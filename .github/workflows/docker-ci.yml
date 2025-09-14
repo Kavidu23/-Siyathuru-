@@ -19,18 +19,23 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # 3️⃣ Build backend Docker image
+      # 3️⃣ Set branch name for tagging
+      - name: Set branch name
+        id: vars
+        run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      # 4️⃣ Build backend Docker image
       - name: Build backend image
         run: |
           docker build \
             -t siyathuru-backend:latest \
-            -t siyathuru-backend:${GITHUB_REF_NAME} \
+            -t siyathuru-backend:${BRANCH_NAME} \
             ./backend
 
-      # 4️⃣ Build frontend Docker image
+      # 5️⃣ Build frontend Docker image
       - name: Build frontend image
         run: |
           docker build \
             -t siyathuru-frontend:latest \
-            -t siyathuru-frontend:${GITHUB_REF_NAME} \
-            ./frontend/siyathuru_frontend
+            -t siyathuru-frontend:${BRANCH_NAME} \
+            ./frontend
