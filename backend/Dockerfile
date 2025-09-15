@@ -9,12 +9,13 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
+RUN npm install -g nodemon
 
 # Copy all backend source code
 COPY . .
 
 # Expose backend port
-EXPOSE 4000
+EXPOSE 3000 
 
-# Start the backend
+# Start the backend server
 CMD ["npm", "start"]

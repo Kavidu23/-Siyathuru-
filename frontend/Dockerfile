@@ -1,20 +1,26 @@
-# Base image with Node.js
-FROM node:20
+# Step 1: Build Angular app
+FROM node:20 AS build
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files (so you can install deps later if needed)
+# Copy package files and install dependencies
 COPY package*.json ./
+RUN npm install
 
-# Install dependencies (optional, can comment out if not needed yet)
-# RUN npm install
-
-# Copy the rest of the project (source code)
+# Copy all source code
 COPY . .
 
-# Expose Angular default port (optional)
-EXPOSE 4200
+# Build Angular app into dist/frontend/browser
+RUN npm run build --output-path=dist/frontend/browser
 
-# Default command (placeholder)
-CMD ["node"]
+# Step 2: Serve with Nginx
+FROM nginx:alpine
+
+# Copy built Angular files into Nginx html folder
+COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
+
+# Expose container port
+EXPOSE 80
+
+# Run Nginx
+CMD ["nginx", "-g", "daemon off;"]

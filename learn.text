@@ -1,0 +1,16 @@
+# Build the image
+docker build -t siyathuru-frontend .
+
+# Run the container (map host 4200 → container 80)
+docker run -p 4200:80 siyathuru-frontend
+
+#checks the current status
+docker ps
+
+//for the back end
+
+# Build image
+docker build -t siyathuru-backend .
+
+# Run container
+docker run -p 3000:3000 siyathuru-backend
