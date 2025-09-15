@@ -1,13 +1,23 @@
-const express=require('express');
+const express = require('express');
 require('dotenv').config();
-const app=express(); //create express app
+const connectDB = require('./db'); // Import MongoDB connection
 
-const PORT=process.env.PORT || 3000;
+const app = express(); // create express app
 
-app.get('/',(req,res)=>{
-    res.send('Hello from Express');
+const PORT = process.env.PORT || 3000;
+
+// Connect to MongoDB
+connectDB();
+
+// Middleware to parse JSON (optional)
+app.use(express.json());
+
+// Example route
+app.get('/', (req, res) => {
+  res.send('Hello from Express + MongoDB!');
 });
 
-app.listen(PORT,()=>{
-    console.log(`Server is running on port ${PORT}`);
+// Start server
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });

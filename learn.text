@@ -14,3 +14,104 @@ docker build -t siyathuru-backend .
 
 # Run container
 docker run -p 3000:3000 siyathuru-backend
+
+
+CI (tests & builds)
+
+CD (deployment-ready images)
+
+
+
+1️⃣ Does your current code close the MongoDB connection after use?
+
+No — your code connects once when the server starts:
+
+connectDB();
+
+
+That means:
+
+The connection stays open while your app is running.
+
+This is the normal & recommended practice ✅ for web apps (Express, Node.js, etc.).
+
+Closing the connection after every request would make your app super slow and unstable.
+
+
+
+
+
+1️⃣ Problem without Compose
+
+Right now, you have:
+
+Backend Node.js/Express app
+
+MongoDB running locally (or maybe in another container)
+
+Optional frontend
+
+If you try to run everything manually:
+
+Start MongoDB separately.
+
+Build/run backend Docker container, making sure it can reach MongoDB.
+
+Set environment variables manually each time (MONGO_URI, PORT).
+
+Start frontend container, configure ports, connect to backend.
+
+⚠️ This is messy, error-prone, and not scalable.
+
+2️⃣ Why Docker Compose helps
+
+Docker Compose lets you:
+
+Define multiple services in one file
+
+Example: backend, mongo, frontend
+
+Specify build instructions, ports, env vars all in one place.
+
+Handle dependencies automatically
+
+depends_on: mongo → backend waits until MongoDB container starts.
+
+Environment variables management
+
+Use .env file → no need to type -e or long commands.
+
+Easier commands
+
+Start everything with one command:
+
+docker-compose up --build
+
+
+Stop everything:
+
+docker-compose down
+
+
+Consistency across environments
+
+Works on dev, staging, or production.
+
+Same setup on Windows, Mac, Linux.
+
+Good industry practice
+
+Most real-world projects (Node.js + DB + other services) use Docker Compose or Kubernetes.
+
+Makes your CI/CD pipelines much simpler.
+
+3️⃣ TL;DR
+
+Without Compose → manual, error-prone, not scalable.
+With Compose → automated, clean, reproducible, production-ready.
+
+
+
+
+docker-compose up --build
+docker-compose down
