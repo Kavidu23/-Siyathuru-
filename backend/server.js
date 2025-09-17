@@ -1,23 +1,22 @@
-const express = require('express');
-require('dotenv').config();
-const connectDB = require('./config/db'); // Import MongoDB connection
+// server.js
+const express = require("express");
+const mongoose = require("mongoose");
+require("dotenv").config();
+const userRoutes = require("./routes/userRoutes"); // make sure this file exists
 
-const app = express(); // create express app
-
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Connect to MongoDB
-connectDB();
-
-// Middleware to parse JSON (optional)
+// Middleware
 app.use(express.json());
 
-// Example route
-app.get('/', (req, res) => {
-  res.send('Hello from Express + MongoDB!');
-});
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI_LOCAL, { dbName: "Siyathuru" })
+  .then(() => console.log("🚀 MongoDB connected"))
+  .catch(err => console.error("❌ MongoDB connection error:", err));
+
+// Routes
+app.use("/api/users", userRoutes);
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
