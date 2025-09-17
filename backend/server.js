@@ -1,6 +1,6 @@
 const express = require('express');
 require('dotenv').config();
-const connectDB = require('./db'); // Import MongoDB connection
+const connectDB = require('./config/db'); // Import MongoDB connection
 
 const app = express(); // create express app
 
