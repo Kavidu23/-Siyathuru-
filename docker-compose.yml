@@ -1,22 +1,30 @@
+version: "3.9"
 services:
   mongo:
     image: mongo:6
+    container_name: siyathuru-mongo
     ports:
       - "27017:27017"
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+    image: siyathuru-backend:latest
+    container_name: siyathuru-backend
     ports:
       - "3000:3000"
     env_file:
       - ./backend/.env
     environment:
-    - DOCKERIZED=1
+      - DOCKERIZED=1
     depends_on:
       - mongo
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+    image: siyathuru-frontend:latest
+    container_name: siyathuru-frontend
     ports:
       - "4200:80"
     depends_on:

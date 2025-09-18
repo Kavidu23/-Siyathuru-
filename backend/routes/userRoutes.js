@@ -1,9 +1,19 @@
 const express = require("express");
-const { createUser, getUsers } = require("../controllers/userController");
+const {
+    createUser,
+    getUsers,
+    getUserById,
+    updateUser,
+    deleteUser,
+} = require("../controllers/userController");
 
 const router = express.Router();
 
-router.get("/", getUsers);
-router.post("/", createUser);
+// CRUD routes
+router.get("/", getUsers);              // Get all users
+router.get("/:id", getUserById);       // Get single user by ID
+router.post("/", createUser);          // Create new user
+router.put("/:id", updateUser);        // Update user by ID
+router.delete("/:id", deleteUser);     // Delete user by ID
 
-module.exports = router; // ✅ export using CommonJS
+module.exports = router; // ✅ CommonJS export

@@ -1,44 +1,52 @@
 // userRoute.test.js
 
-const router = require("../routes/userRoutes"); // The file you want to test
-const { createUser, getUsers } = require("../controllers/userController");
+const router = require("../routes/userRoutes"); // The router file
+const {
+    createUser,
+    getUsers,
+    getUserById,
+    updateUser,
+    deleteUser,
+} = require("../controllers/userController");
 
-// Use Jest to mock the entire controller module.
-// This is the key step to "unit" test the router.
+// Mock the controller module
 jest.mock("../controllers/userController");
 
-// --- Test Suite for User Router ---
+// Utility to find route by path & method
+const findRoute = (route, method) => {
+    return router.stack.find(
+        (s) => s.route.path === route && s.route.methods[method.toLowerCase()]
+    );
+};
+
 describe("User Router Unit Tests", () => {
-    // You don't need a full Express app or Supertest for this kind of unit test.
-    // The goal is just to check if the router defines the paths correctly.
-
-    // A utility function to inspect the router's internal layers.
-    const findRoute = (route, method) => {
-        return router.stack.find(s => {
-            return s.route.path === route && s.route.methods[method.toLowerCase()];
-        });
-    };
-
-    // Test 1: GET route is defined correctly.
-    it("should define a GET / route that calls the getUsers controller", () => {
-        const getRoute = findRoute("/", "get");
-        
-        // Assert that the route handler exists.
-        expect(getRoute).toBeDefined();
-
-        // Check if the handler function is indeed our mocked getUsers function.
-        // This confirms the router is linked to the correct controller.
-        expect(getRoute.route.stack[0].handle).toBe(getUsers);
+    it("should define GET / route -> getUsers", () => {
+        const route = findRoute("/", "get");
+        expect(route).toBeDefined();
+        expect(route.route.stack[0].handle).toBe(getUsers);
     });
 
-    // Test 2: POST route is defined correctly.
-    it("should define a POST / route that calls the createUser controller", () => {
-        const postRoute = findRoute("/", "post");
+    it("should define POST / route -> createUser", () => {
+        const route = findRoute("/", "post");
+        expect(route).toBeDefined();
+        expect(route.route.stack[0].handle).toBe(createUser);
+    });
 
-        // Assert that the route handler exists.
-        expect(postRoute).toBeDefined();
+    it("should define GET /:id route -> getUserById", () => {
+        const route = findRoute("/:id", "get");
+        expect(route).toBeDefined();
+        expect(route.route.stack[0].handle).toBe(getUserById);
+    });
 
-        // Check that the handler function is the mocked createUser.
-        expect(postRoute.route.stack[0].handle).toBe(createUser);
+    it("should define PUT /:id route -> updateUser", () => {
+        const route = findRoute("/:id", "put");
+        expect(route).toBeDefined();
+        expect(route.route.stack[0].handle).toBe(updateUser);
+    });
+
+    it("should define DELETE /:id route -> deleteUser", () => {
+        const route = findRoute("/:id", "delete");
+        expect(route).toBeDefined();
+        expect(route.route.stack[0].handle).toBe(deleteUser);
     });
 });

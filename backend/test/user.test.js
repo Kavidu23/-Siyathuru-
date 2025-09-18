@@ -1,8 +1,7 @@
-// __tests__/userModel.unit.test.js
 const mongoose = require("mongoose");
-const User = require("../models/user"); // Your actual model
+const User = require("../models/user"); // adjust path if needed
 
-// Mock the User model methods with Jest
+// Mock the User model
 jest.mock("../models/user");
 
 describe("User Model (mocked) - Unit Tests", () => {
@@ -18,68 +17,86 @@ describe("User Model (mocked) - Unit Tests", () => {
             pnumber: "1234567890",
             password: "password",
             city: "Test City",
-            role: "member",
+            age: 25,
+            role: "member"
         };
 
-        // Mock .save() to resolve with fake user
-        User.mockImplementation(() => ({
-            save: jest.fn().mockResolvedValue(fakeUser),
-        }));
+        User.create.mockResolvedValue(fakeUser);
 
-        const userInstance = new User(fakeUser);
-        const savedUser = await userInstance.save();
+        const result = await User.create(fakeUser);
 
-        expect(savedUser).toEqual(fakeUser);
-        expect(savedUser.email).toBe("john.doe@example.com");
+        expect(result).toEqual(fakeUser);
+        expect(User.create).toHaveBeenCalledWith(fakeUser);
     });
 
-    it("should fail validation if a required field is missing", async () => {
-        const error = new mongoose.Error.ValidationError();
-        error.addError("name", new mongoose.Error.ValidatorError({ message: "Name is required" }));
+    it("should fetch all users", async () => {
+        const fakeUsers = [
+            { _id: new mongoose.Types.ObjectId(), name: "User A", email: "a@test.com" },
+            { _id: new mongoose.Types.ObjectId(), name: "User B", email: "b@test.com" }
+        ];
 
-        // Mock .validate() to reject
-        User.mockImplementation(() => ({
-            validate: jest.fn().mockRejectedValue(error),
-        }));
+        User.find.mockResolvedValue(fakeUsers);
 
-        const userInstance = new User({ email: "test@example.com" });
-        await expect(userInstance.validate()).rejects.toBeInstanceOf(mongoose.Error.ValidationError);
+        const result = await User.find();
+
+        expect(result).toEqual(fakeUsers);
+        expect(User.find).toHaveBeenCalledTimes(1);
     });
 
-    it("should throw error on duplicate email", async () => {
-        const mongoError = new Error("E11000 duplicate key error collection: users index: email dup key");
+    it("should fetch a user by ID", async () => {
+        const userId = new mongoose.Types.ObjectId();
+        const fakeUser = { _id: userId, name: "User X", email: "x@test.com" };
 
-        // Mock .save() to reject
-        User.mockImplementation(() => ({
-            save: jest.fn().mockRejectedValue(mongoError),
-        }));
+        User.findById.mockResolvedValue(fakeUser);
 
-        const userInstance = new User({
-            name: "Jane Doe",
-            email: "duplicate@example.com",
-            pnumber: "1112223333",
-            password: "pass",
-            city: "City A",
-        });
+        const result = await User.findById(userId);
 
-        await expect(userInstance.save()).rejects.toThrow("duplicate key error");
+        expect(result).toEqual(fakeUser);
+        expect(User.findById).toHaveBeenCalledWith(userId);
     });
 
-    it("should fail validation if role is invalid", async () => {
-        const error = new mongoose.Error.ValidationError();
-        error.addError("role", new mongoose.Error.ValidatorError({ message: "Invalid role" }));
+    it("should update a user", async () => {
+        const userId = new mongoose.Types.ObjectId();
+        const updateData = { city: "New City" };
+        const updatedUser = { _id: userId, name: "John Doe", ...updateData };
 
-        // Mock .validate() to reject
-        User.mockImplementation(() => ({
-            validate: jest.fn().mockRejectedValue(error),
-        }));
+        User.findByIdAndUpdate.mockResolvedValue(updatedUser);
 
-        const userInstance = new User({
-            name: "Role Test",
-            email: "role@test.com",
-            role: "super-admin", // not allowed
-        });
+        const result = await User.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true });
 
-        await expect(userInstance.validate()).rejects.toBeInstanceOf(mongoose.Error.ValidationError);
+        expect(result).toEqual(updatedUser);
+        expect(User.findByIdAndUpdate).toHaveBeenCalledWith(userId, updateData, { new: true, runValidators: true });
+    });
+
+    it("should delete a user", async () => {
+        const userId = new mongoose.Types.ObjectId();
+        const deletedUser = { _id: userId, name: "Deleted User", email: "deleted@test.com" };
+
+        User.findByIdAndDelete.mockResolvedValue(deletedUser);
+
+        const result = await User.findByIdAndDelete(userId);
+
+        expect(result).toEqual(deletedUser);
+        expect(User.findByIdAndDelete).toHaveBeenCalledWith(userId);
+    });
+
+    it("should handle errors when creating a user", async () => {
+        const fakeUser = { name: "Error User" };
+        const errorMessage = "User validation failed";
+
+        User.create.mockRejectedValue(new Error(errorMessage));
+
+        await expect(User.create(fakeUser)).rejects.toThrow(errorMessage);
+        expect(User.create).toHaveBeenCalledWith(fakeUser);
+    });
+
+    it("should handle duplicate email error", async () => {
+        const fakeUser = { email: "duplicate@test.com" };
+        const mongoError = { code: 11000, message: "duplicate key error" };
+
+        User.create.mockRejectedValue(mongoError);
+
+        await expect(User.create(fakeUser)).rejects.toEqual(mongoError);
+        expect(User.create).toHaveBeenCalledWith(fakeUser);
     });
 });
