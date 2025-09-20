@@ -69,6 +69,7 @@ describe("Events Controller Unit Tests", () => {
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({
             success: true,
+            message: "Events fetched successfully",
             data: mockEvents,
         });
     });

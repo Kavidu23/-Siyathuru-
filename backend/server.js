@@ -5,6 +5,7 @@ require("dotenv").config();
 const userRoutes = require("./routes/userRoutes");
 const communityRoutes = require("./routes/communityRoutes");
 const eventsRoutes = require("./routes/eventsRoutes");
+const requestsRoutes = require("./routes/requestsRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,6 +34,7 @@ mongoose
 app.use("/api/users", userRoutes);
 app.use("/api/communities", communityRoutes);
 app.use("/api/events", eventsRoutes);
+app.use("/api/requests", requestsRoutes);
 
 // Start server
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

@@ -62,6 +62,7 @@ const getEvents = async (req, res) => {
         const allEvents = await events.find();
         res.status(200).json({
             success: true,
+            message: "Events fetched successfully",
             data: allEvents
         });
     } catch (err) {
