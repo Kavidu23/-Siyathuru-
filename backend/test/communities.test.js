@@ -41,6 +41,8 @@ describe("Community Model (mocked) - Unit Tests", () => {
     expect(Community.create).toHaveBeenCalledWith(fakeCommunity);
   });
 
+
+
   it("should fetch all communities", async () => {
     const fakeCommunities = [
       { _id: new mongoose.Types.ObjectId(), name: "Community A", type: "Sports" },
@@ -55,6 +57,8 @@ describe("Community Model (mocked) - Unit Tests", () => {
     expect(Community.find).toHaveBeenCalledTimes(1);
   });
 
+
+
   it("should fetch a community by ID", async () => {
     const communityId = new mongoose.Types.ObjectId();
     const fakeCommunity = { _id: communityId, name: "Community X", type: "Charity" };
@@ -66,6 +70,7 @@ describe("Community Model (mocked) - Unit Tests", () => {
     expect(result).toEqual(fakeCommunity);
     expect(Community.findById).toHaveBeenCalledWith(communityId);
   });
+
 
   it("should update a community", async () => {
     const communityId = new mongoose.Types.ObjectId();
@@ -80,6 +85,7 @@ describe("Community Model (mocked) - Unit Tests", () => {
     expect(Community.findByIdAndUpdate).toHaveBeenCalledWith(communityId, updateData, { new: true });
   });
 
+
   it("should delete a community", async () => {
     const communityId = new mongoose.Types.ObjectId();
     const deletedCommunity = { _id: communityId, name: "Deleted Community", type: "Sports" };
@@ -91,6 +97,7 @@ describe("Community Model (mocked) - Unit Tests", () => {
     expect(result).toEqual(deletedCommunity);
     expect(Community.findByIdAndDelete).toHaveBeenCalledWith(communityId);
   });
+
 
   it("should handle errors when creating a community", async () => {
     const fakeCommunity = { name: "Error Community" };
