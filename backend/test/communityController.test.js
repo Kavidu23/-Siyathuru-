@@ -5,6 +5,7 @@ const {
     updateCommunity,
     deleteCommunity,
 } = require("../controllers/communityController");
+
 const Community = require("../models/communities");
 
 jest.mock("../models/communities");

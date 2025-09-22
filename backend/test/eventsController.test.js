@@ -8,6 +8,7 @@ const {
 
 const Event = require("../models/events");
 
+// Mock the controller module
 jest.mock("../models/events");
 
 const mockRequest = () => ({ body: {}, params: {} });

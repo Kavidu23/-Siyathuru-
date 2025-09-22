@@ -1,4 +1,4 @@
-const Community = require("../models/communities");
+const Community = require("../models/communities"); // community model path
 
 // CREATE a new community
 const createCommunity = async (req, res) => {
