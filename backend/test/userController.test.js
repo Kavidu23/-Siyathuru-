@@ -1,14 +1,20 @@
+// test/userController.test.js
+
 const {
   createUser,
   getUsers,
   getUserById,
   updateUser,
   deleteUser,
+  loginUser,
 } = require("../controllers/userController");
 const User = require("../models/user");
+const bcrypt = require("bcryptjs");
 
-jest.mock("../models/user");
+jest.mock("../models/user"); // Mock Mongoose model
+jest.mock("bcryptjs");       // Mock bcrypt
 
+// Helpers to create fake req/res
 const mockRequest = () => ({ body: {}, params: {} });
 const mockResponse = () => {
   const res = {};
@@ -24,9 +30,13 @@ describe("User Controller Unit Tests", () => {
     req = mockRequest();
     res = mockResponse();
     jest.clearAllMocks();
+
+    // Mock bcrypt functions
+    bcrypt.hash.mockResolvedValue("hashed-password");
+    bcrypt.compare.mockResolvedValue(true);
   });
 
-  // CREATE
+  // CREATE USER
   it("should create a user and return 201 status", async () => {
     const userData = {
       name: "Test User",
@@ -39,21 +49,34 @@ describe("User Controller Unit Tests", () => {
     };
     req.body = userData;
 
-    User.create.mockResolvedValueOnce({ ...userData, _id: "fake-id" });
+    User.create.mockResolvedValueOnce({ ...userData, password: "hashed-password", _id: "fake-id" });
 
     await createUser(req, res);
 
-    expect(User.create).toHaveBeenCalledTimes(1);
-    expect(User.create).toHaveBeenCalledWith(userData);
+    expect(User.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ...userData,
+        password: "hashed-password",
+      })
+    );
+
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
       message: "User created successfully",
-      data: { ...userData, _id: "fake-id" },
+      data: {
+        _id: "fake-id",
+        name: userData.name,
+        email: userData.email,
+        pnumber: userData.pnumber,
+        city: userData.city,
+        age: userData.age,
+        role: userData.role,
+      },
     });
   });
 
-  it("should return 400 status if validation fails on create", async () => {
+  it("should return 400 if validation fails on create", async () => {
     const mockError = new Error("Validation failed");
     mockError.name = "ValidationError";
     User.create.mockRejectedValueOnce(mockError);
@@ -69,7 +92,7 @@ describe("User Controller Unit Tests", () => {
     });
   });
 
-  it("should return 400 status if duplicate email error occurs", async () => {
+  it("should return 400 if duplicate field error occurs", async () => {
     const duplicateError = { code: 11000, message: "duplicate key error" };
     User.create.mockRejectedValueOnce(duplicateError);
 
@@ -84,12 +107,47 @@ describe("User Controller Unit Tests", () => {
     });
   });
 
-  // READ ALL
+  // LOGIN USER
+  it("should login a user and return 200 status", async () => {
+    const loginData = { email: "test@gmail.com", password: "password123" };
+    req.body = loginData;
+
+    const mockUser = {
+      _id: "fake-id",
+      name: "Test User",
+      email: "test@gmail.com",
+      password: "hashed-password",
+      pnumber: "123456789",
+      city: "City",
+      age: 25,
+      role: "user",
+    };
+
+    User.findOne.mockResolvedValueOnce(mockUser);
+
+    await loginUser(req, res);
+
+    expect(User.findOne).toHaveBeenCalledWith({ email: loginData.email });
+    expect(bcrypt.compare).toHaveBeenCalledWith(loginData.password, mockUser.password);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      success: true,
+      message: "Login successful",
+      data: {
+        _id: mockUser._id,
+        name: mockUser.name,
+        email: mockUser.email,
+        pnumber: mockUser.pnumber,
+        city: mockUser.city,
+        age: mockUser.age,
+        role: mockUser.role,
+      },
+    });
+  });
+
+  // READ ALL USERS
   it("should return all users with 200 status", async () => {
-    const mockUsers = [
-      { _id: "1", name: "User 1" },
-      { _id: "2", name: "User 2" },
-    ];
+    const mockUsers = [{ _id: "1", name: "User 1" }, { _id: "2", name: "User 2" }];
     User.find.mockResolvedValueOnce(mockUsers);
 
     await getUsers(req, res);
@@ -103,7 +161,7 @@ describe("User Controller Unit Tests", () => {
     });
   });
 
-  // READ ONE
+  // READ ONE USER
   it("should fetch a user by ID", async () => {
     const mockUser = { _id: "1", name: "User 1" };
     req.params.id = "1";
@@ -113,10 +171,7 @@ describe("User Controller Unit Tests", () => {
 
     expect(User.findById).toHaveBeenCalledWith("1");
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({
-      success: true,
-      data: mockUser,
-    });
+    expect(res.json).toHaveBeenCalledWith({ success: true, data: mockUser });
   });
 
   it("should return 404 if user not found by ID", async () => {
@@ -126,13 +181,10 @@ describe("User Controller Unit Tests", () => {
     await getUserById(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({
-      success: false,
-      error: "User not found",
-    });
+    expect(res.json).toHaveBeenCalledWith({ success: false, error: "User not found" });
   });
 
-  // UPDATE
+  // UPDATE USER
   it("should update a user successfully", async () => {
     const updatedData = { city: "New City" };
     const updatedUser = { _id: "1", name: "User 1", ...updatedData };
@@ -143,11 +195,7 @@ describe("User Controller Unit Tests", () => {
 
     await updateUser(req, res);
 
-    expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
-      "1",
-      updatedData,
-      { new: true, runValidators: true }
-    );
+    expect(User.findByIdAndUpdate).toHaveBeenCalledWith("1", updatedData, { new: true, runValidators: true });
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
@@ -164,13 +212,10 @@ describe("User Controller Unit Tests", () => {
     await updateUser(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({
-      success: false,
-      error: "User not found",
-    });
+    expect(res.json).toHaveBeenCalledWith({ success: false, error: "User not found" });
   });
 
-  // DELETE
+  // DELETE USER
   it("should delete a user successfully", async () => {
     const deletedUser = { _id: "1", name: "User 1" };
     req.params.id = "1";
@@ -180,10 +225,7 @@ describe("User Controller Unit Tests", () => {
 
     expect(User.findByIdAndDelete).toHaveBeenCalledWith("1");
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({
-      success: true,
-      message: "User deleted successfully",
-    });
+    expect(res.json).toHaveBeenCalledWith({ success: true, message: "User deleted successfully" });
   });
 
   it("should return 404 if user to delete not found", async () => {
@@ -193,9 +235,6 @@ describe("User Controller Unit Tests", () => {
     await deleteUser(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({
-      success: false,
-      error: "User not found",
-    });
+    expect(res.json).toHaveBeenCalledWith({ success: false, error: "User not found" });
   });
 });
