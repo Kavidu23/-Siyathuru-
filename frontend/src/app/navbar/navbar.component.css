@@ -1,9 +1,9 @@
 /* Navigation container */
 .nav {
   width: 100%;
-  background: #fff;
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+  padding: 20px;
+  border-bottom: 1px solid #d4d4d4;
+  
 }
 
 /* Flex for nav items */
@@ -55,6 +55,8 @@ ol li {
   display: flex;
   justify-content: center;
   height: 50px;
+
+
 }
 
 .search-bar {
@@ -63,9 +65,10 @@ ol li {
   border: 1px solid #ddd;
   border-radius: 10px;
   overflow: hidden;
-  max-width: 500px;
+  max-width: 700px;
   width: 100%;
   background: #fff;
+    
 }
 
 

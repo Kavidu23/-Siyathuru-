@@ -9,6 +9,9 @@ body{
     font-family: "Roboto", sans-serif;
     margin-left: 10px;
     margin-right: 10px;
+    background-color: #fffcfc; /* Sets a base background color */
+    background-image: url("https://www.transparenttextures.com/patterns/church.png"); /* Sets a background pattern image */
+
 }
 
 a{
