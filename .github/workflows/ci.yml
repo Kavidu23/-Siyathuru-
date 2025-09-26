@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
@@ -13,7 +14,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
+      # ======================
+      # Backend
+      # ======================
+      - name: Install backend dependencies
         run: |
           cd backend
           npm install
@@ -22,3 +26,21 @@ jobs:
         run: |
           cd backend
           npm test
+
+      # ======================
+      # Frontend
+      # ======================
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run frontend tests (Angular + Karma)
+        run: |
+          cd frontend
+          npm test -- --watch=false --browsers=ChromeHeadless
+
+        # Key points:
+        # --watch=false → makes sure Angular tests exit after running (important in CI, otherwise Karma waits forever).
+        # --browsers=ChromeHeadless → runs tests in a headless Chrome, since CI runners don’t have a GUI.
+        # You need separate install/test steps for backend and frontend folders.

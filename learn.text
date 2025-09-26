@@ -85,7 +85,7 @@ Easier commands
 
 Start everything with one command:
 
-docker-compose up --build
+do
 
 
 Stop everything:
