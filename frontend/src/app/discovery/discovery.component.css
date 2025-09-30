@@ -1,10 +1,9 @@
 .discovery-page {
-  margin: 30px;
-  padding: 20px;
+  padding: 10px;
 }
 
 .discovery-header {
-  margin-bottom: 30px;
+  margin-bottom: 15px; /*maintain same 15 margin*/
 }
 
 .discovery-header h1 {

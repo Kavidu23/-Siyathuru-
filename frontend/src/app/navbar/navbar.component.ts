@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { LanguageSelectComponent } from '../language-select/language-select.component';
+import { ModalService } from '../modal.service';
 
 
 @Component({
@@ -11,5 +12,10 @@ import { LanguageSelectComponent } from '../language-select/language-select.comp
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
+  constructor(private modalService: ModalService) { }
+
+  openLoginModal() {
+    this.modalService.openLogin();
+  }
 
 }

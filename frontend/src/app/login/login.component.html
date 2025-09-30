@@ -1,0 +1,35 @@
+<div class="login-modal" [class.visible]="isVisible" *ngIf="isVisible">
+  <div class="login-overlay" (click)="closeLogin()"></div>
+
+  <div class="login-box">
+    <button class="close-btn" (click)="closeLogin()">×</button>
+
+    <div class="login-header">
+      <h2>Login to Siyathuru</h2>
+      <p>Access your account or continue with Google</p>
+    </div>
+
+    <form class="login-form">
+      <input type="email" placeholder="Email" required />
+      <input type="password" placeholder="Password" required />
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+
+    <div class="google-login">
+      <button class="google-btn">
+        <img
+          src="https://www.google.com/images/branding/product/2x/gsa_24dp.png"
+          alt="Google logo"
+          width="20"
+          height="20"
+        />
+        Continue with Google
+      </button>
+    </div>
+
+    <div class="links">
+      <a href="#" class="forgot-link">Forgot password?</a>
+      <p>Don’t have an account? <a href="#">Sign up</a></p>
+    </div>
+  </div>
+</div>

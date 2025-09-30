@@ -18,6 +18,14 @@ ol {
   gap: 17px;
 }
 
+#log:hover{
+  color: #d7372c;
+}
+
+#discover:hover{
+  color: #d7372c;
+}
+
 .ask-ai {
   font: 1em sans-serif;
   font-weight: 600;
@@ -57,6 +65,10 @@ ol li {
   height: 50px;
 
 
+}
+
+.color:hover{
+  color: #d7372c;
 }
 
 .search-bar {

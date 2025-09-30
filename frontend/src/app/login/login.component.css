@@ -1,0 +1,169 @@
+/* Modal background */
+.login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 9999;
+}
+
+.login-modal.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.login-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+}
+
+/* Modal box */
+.login-box {
+  position: relative;
+  background: white;
+  padding: 35px;
+  border-radius: 15px;
+  width: 400px;
+  max-width: 95%;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+  animation: fadeInScale 0.3s ease forwards;
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #888;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+/* Header */
+.login-header h2 {
+  margin: 0;
+  font-size: 30px;
+  text-align: center;
+  color: #00616e;
+  font-family: "Oswald", sans-serif;
+}
+
+.login-header p {
+  text-align: center;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Form */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-form input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.login-form input:focus {
+  border-color: #00616e;
+  outline: none;
+}
+
+.login-btn {
+  padding: 12px;
+  background: #00616e;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.login-btn:hover {
+  background: #004d52;
+}
+
+/* Google Login */
+.google-login {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 14px;
+}
+
+.google-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.google-btn:hover {
+  background: #f7f7f7;
+}
+
+/* Links */
+.links {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.links a {
+  color: #00616e;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+.links p {
+  font-size: 13px;
+  color: #555;
+}
+
+/* Animation */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
