@@ -1,0 +1,122 @@
+.ask-ai-page {
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.ask-ai-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.ask-ai-header h1 {
+  font-size: 26px;
+  color: #00616e;
+}
+
+.chat-container {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 15px;
+  height: 500px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.chat-message {
+  max-width: 70%;
+  padding: 12px 15px;
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.user-message {
+  align-self: flex-end;
+  background: #00616e;
+  color: #fff;
+  border-bottom-right-radius: 2px;
+}
+
+.ai-message {
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-bottom-left-radius: 2px;
+}
+
+.ai-suggestions {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.suggestion-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  width: 220px;
+}
+
+.suggestion-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.suggestion-info {
+  padding: 10px;
+}
+
+.quick-suggestions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.quick-suggestions button {
+  padding: 8px 14px;
+  background: #e6f7f9;
+  border: 1px solid #00616e;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #00616e;
+}
+
+.quick-suggestions button:hover {
+  background: #00616e;
+  color: #fff;
+}
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+}
+
+.send-btn {
+  background: #00616e;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.send-btn:hover {
+  background: #004d52;
+}

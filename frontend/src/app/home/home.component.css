@@ -36,12 +36,6 @@
   line-height: 1.6;
 }
 
-.button-align{
-    display: flex;
-    align-items: start;
-    justify-content: start;
-    gap: 20px;
-}
 
 .mid button {
   margin-top: 30px;
@@ -188,13 +182,18 @@
 }
 
 #seeall {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: right;
   color: #00616e;
   cursor: pointer;
+  transition: color 0.3s;
 }
 
-#seeall:hover{
-    color: #004d52;
+#seeall a:hover{
+    color: #ff3b81;
 }
 
 
@@ -330,6 +329,15 @@
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-top: 10px solid #fff;
+}
+
+@media (max-width: 608px) {
+  .feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
 }
 
 

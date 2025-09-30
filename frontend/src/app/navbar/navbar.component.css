@@ -195,7 +195,7 @@ ol li {
   }
 }
 
-@media(max-width: 619px) {
+@media(max-width: 711px) {
   ol {
     display: flex;
     align-items: center;
@@ -208,7 +208,7 @@ ol li {
 
 }
 
-@media(max-width: 539px) {
+@media(max-width: 613px) {
   ol {
     display: flex;
     flex-direction: column;

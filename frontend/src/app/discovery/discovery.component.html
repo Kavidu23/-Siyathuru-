@@ -1,0 +1,88 @@
+<section class="discovery-page">
+  <header class="discovery-header">
+    <h1>Explore Communities Near You</h1>
+    <p>Filter and explore community locations on the map.</p>
+  </header>
+
+  <div class="discovery-layout">
+    <!-- Filters Panel -->
+    <aside class="filters-panel">
+      <h2>Filters</h2>
+
+      <!-- Location Search -->
+      <div class="filter-group">
+        <label for="locationSearch">Search Location</label>
+        <input
+          id="locationSearch"
+          type="text"
+          [(ngModel)]="searchQuery"
+          (input)="onLocationSearch()"
+          placeholder="Type a location"
+        />
+        <ul *ngIf="locationSuggestions.length" class="suggestions-list">
+          <li
+            *ngFor="let suggestion of locationSuggestions"
+            (click)="selectLocation(suggestion)"
+          >
+            {{ suggestion.display_name }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="filter-group">
+        <label for="distance">Distance</label>
+        <select id="distance" [(ngModel)]="selectedDistance">
+          <option value="5">Within 5 km</option>
+          <option value="10">Within 10 km</option>
+          <option value="25">Within 25 km</option>
+          <option value="50">Within 50 km</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="type">Type</label>
+        <select id="type" [(ngModel)]="selectedType">
+          <option value="all">All</option>
+          <option value="youth">Youth</option>
+          <option value="women">Women</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="joinType">Join Type</label>
+        <select id="joinType" [(ngModel)]="selectedJoinType">
+          <option value="free">Free</option>
+          <option value="request">On Request</option>
+        </select>
+      </div>
+
+      <button class="apply-btn" (click)="applyFilters()">Apply Filters</button>
+    </aside>
+
+    <!-- Map & Results -->
+    <main class="map-results">
+      <div class="map-wrapper">
+        <div id="map"></div>
+      </div>
+
+      <section class="results">
+        <h2>Communities</h2>
+        <div
+          class="community-card"
+          *ngFor="let community of filteredCommunities"
+        >
+          <img [src]="community.image" alt="{{ community.name }}" />
+          <div class="community-info">
+            <h3>{{ community.name }}</h3>
+            <p>{{ community.location }} · {{ community.joinType }}</p>
+          </div>
+        </div>
+
+        <p *ngIf="filteredCommunities.length === 0" class="no-results">
+          No communities found matching your criteria.
+        </p>
+      </section>
+    </main>
+  </div>
+</section>
+<app-footer></app-footer>

@@ -76,16 +76,6 @@
   color: #ff3b81;
 }
 
-.app-buttons{
-    display: flex;
-    gap: 10px;
-}
-
-.app-buttons img {
-  
-  height: 40px;
-  margin: 8px 0;
-}
 
 .footer-bottom {
   text-align: center;

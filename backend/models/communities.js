@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const communitySchema = new mongoose.Schema(
   {
     name: { type: String, required: true, unique: true },   // Community name
-    type: { type: String, required:true },                                // e.g., 'Youth Club', 'Charity', 'Sports'
+    type: { type: String, required: true },                 // e.g., 'Youth Club', 'Charity', 'Sports'
     mission: { type: String },                             // Mission statement
     description: { type: String },                         // Longer description
 
