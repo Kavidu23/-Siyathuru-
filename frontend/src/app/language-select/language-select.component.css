@@ -28,7 +28,7 @@
   border-radius: 12px;
   text-align: center;
   font: 1em;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
   min-width: 250px;
   animation: fadeIn 0.3s ease;
 }

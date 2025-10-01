@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalService } from '../modal.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -11,12 +11,18 @@ import { CommonModule } from '@angular/common';
   standalone: true
 
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   isVisible = false;
   subscription!: Subscription;
 
   constructor(private modalService: ModalService) { }
+
+  // switch to signup modal
+  OpenSignup() {
+    this.modalService.openSignup();
+    this.modalService.closeLogin(); // close login properly
+  }
 
   ngOnInit() {
     this.subscription = this.modalService.loginVisible$.subscribe(visible => {

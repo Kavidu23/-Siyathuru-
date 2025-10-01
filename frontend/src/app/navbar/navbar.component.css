@@ -41,7 +41,7 @@ ol {
 .ask-ai:hover {
   background: #00616e;
   color: #fff;
-  box-shadow: 0 4px 10px rgba(0, 97, 110, 0.2);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
 
@@ -144,7 +144,6 @@ ol li {
 #sign {
   padding: 10px 25px;
   color: white;
-  font-weight: 600;
   border-radius: 8px;
   background-color: #00616e;
   transition: background 0.3s;

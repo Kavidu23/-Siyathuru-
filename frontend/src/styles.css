@@ -1,3 +1,32 @@
+:root {
+  /* Color Variables */
+  --primary-color: #00616e;
+  --primary-color-dark: #004d52; 
+  --primary-color-light: #e6f7f9; 
+  --primary-color-hover: #00474a;
+  --text-color: #333; 
+  --secondary-text-color: #555;
+  --background-color: white;
+  --border-color-light: #ddd;
+  --rd--ark-mode-bg: #f44336;
+  --rd--ark-mode-bg--hover: #ff3b81;;
+  
+  /* Spacing and Sizing */
+  --spacing-sm: 10px;
+  --spacing-md: 15px;
+  --spacing-lg: 20px;
+  
+  /* Radius Variables */
+  --border-radius-button: 8px;
+  --border-radius-input: 10px;
+  --border-radius-card: 20px;
+  
+  /* Utility Variables */
+  --transition-duration: 0.2s;
+  --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  --box-shadow-strong: 0 6px 15px rgba(0, 0, 0, 0.12); /* For cards */
+}
+
 *{
     margin: 0;
     padding: 0;

@@ -18,4 +18,8 @@ export class NavbarComponent {
     this.modalService.openLogin();
   }
 
+  openSignupModal() {
+    this.modalService.openSignup();
+  }
+
 }

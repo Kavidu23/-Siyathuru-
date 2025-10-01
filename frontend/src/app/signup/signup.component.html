@@ -1,0 +1,41 @@
+<div class="signup-modal" [class.visible]="isVisible" *ngIf="isVisible">
+  <div class="login-overlay" (click)="closeSignup()"></div>
+
+  <div class="signup-box">
+    <button class="close-btn" (click)="closeSignup()">×</button>
+
+    <div class="login-header">
+      <h2>Create Your Account</h2>
+      <p>Join Siyathuru and connect with your community</p>
+    </div>
+
+    <form class="signup-form">
+      <input type="text" placeholder="Full Name" required />
+      <input type="email" placeholder="Email Address" required />
+      <input type="text" placeholder="Phone Number" required />
+      <input type="password" placeholder="Password" required />
+      <input type="password" placeholder="Re-Enter Password" required />
+      <input type="text" placeholder="City" required />
+      <input type="number" placeholder="Age" />
+
+      <button type="submit" class="signup-btn">Sign Up</button>
+    </form>
+
+    <div class="google-login">
+      <button class="google-btn">
+        <img
+          src="https://www.google.com/images/branding/product/2x/gsa_24dp.png"
+          alt="Google logo"
+        />
+        Sign up with Google
+      </button>
+    </div>
+
+    <div class="links">
+      <p>
+        Already have an account?
+        <a href="javascript:void(0)" (click)="openLogin()">Login</a>
+      </p>
+    </div>
+  </div>
+</div>

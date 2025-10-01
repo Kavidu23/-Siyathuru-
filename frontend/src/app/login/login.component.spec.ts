@@ -1,14 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
 import { ModalService } from '../modal.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { CommonModule } from '@angular/common'; // Required for LoginComponent's imports
+import { BehaviorSubject } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 // 1. Mock the ModalService
 class MockModalService {
   private subject = new BehaviorSubject<boolean>(false);
   loginVisible$ = this.subject.asObservable();
+
   closeLogin = jasmine.createSpy('closeLogin');
+  openSignup = jasmine.createSpy('openSignup'); // ✅ Added so we can test it
 
   emit(value: boolean) {
     this.subject.next(value);
@@ -22,30 +24,18 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      // 🛑 FIX: Since LoginComponent is standalone, move it from declarations to imports.
-      // We also need to include CommonModule because LoginComponent imports it.
+      // Since LoginComponent is standalone, import it instead of declaring
       imports: [LoginComponent, CommonModule],
-
-      // Provide the MockModalService
-      providers: [
-        // Use the mock class instead of the real ModalService
-        { provide: ModalService, useClass: MockModalService }
-      ]
-    })
-      .compileComponents();
+      providers: [{ provide: ModalService, useClass: MockModalService }]
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
-
-    // Retrieve the mock service instance
-    // Note: The service is injected into the component constructor, but we retrieve 
-    // it from TestBed to interact with the mock.
     modalService = TestBed.inject(ModalService) as unknown as MockModalService;
 
-    // Calls ngOnInit()
-    fixture.detectChanges();
+    fixture.detectChanges(); // triggers ngOnInit
   });
 
   // --- Core Tests ---
@@ -55,35 +45,32 @@ describe('LoginComponent', () => {
   });
 
   it('should unsubscribe from ModalService on ngOnDestroy', () => {
-    // Arrange: Spy on the unsubscribe method
     const unsubscribeSpy = spyOn(component.subscription, 'unsubscribe');
-
-    // Act: Destroy the component
     component.ngOnDestroy();
-
-    // Assert: Verify that unsubscribe was called
     expect(unsubscribeSpy).toHaveBeenCalledTimes(1);
   });
 
   it('should set isVisible based on the ModalService stream', () => {
-    // Arrange: Initial state check
     expect(component.isVisible).toBe(false);
 
-    // Act: Change the service state to true
     modalService.emit(true);
 
-    // Assert: Component should react and update its property
     expect(component.isVisible).toBe(true);
   });
 
   it('should call closeLogin() on the ModalService when closeLogin() is called', () => {
-    // Arrange: Ensure the spy hasn't been called yet
+    expect(modalService.closeLogin).not.toHaveBeenCalled();
+    component.closeLogin();
+    expect(modalService.closeLogin).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call openSignup() and closeLogin() on the ModalService when OpenSignup() is called', () => {
+    expect(modalService.openSignup).not.toHaveBeenCalled();
     expect(modalService.closeLogin).not.toHaveBeenCalled();
 
-    // Act
-    component.closeLogin();
+    component.OpenSignup();
 
-    // Assert
+    expect(modalService.openSignup).toHaveBeenCalledTimes(1);
     expect(modalService.closeLogin).toHaveBeenCalledTimes(1);
   });
 });

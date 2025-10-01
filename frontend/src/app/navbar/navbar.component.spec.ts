@@ -16,6 +16,7 @@ class MockActivatedRoute {
 // 2. Mock the Modal Service
 class MockModalService {
     openLogin = jasmine.createSpy('openLogin');
+    openSignup = jasmine.createSpy('openSignup');
 }
 
 // 3. Mock the Dependency Component
@@ -69,6 +70,16 @@ describe('NavbarComponent', () => {
 
         // ASSERT: Check if the service method was called exactly once
         expect(modalService.openLogin).toHaveBeenCalledTimes(1);
+    });
+
+    it("should call openSignup() on ModalService when openSignupModal() is called", () => {
+        // ARRANGE: Ensure the spy hasn't been called yet
+        expect(modalService.openLogin).not.toHaveBeenCalled();
+
+        component.openSignupModal();
+
+        // ASSERT: Check if the service method was called exactly once
+        expect(modalService.openSignup).toHaveBeenCalledTimes(1);
     });
 
     // Now this test will pass because ActivatedRoute is provided

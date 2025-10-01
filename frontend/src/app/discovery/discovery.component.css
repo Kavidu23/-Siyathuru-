@@ -1,94 +1,119 @@
+/* --- Discovery Page Layout --- */
 .discovery-page {
-  padding: 10px;
+  padding: var(--spacing-sm);
 }
 
 .discovery-header {
-  margin-bottom: 15px; /*maintain same 15 margin*/
+  margin-bottom: var(--spacing-md);
 }
 
 .discovery-header h1 {
   font-size: 30px;
   text-align: start;
+  font-weight: 600;
   font-family: "Oswald", sans-serif;
-  font-weight: 500;
 }
 
 .discovery-layout {
   display: flex;
-  gap: 20px;
+  gap: var(--spacing-lg);
   flex-wrap: wrap;
 }
 
+/* --- Filters Panel --- */
 .filters-panel {
   flex: 1;
   min-width: 250px;
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  background: var(--background-color);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--box-shadow);
 }
 
 .filters-panel h2 {
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-md);
 }
 
-/* Location Search Input */
+/* --- Filter Groups and Inputs --- */
+.filter-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.filter-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: var(--text-color);
+}
+
+/* Location Search Input (Text) */
 .filter-group input[type="text"] {
   width: 100%;
-  padding: 10px 35px 10px 10px; /* space for icon */
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  padding: var(--spacing-sm) 35px var(--spacing-sm) var(--spacing-sm); /* space for icon */
+  border-radius: var(--border-radius-input);
+  border: 1px solid var(--border-color-light);
   font-size: 14px;
   transition: border-color 0.3s ease;
   position: relative;
 }
 
 .filter-group input[type="text"]:focus {
-  border-color: #00616e;
+  border-color: var(--primary-color);
   outline: none;
 }
 
-/* Location search icon inside input */
-.filter-group input[type="text"]::placeholder {
-  color: #999;
-}
-
+/* Location Search Icon Wrapper */
 .location-input-wrapper {
   position: relative;
 }
 
-.location-input-wrapper i {
+/* Location search icon inside input */
+.location-input-wrapper i,
+.location-icon {
   position: absolute;
-  right: 10px;
+  right: var(--spacing-sm);
   top: 50%;
   transform: translateY(-50%);
-  color: #666;
+  color: var(--secondary-text-color);
   pointer-events: none;
 }
 
-/* Suggestions List Styling */
+.filter-group input[type="text"]::placeholder {
+  color: #999; /* This color is specific and might not need a variable */
+}
+
+/* Dropdown/Select Input */
+.filter-group select {
+  width: 100%;
+  padding: 8px;
+  border-radius: var(--border-radius-input);
+  border: 1px solid var(--border-color-light);
+  font-size: 14px;
+}
+
+/* --- Suggestions List Styling --- */
 .suggestions-list {
   list-style: none;
   padding: 0;
   margin: 5px 0 0 0;
-  background: white;
-  border: 1px solid #ccc;
+  background: var(--background-color);
+  border: 1px solid var(--border-color-light);
   border-top: none;
   max-height: 180px;
   overflow-y: auto;
   border-radius: 0 0 6px 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--box-shadow);
   z-index: 1000;
   position: absolute;
   max-width: 450px;
 }
 
 .suggestions-list li {
-  padding: 10px;
+  padding: var(--spacing-sm);
   cursor: pointer;
   font-size: 14px;
-  border-bottom: 1px solid #eee;
-  transition: background 0.2s ease;
+  border-bottom: 1px solid #eee; /* Specific light gray */
+  transition: background var(--transition-duration) ease;
 }
 
 .suggestions-list li:last-child {
@@ -96,43 +121,27 @@
 }
 
 .suggestions-list li:hover {
-  background: #f0f8ff;
+  background: #f0f8ff; /* Specific light blue hover */
 }
 
-.filter-group {
-  margin-bottom: 15px;
-}
-
-.filter-group label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #333;
-}
-
-.filter-group select {
-  width: 100%;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
+/* --- Action Buttons --- */
 .apply-btn {
   width: 100%;
-  padding: 10px;
-  background: #00616e;
-  color: white;
+  padding: var(--spacing-sm);
+  background: var(--primary-color);
+  color: var(--background-color);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-radius-button);
   font-weight: bold;
   cursor: pointer;
+  transition: background var(--transition-duration);
 }
 
 .apply-btn:hover {
-  background: #004d52;
+  background: var(--primary-color-dark);
 }
 
+/* --- Map and Results Section --- */
 .map-results {
   flex: 2;
   display: flex;
@@ -142,15 +151,13 @@
 .map-wrapper {
   height: 400px;
   width: 100%;
-  border-radius: 12px;
+  border-radius: var(--border-radius-card);
   overflow: hidden;
-  margin-bottom: 20px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-  
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--box-shadow);
 }
 
 #map {
-  
   width: 100%;
   height: 100%;
 }
@@ -158,14 +165,15 @@
 .results {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  gap: var(--spacing-lg);
 }
 
+/* --- Community Card --- */
 .community-card {
-  background: white;
-  border-radius: 12px;
+  background: var(--background-color);
+  border-radius: var(--border-radius-input);
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--box-shadow);
 }
 
 .community-card img {
@@ -175,27 +183,18 @@
 }
 
 .community-info {
-  padding: 10px;
+  padding: var(--spacing-sm);
 }
 
 .no-results {
   grid-column: 1 / -1;
   text-align: center;
-  padding: 20px;
+  padding: var(--spacing-lg);
 }
 
-/* Responsive Adjustments */
+/* --- Responsive Adjustments --- */
 @media (max-width: 900px) {
   .filters-panel {
     min-width: 100%;
   }
-}
-
-/* Location Icon Style */
-.location-icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
 }
