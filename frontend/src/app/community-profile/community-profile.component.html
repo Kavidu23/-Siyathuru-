@@ -1,0 +1,109 @@
+<div class="community-profile-page">
+  <!-- Banner + Logo -->
+  <div class="banner-container">
+    <div class="banner">
+      <img src="banner.png" alt="Community Banner" class="banner-img" />
+    </div>
+
+    <div class="community-logo">
+      <img src="profile.png" alt="Community Logo" />
+    </div>
+  </div>
+
+  <!-- Identity Section -->
+  <div class="identity-card">
+    <h1 class="community-name">"TT" village Community</h1>
+    <p class="mission">
+      Empowering villagers to build stronger communities together.
+    </p>
+    <div class="verification">
+      <span class="verified-badge">✔ Verified Community</span>
+    </div>
+    <div class="stats">
+      <div><strong>1,245</strong><span>Members</span></div>
+      <div><strong>58</strong><span>Events</span></div>
+    </div>
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn-primary">Join Community</button>
+      <button class="btn-secondary">Share</button>
+    </div>
+  </div>
+
+  <!-- About + Info -->
+  <div class="about-section">
+    <h2>About Us</h2>
+    <p>
+      Siyathuru Youth Network is a community-driven group focused on youth
+      empowerment, environmental sustainability, and skill development projects.
+      We bring together students and professionals for collective impact.
+    </p>
+    <div class="info-grid">
+      <div><strong>Type:</strong> Youth Club</div>
+      <div><strong>Location:</strong> Colombo, Sri Lanka</div>
+      <div><strong>Contact:</strong> siyathuru&#64;gmail.com</div>
+      <!--&#64;-->
+    </div>
+    <div class="map-container">
+      <div class="map-wrapper">
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Feed -->
+  <div class="activity-section">
+    <!-- Events -->
+    <h2>Upcoming Events</h2>
+    <div class="events-carousel">
+      <div class="event-card">
+        <h4>Beach Cleanup</h4>
+        <p>Oct 15, 2025</p>
+      </div>
+      <div class="event-card">
+        <h4>Youth Forum 2025</h4>
+        <p>Nov 5, 2025</p>
+      </div>
+      <div class="event-card">
+        <h4>Tree Planting Day</h4>
+        <p>Dec 12, 2025</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <div class="gallery-section">
+    <h2>Photo Gallery</h2>
+    <div class="gallery">
+      <img
+        src="photo1.png"
+        alt="Community Event"
+        (click)="openImage('photo1.png')"
+      />
+      <img
+        src="photo2.png"
+        alt="Community Event"
+        (click)="openImage('photo2.png')"
+      />
+      <img
+        src="photo3.png"
+        alt="Community Event"
+        (click)="openImage('photo3.png')"
+      />
+      <img
+        src="photo4.png"
+        alt="Community Event"
+        (click)="openImage('photo4.png')"
+      />
+    </div>
+  </div>
+
+  <!-- Modal Preview -->
+  <div class="image-modal" *ngIf="selectedImage" (click)="closeImage()">
+    <div class="image-modal-content" (click)="$event.stopPropagation()">
+      <span class="close-btn" (click)="closeImage()">&times;</span>
+      <img [src]="selectedImage" alt="Preview" />
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

@@ -23,8 +23,19 @@
   
   /* Utility Variables */
   --transition-duration: 0.2s;
-  --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
   --box-shadow-strong: 0 6px 15px rgba(0, 0, 0, 0.12); /* For cards */
+
+
+  --main--font--size: 14px;
+  --header--font--size: 30px;
+  --inside--button-font--size: 18px;
+  --some--h2-set:20px;
+
+
+  --font--weight:600;
+
+
 }
 
 *{
@@ -47,3 +58,5 @@ a{
     text-decoration: none;
     color: black;
 }
+
+

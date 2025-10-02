@@ -29,11 +29,11 @@
   border-radius: 50%;
   border: 3px solid rgba(255,255,255,0.8);
   object-fit: cover;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--box-shadow);
 }
 
 .profile-info h2 {
-  font-size: 22px;
+  font-size: 20px;
   margin: 0;
 }
 
@@ -58,7 +58,7 @@
   padding: 12px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--box-shadow);
 }
 
 .stat h3 {
@@ -78,7 +78,7 @@
   animation: glowPulse 1s ease-in-out 3;
 }
 
-/* 🔹 Cards */
+/* Cards */
 .card {
   background: white;
   padding: 20px;
@@ -87,11 +87,10 @@
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
-.card h3 {
+.card h2 {
+  font-family: 'Oswald', sans-serif;
   font-size: 20px;
-  color: #000000;
-  font-family: "Oswald", sans-serif;
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-md);
 }
 
 /* Feed */
@@ -140,7 +139,7 @@
   color: white;
   padding: 15px;
   border-radius: 10px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--box-shadow);
   transition: transform 0.2s ease;
 }
 
@@ -154,20 +153,19 @@
   padding: 20px;
   border-radius: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--box-shadow);
 
 }
 
-.member-joined-section h3 {
+.member-joined-section h2 {
+  font-family: 'Oswald', sans-serif;
   font-size: 20px;
-  color: #000000;
-  font-family: "Oswald", sans-serif;
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-md);
 }
 
 .member-communities-list {
   display: flex;
-  overflow-x: auto;
+  overflow-x: auto; /* key */
   gap: 15px;
   padding-bottom: 10px;
 }
@@ -177,7 +175,7 @@
   border: #00616e69 solid 1px;
   flex: 0 0 250px;
   border-radius: 20px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--box-shadow);
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -244,7 +242,7 @@
   transition: transform 0.2s ease;
   color: white;
   cursor: pointer;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--box-shadow);
 }
 .rec-card:hover {
   transform: translateY(-3px);
@@ -257,7 +255,7 @@
 }
 
 
-/* 🔹 Responsive */
+/* Responsive */
 @media (max-width: 768px) {
   .stats {
     flex-direction: column;
