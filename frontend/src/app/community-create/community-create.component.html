@@ -1,0 +1,111 @@
+<div class="community-profile-page">
+  <!-- Banner Upload -->
+  <div class="banner-container">
+    <div class="banner upload-banner">
+      <label for="bannerUpload" class="upload-banner-label">
+        <i class="bx bx-image-add"></i>
+        <span>Upload Banner Image</span>
+      </label>
+      <input type="file" id="bannerUpload" hidden />
+    </div>
+
+    <div class="community-logo upload-logo">
+      <label for="logoUpload">
+        <img src="default-logo.jpg" alt="Community Logo" />
+        <span class="upload-logo-text">Upload Logo</span>
+      </label>
+      <input type="file" id="logoUpload" hidden />
+    </div>
+  </div>
+
+  <!-- Identity Card -->
+  <div class="identity-card">
+    <h1 class="community-name">Create New Community</h1>
+    <p class="mission">Fill in the details to create your community profile.</p>
+
+    <!-- Form Fields -->
+    <form>
+      <div class="form-section">
+        <h2>Basic Information</h2>
+
+        <div class="form-group">
+          <label>Community Name *</label>
+          <input type="text" placeholder="Enter community name" />
+        </div>
+
+        <div class="form-group">
+          <label>Type *</label>
+          <select>
+            <option selected disabled>Select type</option>
+            <option>Youth Club</option>
+            <option>Charity</option>
+            <option>Sports</option>
+            <option>Environmental</option>
+            <option>Education</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Mission</label>
+          <textarea placeholder="State your mission"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea placeholder="Briefly describe your community"></textarea>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Location</h2>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" placeholder="Enter address" />
+        </div>
+
+        <div class="coords">
+          <div class="form-group">
+            <label>Latitude</label>
+            <input type="number" placeholder="e.g., 6.9271" />
+          </div>
+          <div class="form-group">
+            <label>Longitude</label>
+            <input type="number" placeholder="e.g., 79.8612" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Contact Details</h2>
+        <div class="form-group">
+          <label>Contact Name</label>
+          <input type="text" placeholder="Full name" />
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" placeholder="Phone number" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="Email address" />
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Settings</h2>
+        <label class="toggle">
+          <input type="checkbox" />
+          <span>Private Community (requires join requests)</span>
+        </label>
+      </div>
+
+      <div class="action-buttons">
+        <div class="buttonin">
+          <button type="button" class="btn-primary">Save</button>
+          <button type="reset" class="btn-secondary">Clear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<app-footer></app-footer>

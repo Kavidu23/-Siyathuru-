@@ -22,6 +22,8 @@
   border-radius: var(--border-radius-card);
 }
 
+/* Logo */
+
 .community-logo {
   position: absolute;
   bottom: -40px; /* Overlaps the banner */
