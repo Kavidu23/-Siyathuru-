@@ -95,45 +95,95 @@
 
 
 /* Action Buttons */
+/* ==== ACTION BUTTONS SECTION ==== */
+
 .action-buttons {
-  margin: var(--spacing-lg) 0;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
+}
+
+.buttonin {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+/* Main Buttons */
+.btn-primary,
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border: none;
+  border-radius: var(--border-radius-button);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {
   background: var(--primary-color);
   color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: var(--border-radius-button);
-  cursor: pointer;
-  transition: background var(--transition-duration);
-  font-weight: 600;
 }
-
 
 .btn-primary:hover {
-  background: var(--primary-color-hover);
+ background-color: var(--primary-color-hover);
 }
-
 
 .btn-secondary {
   background: var(--primary-color);
-  color:white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: var(--border-radius-button);
-  cursor: pointer;
-  font-weight: 600;
-  transition: background var(--transition-duration);
+  color: white;
 }
-
 
 .btn-secondary:hover {
-  background: var(--primary-color-hover);
+  background-color: var(--primary-color-hover);
 }
 
+/* ==== SOCIAL ICONS ==== */
+.social-icons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+
+.social-icons a {
+  font-size: 1.8rem;
+  color: var(--secondary-text-color);
+  background-color: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  transform: translateY(-3px);
+}
+
+/* Brand colors on hover */
+.social-icons a:nth-child(1){ color: #1877F2; } /* Facebook */
+.social-icons a:nth-child(2){ color: #E1306C; } /* Instagram */
+.social-icons a:nth-child(3){ color: #25D366; } /* WhatsApp */
+
+/* Responsive tweak */
+@media (max-width: 600px) {
+  .action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .buttonin {
+    justify-content: center;
+  }
+  .social-icons {
+    justify-content: center;
+  }
+}
 
 
 /* About Section */
@@ -144,6 +194,7 @@
   box-shadow: var(--box-shadow);
   background: var(--background-color);
 }
+
 .about-section h2 {
   font-family: 'Oswald', sans-serif;
   font-size: 20px;
@@ -200,7 +251,9 @@
 
 .event-card:hover {
   transform: translateY(-3px);
-}/* Gallery */
+}
+
+/* Gallery */
 .gallery-section {
   margin-top: var(--spacing-lg);
   padding: var(--spacing-md);
