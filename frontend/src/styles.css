@@ -9,11 +9,11 @@
   --background-color: white;
   --border-color-light: #ddd;
   --rd--ark-mode-bg: #f44336;
-  --rd--ark-mode-bg--hover: #ff3b81;;
+  --rd--ark-mode-bg--hover: #d7372c;
   
   /* Spacing and Sizing */
   --spacing-sm: 10px;
-  --spacing-md: 15px;
+  --spacing-md: 15px; /*Can be apply for card h2*/
   --spacing-lg: 20px;
   
   /* Radius Variables */
@@ -31,9 +31,15 @@
   --header--font--size: 30px;
   --inside--button-font--size: 18px;
   --some--h2-set:20px;
+  --very-small:10px;
 
 
   --font--weight:600;
+
+  --margin-sm: 10px; /*Can be apply for top of the small button*/
+  --margin--sm: 5px;
+  --margin-lg: 20px;
+  --margin--lg: 15px;
 
 
 }

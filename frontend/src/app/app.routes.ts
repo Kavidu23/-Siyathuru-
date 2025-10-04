@@ -6,6 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { CommunityProfileComponent } from './community-profile/community-profile.component';
 import { CommunityCreateComponent } from './community-create/community-create.component';
+import { CommunityDashboardComponent } from './community-dashboard/community-dashboard.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' }, // redirect '/' to '/home'
@@ -13,7 +14,8 @@ export const routes: Routes = [
     { path: 'discover', component: DiscoveryComponent },
     { path: "ask-ai", component: AskaiComponent },
     { path: 'login', component: LoginComponent },
-    { path: 'dashboard', component: UserDashboardComponent },
+    { path: 'user-dashboard', component: UserDashboardComponent },
     { path: 'community', component: CommunityProfileComponent }, //there should be the id pass
-    { path: 'create-community', component: CommunityCreateComponent }
+    { path: 'create-community', component: CommunityCreateComponent },
+    { path: 'community-dashboard', component: CommunityDashboardComponent }
 ];

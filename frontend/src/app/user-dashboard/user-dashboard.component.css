@@ -79,6 +79,7 @@
 }
 
 /* Cards */
+
 .card {
   background: white;
   padding: 20px;
@@ -93,7 +94,9 @@
   margin-bottom: var(--spacing-md);
 }
 
+
 /* Feed */
+
 .feed-item {
   display: flex;
   justify-content: space-between;
@@ -114,12 +117,12 @@
 .view-btn {
   color: black;
   text-decoration: none;
-  font-size: 13px;
+  font-size: var(--font-size-sm);
   transition: background 0.2s;
 }
 
 .view-btn:hover {
-  color: #d32f2f;
+  color:var(--rd--ark-mode-bg--hover);
 }
 
 
@@ -199,7 +202,7 @@
 
 .member-community-info strong {
   display: block;
-  font-size: 15px;
+  font-size: var(--font-size-md);
   margin-bottom: 5px;
   color: #333;
 }
@@ -216,10 +219,10 @@
   color: white;
   text-align: center;
   border-radius: 8px;
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: var(--font--weight);
   text-decoration: none;
   transition: background 0.2s ease;
+  margin-top: var(--margin-sm);
 }
 
 .member-view-btn:hover {
