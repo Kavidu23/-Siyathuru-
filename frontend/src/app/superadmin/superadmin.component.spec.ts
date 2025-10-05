@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { SuperadminComponent } from './superadmin.component';
 
@@ -8,9 +9,9 @@ describe('SuperadminComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SuperadminComponent]
+      imports: [SuperadminComponent, RouterTestingModule]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SuperadminComponent);
     component = fixture.componentInstance;
