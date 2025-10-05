@@ -9,19 +9,17 @@
 .chart-card {
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--box-shadow);
   padding: 20px 25px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .chart-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
 }
 
 .chart-card h3 {
-  font-size: 1.2rem;
-  margin-bottom: 12px;
-  color: #111827;
-  text-align: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  margin-bottom: var(--spacing-md);
 }
