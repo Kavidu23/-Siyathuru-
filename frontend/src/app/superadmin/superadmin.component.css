@@ -1,0 +1,381 @@
+/*  COMMUNITY DASHBOARD  */
+.community-dashboard {
+  padding: 10px;
+}
+
+/* common setup resueable card style */
+.card{
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--box-shadow);
+}
+
+h2 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  margin-bottom: var(--spacing-md);
+}
+
+
+/* HEADER */
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.profile-info .profile-pic {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  object-fit: cover;
+  box-shadow: var(--box-shadow);
+}
+
+.profile-info h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+
+/*  IMMEDIATE ACTION CENTER  */
+
+.immediate-actions{
+  margin-top: 15px;
+  margin-bottom: 30px;
+  padding: 25px;
+  border-radius: 10px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.immediate-actions .immediate-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.action-card {
+  background: white;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: var(--box-shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.action-card .metric h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.action-card .metric p {
+  margin: 4px 0 0;
+  color: black;
+}
+
+
+.btn-primary {
+  padding: 10px 14px;
+}
+
+.btn-primary:hover{
+    background-color: var(--primary-color-hover);
+}
+
+.btn-alert {
+  background: var(--rd--ark-mode-bg);
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(255, 77, 0, 0.18);
+  transition: transform 0.15s ease;
+}
+
+.btn-alert:hover {
+  background-color: var(--rd--ark-mode-bg--hover);
+}
+
+
+/* COMMUNITY HEALTH SNAPSHOT */
+
+.health-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.stat-card {
+  background: white;
+  padding: 14px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: var(--box-shadow);
+}
+
+.stat-card h3 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.stat-card p {
+  margin-top: 6px;
+}
+
+
+/* UPCOMING EVENTS & MANAGEMENT  */
+.upcoming-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.upcoming-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fafafa;
+  border: 1px solid #eee;
+}
+
+.upcoming-info strong {
+  display: block;
+  font-size: var(--font-size-md);
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.upcoming-info span {
+  font-size: var(--font-size-sm);
+  color: var(--secondary-text-color);
+}
+
+.upcoming-actions a {
+  color: black;
+  font-size: var(--font-size-sm);
+  transition: background 0.2s;
+}
+
+.upcoming-actions .view-btn:hover{
+  color: var(--rd--ark-mode-bg--hover);
+}
+
+.upcoming-actions .edit-link {
+  color: var(--primary-color);
+  margin-left: 12px;
+}
+
+.upcoming-actions .edit-link:hover {
+  color: var(--primary-color-hover);
+}
+
+/* COMPACT FEED */
+.compact-feed .feed-item.small {
+  padding: 8px;
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+
+/* MEMBER MANAGEMENT & ALERTS */
+.members-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.members-overview,
+.alerts-overview {
+  background: white;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: var(--box-shadow);
+  margin: 6px 0;
+}
+
+.members-overview p{
+    margin-top: var(--margin--sm);
+}
+
+.member-actions {
+  margin-top: var(--margin-sm);
+  display: flex;
+  gap: 8px;
+}
+
+.alert-row {
+  margin-top: var(--margin-sm);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.alert-pill {
+  background: #e8f5e9;
+  color: #256;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  margin-top: var(--margin--sm);
+}
+
+.alert-pill.warn {
+  background: #fff3e0;
+  color: #8a4b00;
+}
+
+.members-grid .btn-secondary{
+  padding: 8px 12px;
+  background: #00616e;
+  color: white;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: var(--font--weight);
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.members-grid .btn-secondary:hover{
+  background: var(--primary-color-hover);
+}
+
+/* AI & INSIGHTS */
+.ai-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: var(--margin-sm);
+}
+
+.ai-card {
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: var(--box-shadow);
+}
+
+.ai-card .btn-secondary{
+  margin-top: var(--margin-sm);
+  padding: 8px 12px;
+  background: #00616e;
+  color: white;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: var(--font--weight);
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.ai-card .btn-secondary:hover{
+  background: var(--primary-color-hover);
+}
+
+.ai-card h4 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.ai-list {
+  margin: 10px 0 0 16px;
+  color: var(--secondary-text-color);
+}
+
+/* MINI CHART */
+.mini-chart {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #fafafa, #fff);
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.chart-line {
+  width: 80%;
+  height: 6px;
+  background: linear-gradient(90deg, #00616e, #00a6b6);
+  border-radius: 6px;
+}
+
+/* BUTTONS */
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.muted{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--margin--sm);
+}
+
+.muted #view{
+  color: var(--primary-color);
+}
+
+.muted #view:hover{
+  cursor: pointer;
+  color: var(--primary-color-hover);
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 992px) {
+  .immediate-actions .immediate-grid {
+    grid-template-columns: 1fr;
+  }
+  .health-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .members-grid {
+    grid-template-columns: 1fr;
+  }
+  .ai-grid {
+    grid-template-columns: 1fr;
+  }
+  .health-snapshot .stat-card {
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .health-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 440px) {
+  .btn-primary,.btn-alert,.btn-secondary {
+    font-size: var( --very-small);
+    text-align: center;
+  }
+  .btn-alert{
+    margin-top: 30px;
+  }
+}
