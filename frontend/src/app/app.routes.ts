@@ -8,6 +8,7 @@ import { CommunityProfileComponent } from './community-profile/community-profile
 import { CommunityCreateComponent } from './community-create/community-create.component';
 import { CommunityDashboardComponent } from './community-dashboard/community-dashboard.component';
 import { ChatboxComponent } from './chatbox/chatbox.component';
+import { ChartDashboardComponent } from './charts/charts.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' }, // redirect '/' to '/home'
@@ -19,5 +20,6 @@ export const routes: Routes = [
     { path: 'community', component: CommunityProfileComponent }, //there should be the id pass
     { path: 'create-community', component: CommunityCreateComponent },
     { path: 'community-dashboard', component: CommunityDashboardComponent },
-    { path: 'chatbox', component: ChatboxComponent }
+    { path: 'chatbox', component: ChatboxComponent },
+    { path: 'chart', component: ChartDashboardComponent }
 ];

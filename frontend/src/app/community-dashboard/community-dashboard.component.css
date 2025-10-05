@@ -329,6 +329,22 @@ h2 {
   cursor: pointer;
 }
 
+.muted{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--margin--sm);
+}
+
+.muted #view{
+  color: var(--primary-color);
+}
+
+.muted #view:hover{
+  cursor: pointer;
+  color: var(--primary-color-hover);
+}
+
 /* RESPONSIVE DESIGN */
 @media (max-width: 992px) {
   .immediate-actions .immediate-grid {
