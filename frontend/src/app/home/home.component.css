@@ -66,9 +66,10 @@
 }
 
 .features h2 {
+    font-family: 'Oswald', sans-serif;
     font-size: 30px;
-    text-align: start;
     font-weight: 600;
+    text-align: start;
 }
 
 .feature-grid {
@@ -118,17 +119,20 @@
 /* Communities Section */
 /* ----------------------------------- */
 .communities {
+    margin-left: var(--margin-sm);
+    margin-right: var(--margin-sm);
     margin-top: 60px;
-    padding: 60px 5%;
+    padding: 60px 4.3%;
     background: #fff;
     text-align: center;
+    border-radius: var(--border-radius-card);
 }
 
 .communities h2 {
-    font-size: 30px;
-    text-align: start;
-
-    font-weight: 600;
+  font-family: 'Oswald', sans-serif;
+  font-size: 30px;
+  font-weight: 600;
+  text-align: start;
 }
 
 .community-cards {
@@ -208,9 +212,10 @@
 }
 
 .about h2 {
+    font-family: 'Oswald', sans-serif;
     font-size: 30px;
-    text-align: center;
     font-weight: 600;
+    text-align: center;
     margin-bottom: 20px;
 }
 
@@ -381,11 +386,11 @@
 }
 
 /* Existing Query: Stack CTA Card (Tablet Landscape/Medium Screens) */
-@media (max-width: 992px) {
+@media (max-width: 993px) {
     .meetup-cta-card {
         flex-direction: column;
         padding: 30px 15px; /* Reduced padding */
-        height: auto;
+        max-height: 300px;
         align-items: center;
     }
     .meetup-content {
