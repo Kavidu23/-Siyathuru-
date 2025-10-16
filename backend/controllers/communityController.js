@@ -1,22 +1,13 @@
-const Community = require("../models/communities"); // community model path
+const Community = require("../models/communities");
 
 // CREATE a new community
 const createCommunity = async (req, res) => {
     try {
-        const {
-            name,
-            type,
-            mission,
-            description,
-            bannerImage,
-            profileImage,
-            location,
-            contact,
-            isPrivate,
-            members,
-            leader,
-            established
-        } = req.body;
+        const { name, type, mission, description, location, contact, isPrivate, members, leader, established } = req.body;
+
+        // Get image URLs from Cloudinary upload
+        const bannerImage = req.files?.bannerImage?.[0]?.path || null;
+        const profileImage = req.files?.profileImage?.[0]?.path || null;
 
         const newCommunity = await Community.create({
             name,
@@ -61,7 +52,7 @@ const createCommunity = async (req, res) => {
     }
 };
 
-// READ all communities
+// GET all communities
 const getCommunities = async (req, res) => {
     try {
         const communities = await Community.find();
@@ -79,7 +70,7 @@ const getCommunities = async (req, res) => {
     }
 };
 
-// READ single community by ID
+// GET a single community by ID
 const getCommunityById = async (req, res) => {
     try {
         const community = await Community.findById(req.params.id);
@@ -105,17 +96,25 @@ const getCommunityById = async (req, res) => {
 // UPDATE a community
 const updateCommunity = async (req, res) => {
     try {
+        const updateData = { ...req.body };
+
+        // Update images only if new files are uploaded
+        if (req.files?.bannerImage) updateData.bannerImage = req.files.bannerImage[0].path;
+        if (req.files?.profileImage) updateData.profileImage = req.files.profileImage[0].path;
+
         const updatedCommunity = await Community.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            updateData,
             { new: true, runValidators: true }
         );
+
         if (!updatedCommunity) {
             return res.status(404).json({
                 success: false,
                 error: "Community not found"
             });
         }
+
         res.status(200).json({
             success: true,
             message: "Community updated successfully",
