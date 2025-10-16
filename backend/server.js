@@ -12,6 +12,10 @@ const feedbackRoutes = require("./routes/feedbackRoutes");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Enable CORS for all routes
+app.use(cors());
+
+
 // Middleware
 app.use(express.json());
 
