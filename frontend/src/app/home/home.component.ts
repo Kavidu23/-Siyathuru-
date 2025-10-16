@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { FooterComponent } from "../footer/footer.component";
+import { ModalService } from '../modal.service';
 
 @Component({
   selector: 'app-home',
@@ -10,5 +11,14 @@ import { FooterComponent } from "../footer/footer.component";
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+  constructor(private modalService: ModalService) { }
+
+  openLoginModal() {
+    this.modalService.openLogin();
+  }
+
+  openSignupModal() {
+    this.modalService.openSignup();
+  }
 
 }
