@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors"); // <-- import cors
 require("dotenv").config();
 
 const userRoutes = require("./routes/userRoutes");
@@ -12,9 +13,11 @@ const feedbackRoutes = require("./routes/feedbackRoutes");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Enable CORS for all routes
-app.use(cors());
-
+// Enable CORS for Angular frontend
+app.use(cors({
+  origin: "http://localhost:4200",
+  methods: ["GET", "POST", "PUT", "DELETE"]
+}));
 
 // Middleware
 app.use(express.json());
@@ -23,10 +26,8 @@ app.use(express.json());
 let mongoUri;
 
 if (process.env.DOCKERIZED === "1") {
-  // Inside Docker Compose
   mongoUri = process.env.MONGO_URI_DOCKER;
 } else {
-  // Local development
   mongoUri = process.env.MONGO_URI_LOCAL;
 }
 

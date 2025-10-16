@@ -137,15 +137,12 @@
 <!-- About Section -->
 <section id="about" class="about">
   <h2>💞 Words That Unite: Voices of Trust 🤝</h2>
-  <div class="feedback-bubbles">
-    <div class="bubble">
-      “This platform helped our village connect like never before!” – Amal
+  <div *ngIf="loading">Loading feedbacks...</div>
+  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="feedback-bubbles" *ngIf="!loading && !errorMessage">
+    <div class="bubble" *ngFor="let fb of feedbacks">
+      “{{ fb.message }} !” – {{ fb.name }}
     </div>
-    <div class="bubble">
-      “Easy to find and join communities I care about.” – Nethmi
-    </div>
-    <div class="bubble">“Feels like home, even online.” – Sahan</div>
-    <div class="bubble">“Finally, one space for everyone!” – Kavindi</div>
   </div>
 </section>
 
