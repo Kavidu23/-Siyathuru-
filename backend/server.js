@@ -7,6 +7,7 @@ const communityRoutes = require("./routes/communityRoutes");
 const eventsRoutes = require("./routes/eventsRoutes");
 const requestsRoutes = require("./routes/requestsRoutes");
 const alertRoutes = require("./routes/alertRoutes");
+const feedbackRoutes = require("./routes/feedbackRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,6 +38,7 @@ app.use("/api/communities", communityRoutes);
 app.use("/api/events", eventsRoutes);
 app.use("/api/requests", requestsRoutes);
 app.use("/api/alerts", alertRoutes);
+app.use("/api/feedbacks", feedbackRoutes);
 
 // Start server
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

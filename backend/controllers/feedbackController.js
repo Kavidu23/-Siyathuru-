@@ -1,0 +1,58 @@
+const Feedback = require("../models/feedback");
+
+// Create Feedback (POST)
+const createFeedback = async (req, res) => {
+    try {
+        const { userId, name, message } = req.body;
+
+        // Basic validation
+        if (!userId || !name || !message) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields (userId, name, message) are required"
+            });
+        }
+
+        const newFeedback = await Feedback.create({
+            userId,
+            name,
+            message
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Feedback submitted successfully",
+            data: newFeedback
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: "Server error",
+            details: err.message
+        });
+    }
+};
+
+// Get All Feedbacks (GET)
+const getFeedbacks = async (req, res) => {
+    try {
+        const feedbacks = await Feedback.find().populate('userId', 'name email'); // optional populate
+
+        res.status(200).json({
+            success: true,
+            message: "Feedbacks fetched successfully",
+            data: feedbacks
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: "Server error",
+            details: err.message
+        });
+    }
+};
+
+module.exports = {
+    createFeedback,
+    getFeedbacks
+};
