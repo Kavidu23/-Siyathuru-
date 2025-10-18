@@ -1,20 +1,64 @@
+<!-- Loading overlay -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-dots">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <span>Creating your community...</span>
+</div>
+
 <div class="community-profile-page">
   <!-- Banner Upload -->
   <div class="banner-container">
     <div class="banner upload-banner">
-      <label for="bannerUpload" class="upload-banner-label">
+      <label
+        *ngIf="!bannerPreview"
+        for="bannerUpload"
+        class="upload-banner-label"
+      >
         <i class="bx bx-image-add"></i>
         <span>Upload Banner Image</span>
       </label>
-      <input type="file" id="bannerUpload" hidden />
+      <input
+        type="file"
+        id="bannerUpload"
+        (change)="onBannerSelected($event)"
+        hidden
+        #bannerInput
+      />
+      <div class="error" *ngIf="submitted && !bannerFile">
+        <small>Banner image is required.</small>
+      </div>
+      <img *ngIf="bannerPreview" [src]="bannerPreview" class="preview-image" />
     </div>
 
     <div class="community-logo upload-logo">
       <label for="logoUpload">
-        <img src="default-logo.jpg" alt="Community Logo" />
+        <img
+          *ngIf="!profilePreview"
+          src="default-logo.jpg"
+          alt="Community Logo"
+        />
+        <!-- Show uploaded logo preview -->
+        <img
+          *ngIf="profilePreview"
+          [src]="profilePreview"
+          alt="Uploaded Logo"
+          class="preview-logo"
+        />
         <span class="upload-logo-text">Upload Logo</span>
       </label>
-      <input type="file" id="logoUpload" hidden />
+      <input
+        type="file"
+        id="logoUpload"
+        (change)="onProfileSelected($event)"
+        hidden
+      />
+      <div class="error" *ngIf="submitted && !profileFile">
+        <small>Logo image is required.</small>
+      </div>
     </div>
   </div>
 
@@ -23,36 +67,78 @@
     <h1 class="community-name">Create New Community</h1>
     <p class="mission">Fill in the details to create your community profile.</p>
 
-    <!-- Form Fields -->
-    <form>
+    <!-- Form Fields start from here-->
+    <form [formGroup]="communityForm" (ngSubmit)="onSubmit()">
       <div class="form-section">
         <h2>Basic Information</h2>
 
         <div class="form-group">
           <label>Community Name *</label>
-          <input type="text" placeholder="Enter community name" />
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Enter community name"
+          />
+          <div class="error" *ngIf="submitted && f['name'].errors">
+            <small *ngIf="f['name'].errors['required']"
+              >Community Name is required.</small
+            >
+            <small *ngIf="f['name'].errors['minlength']"
+              >Minimum 3 characters required.</small
+            >
+          </div>
         </div>
 
         <div class="form-group">
           <label>Type *</label>
-          <select>
-            <option selected disabled>Select type</option>
-            <option>Youth Club</option>
-            <option>Charity</option>
-            <option>Sports</option>
-            <option>Environmental</option>
-            <option>Education</option>
+          <select formControlName="type">
+            <option value="" disabled disabled>Select type</option>
+            <option *ngFor="let t of communityTypes">
+              {{ t }}
+            </option>
           </select>
+          <div class="error" *ngIf="submitted && f['type'].errors">
+            <small>Type is required.</small>
+          </div>
+        </div>
+
+        <!-- Show input only if 'Others' is selected -->
+        <div class="form-group" *ngIf="f['type'].value === 'Others'">
+          <label>Enter Type *</label>
+          <input
+            type="text"
+            formControlName="otherType"
+            placeholder="Enter type"
+          />
+          <div class="error" *ngIf="submitted && f['otherType'].errors">
+            <small>Type is required.</small>
+          </div>
         </div>
 
         <div class="form-group">
           <label>Mission</label>
-          <textarea placeholder="State your mission"></textarea>
+          <textarea
+            formControlName="mission"
+            placeholder="State your mission"
+          ></textarea>
+          <div class="error" *ngIf="submitted && f['mission'].errors">
+            <small *ngIf="f['mission'].errors['maxlength']"
+              >Maximum 50 characters allowed.</small
+            >
+          </div>
         </div>
 
         <div class="form-group">
           <label>Description</label>
-          <textarea placeholder="Briefly describe your community"></textarea>
+          <textarea
+            formControlName="description"
+            placeholder="Briefly describe your community"
+          ></textarea>
+          <div class="error" *ngIf="submitted && f['description'].errors">
+            <small *ngIf="f['description'].errors['maxlength']"
+              >Maximum 100 characters allowed.</small
+            >
+          </div>
         </div>
       </div>
 
@@ -60,17 +146,50 @@
         <h2>Location</h2>
         <div class="form-group">
           <label>Address</label>
-          <input type="text" placeholder="Enter address" />
+          <input
+            formControlName="address"
+            type="text"
+            placeholder="Enter address"
+          />
+          <div class="error" *ngIf="submitted && f['address'].errors">
+            <small>Address is required.</small>
+          </div>
         </div>
 
         <div class="coords">
           <div class="form-group">
             <label>Latitude</label>
-            <input type="number" placeholder="e.g., 6.9271" />
+            <input
+              type="number"
+              formControlName="latitude"
+              placeholder="e.g., 6.9271"
+            />
+            <div class="error" *ngIf="submitted && f['latitude'].errors">
+              <small *ngIf="f['latitude'].errors['required']"
+                >Latitude is required.</small
+              >
+              <small *ngIf="f['latitude'].errors['pattern']"
+                >Invalid latitude value.</small
+              >
+            </div>
           </div>
+
+          <!--Longitute-->
           <div class="form-group">
             <label>Longitude</label>
-            <input type="number" placeholder="e.g., 79.8612" />
+            <input
+              type="number"
+              formControlName="longitude"
+              placeholder="e.g., 79.8612"
+            />
+            <div class="error" *ngIf="submitted && f['longitude'].errors">
+              <small *ngIf="f['longitude'].errors['required']"
+                >Longitude is required.</small
+              >
+              <small *ngIf="f['longitude'].errors['pattern']"
+                >Invalid longitude value.</small
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -79,61 +198,121 @@
         <h2>Contact Details</h2>
         <div class="form-group">
           <label>Contact Name</label>
-          <input type="text" placeholder="Full name" />
+          <input
+            type="text"
+            formControlName="contactName"
+            placeholder="Full name"
+          />
+          <div class="error" *ngIf="submitted && f['contactName'].errors">
+            <small *ngIf="f['contactName'].errors['required']"
+              >Contact Name is required.</small
+            >
+            <small *ngIf="f['contactName'].errors['minlength']"
+              >Minimum 3 characters required.</small
+            >
+          </div>
         </div>
+
         <div class="form-group">
           <label>Phone</label>
-          <input type="text" placeholder="Phone number" />
+          <input
+            formControlName="phone"
+            type="text"
+            placeholder="Phone number"
+          />
+          <div class="error" *ngIf="submitted && f['phone'].errors">
+            <small *ngIf="f['phone'].errors['required']"
+              >Phone number is required.</small
+            >
+            <small *ngIf="f['phone'].errors['pattern']"
+              >Invalid phone number.</small
+            >
+          </div>
         </div>
+
         <div class="form-group">
           <label>Email</label>
-          <input type="email" placeholder="Email address" />
+          <input
+            formControlName="email"
+            type="email"
+            placeholder="Email address"
+          />
+          <div class="error" *ngIf="submitted && f['email'].errors">
+            <small *ngIf="f['email'].errors['required']"
+              >Email is required.</small
+            >
+            <small *ngIf="f['email'].errors['email']"
+              >Invalid email address.</small
+            >
+          </div>
         </div>
       </div>
 
       <!--Social media-->
       <div class="form-section">
         <h2>Social Media Links</h2>
-        <p class="section-note">Add up to 4 social media links (optional)</p>
-
-        <div class="social-media-links">
-          <div class="form-group">
-            <label><i class="fab fa-facebook"></i> Facebook</label>
-            <input type="url" placeholder="https://www.facebook.com/yourpage" />
-          </div>
-          <div class="form-group">
-            <label><i class="fab fa-instagram"></i> Instagram</label>
-            <input
-              type="url"
-              placeholder="https://www.instagram.com/yourprofile"
-            />
-          </div>
-          <div class="form-group">
-            <label><i class="fab fa-whatsapp"></i> WhatsApp</label>
-            <input type="url" placeholder="https://wa.me/yourphonenumber" />
-          </div>
-          <div class="form-group">
-            <label><i class="fab fa-reddit"></i> Reddit</label>
-            <input
-              type="url"
-              placeholder="https://www.reddit.com/user/yourname"
-            />
-          </div>
+        <div class="form-group">
+          <label>Facebook</label>
+          <input
+            type="url"
+            formControlName="facebook"
+            placeholder="https://www.facebook.com/yourpage"
+          />
+          <small *ngIf="submitted && f['facebook'].errors"
+            >Invalid Facebook URL.</small
+          >
+        </div>
+        <div class="form-group">
+          <label>Instagram</label>
+          <input
+            type="url"
+            formControlName="instagram"
+            placeholder="https://www.instagram.com/yourprofile"
+          />
+          <small *ngIf="submitted && f['instagram'].errors"
+            >Invalid Instagram URL.</small
+          >
+        </div>
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <input
+            type="url"
+            formControlName="whatsapp"
+            placeholder="https://wa.me/yourphonenumber"
+          />
+          <small *ngIf="submitted && f['whatsapp'].errors"
+            >Invalid WhatsApp URL.</small
+          >
+        </div>
+        <div class="form-group">
+          <label>Reddit</label>
+          <input
+            type="url"
+            formControlName="reddit"
+            placeholder="https://www.reddit.com/user/yourname"
+          />
+          <small *ngIf="submitted && f['reddit'].errors"
+            >Invalid Reddit URL.</small
+          >
         </div>
       </div>
 
       <div class="form-section">
         <h2>Settings</h2>
-        <label class="toggle">
-          <input type="checkbox" />
-          <span>Private Community (requires join requests)</span>
-        </label>
+        <div class="form-group">
+          <label class="toggle">
+            <span>Private Community (requires join requests)</span>
+            <input formControlName="isPrivate" type="checkbox" />
+          </label>
+        </div>
       </div>
 
       <div class="action-buttons">
         <div class="buttonin">
-          <button type="button" class="btn-primary">Save</button>
-          <button type="reset" class="btn-secondary">Clear</button>
+          <button type="submit" class="btn-primary">Save</button>
+          <button type="reset" class="btn-secondary" (click)="onReset()">
+            Clear
+          </button>
         </div>
       </div>
     </form>

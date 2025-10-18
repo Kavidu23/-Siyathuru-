@@ -3,7 +3,7 @@ const Community = require("../models/communities");
 // CREATE a new community
 const createCommunity = async (req, res) => {
     try {
-        const { name, type, mission, description, location, contact, isPrivate, members, leader, established } = req.body;
+        const { name, type, mission, description, location, contact, media, isPrivate, members, leader, established } = req.body;
 
         // Get image URLs from Cloudinary upload
         const bannerImage = req.files?.bannerImage?.[0]?.path || null;
@@ -18,6 +18,7 @@ const createCommunity = async (req, res) => {
             profileImage,
             location,
             contact,
+            media,
             isPrivate,
             members,
             leader,

@@ -24,6 +24,13 @@ const communitySchema = new mongoose.Schema(
       email: { type: String }
     },
 
+    media: {
+      facebook: { type: String },
+      instagram: { type: String },
+      whatsapp: { type: String },
+      Reddit: { type: String },
+    },
+
     isPrivate: { type: Boolean, default: false },          // Require join requests or not
 
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Members list
