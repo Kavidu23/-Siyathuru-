@@ -91,12 +91,15 @@
 
         <div class="form-group">
           <label>Type *</label>
-          <select formControlName="type">
-            <option value="" disabled disabled>Select type</option>
-            <option *ngFor="let t of communityTypes">
+          <div class="chip-group">
+            <span
+              *ngFor="let t of communityTypes"
+              (click)="f['type'].setValue(t)"
+              [class.selected]="f['type'].value === t"
+            >
               {{ t }}
-            </option>
-          </select>
+            </span>
+          </div>
           <div class="error" *ngIf="submitted && f['type'].errors">
             <small>Type is required.</small>
           </div>
