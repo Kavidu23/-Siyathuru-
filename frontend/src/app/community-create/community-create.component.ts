@@ -4,6 +4,7 @@ import { CommunityService } from '../services/community.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from "../footer/footer.component";
 import { CommonModule } from '@angular/common';
+import imageCompression from 'browser-image-compression';
 
 
 @Component({
@@ -54,30 +55,46 @@ export class CommunityCreateComponent {
     return this.communityForm.controls;
   }
 
-  onBannerSelected(event: Event) {
+  async onBannerSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.bannerFile = input.files[0];
+      const file = input.files[0];
+      const options = { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true };
 
-      const reader = new FileReader();
-      reader.onload = () => this.bannerPreview = reader.result as string;
-      reader.readAsDataURL(this.bannerFile);
+      try {
+        this.bannerFile = await imageCompression(file, options);
+        const reader = new FileReader();
+        reader.onload = () => (this.bannerPreview = reader.result as string);
+        reader.readAsDataURL(this.bannerFile);
+      } catch (error) {
+        console.error("Error compressing banner:", error);
+      }
     }
   }
 
-  onProfileSelected(event: Event) {
+  async onProfileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.profileFile = input.files[0];
+      const file = input.files[0];
+      const options = { maxSizeMB: 0.5, maxWidthOrHeight: 800, useWebWorker: true };
 
-      const reader = new FileReader();
-      reader.onload = () => this.profilePreview = reader.result as string;
-      reader.readAsDataURL(this.profileFile);
+      try {
+        this.profileFile = await imageCompression(file, options);
+        const reader = new FileReader();
+        reader.onload = () => (this.profilePreview = reader.result as string);
+        reader.readAsDataURL(this.profileFile);
+      } catch (error) {
+        console.error("Error compressing profile:", error);
+      }
     }
   }
+
 
   onSubmit() {
     this.submitted = true;
+    if (this.communityForm.value.otherType) {
+      this.communityForm.value.type = this.communityForm.value.otherType;
+    }
 
     // 1️⃣ Validate images
     if (!this.bannerFile || !this.profileFile) {

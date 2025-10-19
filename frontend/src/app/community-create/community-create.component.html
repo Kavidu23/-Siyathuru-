@@ -28,9 +28,6 @@
         hidden
         #bannerInput
       />
-      <div class="error" *ngIf="submitted && !bannerFile">
-        <small>Banner image is required.</small>
-      </div>
       <img *ngIf="bannerPreview" [src]="bannerPreview" class="preview-image" />
     </div>
 
@@ -56,9 +53,6 @@
         (change)="onProfileSelected($event)"
         hidden
       />
-      <div class="error" *ngIf="submitted && !profileFile">
-        <small>Logo image is required.</small>
-      </div>
     </div>
   </div>
 

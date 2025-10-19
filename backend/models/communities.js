@@ -28,7 +28,7 @@ const communitySchema = new mongoose.Schema(
       facebook: { type: String },
       instagram: { type: String },
       whatsapp: { type: String },
-      Reddit: { type: String },
+      reddit: { type: String },
     },
 
     isPrivate: { type: Boolean, default: false },          // Require join requests or not
