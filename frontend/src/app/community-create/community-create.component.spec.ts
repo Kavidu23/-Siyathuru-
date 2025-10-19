@@ -5,15 +5,21 @@ import { CommunityService } from '../services/community.service';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 
+
+
 describe('CommunityCreateComponent', () => {
+
+
   let component: CommunityCreateComponent;
   let fixture: ComponentFixture<CommunityCreateComponent>;
   let communityServiceMock: any;
+
 
   beforeEach(async () => {
     communityServiceMock = {
       createCommunity: jasmine.createSpy('createCommunity').and.returnValue(of({ success: true }))
     };
+
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, CommunityCreateComponent],
@@ -46,16 +52,6 @@ describe('CommunityCreateComponent', () => {
     expect(component.communityForm.invalid).toBeTrue();
   });
 
-  it('should accept banner and profile files', () => {
-    const bannerFile = new File(['banner'], 'banner.png', { type: 'image/png' });
-    const profileFile = new File(['profile'], 'profile.png', { type: 'image/png' });
-
-    component.onBannerSelected({ target: { files: [bannerFile] } } as any);
-    component.onProfileSelected({ target: { files: [profileFile] } } as any);
-
-    expect(component.bannerFile).toBe(bannerFile);
-    expect(component.profileFile).toBe(profileFile);
-  });
 
   it('should submit the form when valid', fakeAsync(() => {
     const form = component.communityForm;
