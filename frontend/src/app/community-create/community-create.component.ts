@@ -31,13 +31,6 @@ export class CommunityCreateComponent {
   isLoading = false;
   submitted = false;
 
-  //for image crop
-  imageChangedEvent: any = '';
-  croppedImage: any = '';
-  showCropper = false;
-  cropType: 'banner' | 'profile' | null = null;
-
-
   communityTypes = ['Youth', 'Charity', 'Sports', 'Environmental', 'Education', 'Women', 'City', 'Village', 'Volunteer', 'Others'];
 
   constructor(private fb: FormBuilder, private communityService: CommunityService) {
