@@ -3,28 +3,32 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommunityCreateComponent } from './community-create.component';
 import { CommunityService } from '../services/community.service';
 import { of, throwError } from 'rxjs';
-import { By } from '@angular/platform-browser';
-
-
+import { Router } from '@angular/router';
 
 describe('CommunityCreateComponent', () => {
-
-
   let component: CommunityCreateComponent;
   let fixture: ComponentFixture<CommunityCreateComponent>;
   let communityServiceMock: any;
-
+  let routerMock: any;
 
   beforeEach(async () => {
+    // Mock CommunityService
     communityServiceMock = {
-      createCommunity: jasmine.createSpy('createCommunity').and.returnValue(of({ success: true }))
+      createCommunity: jasmine.createSpy('createCommunity').and.returnValue(
+        of({ success: true, data: { _id: '123' } })
+      )
     };
 
+    // Mock Router
+    routerMock = {
+      navigate: jasmine.createSpy('navigate')
+    };
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, CommunityCreateComponent],
       providers: [
-        { provide: CommunityService, useValue: communityServiceMock }
+        { provide: CommunityService, useValue: communityServiceMock },
+        { provide: Router, useValue: routerMock }
       ]
     }).compileComponents();
   });
@@ -52,12 +56,14 @@ describe('CommunityCreateComponent', () => {
     expect(component.communityForm.invalid).toBeTrue();
   });
 
-
-  it('should submit the form when valid', fakeAsync(() => {
+  it('should submit the form when valid and navigate', fakeAsync(() => {
     const form = component.communityForm;
+
+    // Mock banner/profile files
     component.bannerFile = new File(['banner'], 'banner.png', { type: 'image/png' });
     component.profileFile = new File(['profile'], 'profile.png', { type: 'image/png' });
 
+    // Fill form
     form.controls['name'].setValue('Test Community');
     form.controls['type'].setValue('Youth');
     form.controls['address'].setValue('Colombo');
@@ -67,14 +73,21 @@ describe('CommunityCreateComponent', () => {
     form.controls['phone'].setValue('0712345678');
     form.controls['email'].setValue('test@example.com');
 
+    // Submit form
     component.onSubmit();
     tick();
 
+    // Assertions
     expect(communityServiceMock.createCommunity).toHaveBeenCalled();
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/community', '123']); // Check navigation
+    expect(component.isLoading).toBeFalse(); // Loading should hide
   }));
 
   it('should handle error on form submission', fakeAsync(() => {
-    communityServiceMock.createCommunity.and.returnValue(throwError(() => new Error('Server error')));
+    communityServiceMock.createCommunity.and.returnValue(
+      throwError(() => new Error('Server error'))
+    );
+
     const form = component.communityForm;
     component.bannerFile = new File(['banner'], 'banner.png', { type: 'image/png' });
     component.profileFile = new File(['profile'], 'profile.png', { type: 'image/png' });
@@ -93,7 +106,9 @@ describe('CommunityCreateComponent', () => {
     component.onSubmit();
     tick();
 
-    expect(window.alert).toHaveBeenCalledWith('Failed to create community. Check console for details.');
+    expect(window.alert).toHaveBeenCalledWith(
+      'Failed to create community. Check console for details.'
+    );
   }));
 
   it('should reset form and preview images', () => {
