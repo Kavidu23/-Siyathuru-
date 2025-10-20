@@ -7,6 +7,9 @@ import { CommonModule } from '@angular/common';
 import imageCompression from 'browser-image-compression';
 
 
+
+
+
 @Component({
   selector: 'app-community-create',
   standalone: true,
@@ -27,6 +30,13 @@ export class CommunityCreateComponent {
 
   isLoading = false;
   submitted = false;
+
+  //for image crop
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  showCropper = false;
+  cropType: 'banner' | 'profile' | null = null;
+
 
   communityTypes = ['Youth', 'Charity', 'Sports', 'Environmental', 'Education', 'Women', 'City', 'Village', 'Volunteer', 'Others'];
 
