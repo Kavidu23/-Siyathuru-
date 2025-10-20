@@ -1,4 +1,5 @@
 const Community = require("../models/communities");
+const sendEmail = require('../utils/sendEmail');
 
 // CREATE a new community
 const createCommunity = async (req, res) => {
@@ -24,6 +25,26 @@ const createCommunity = async (req, res) => {
             leader,
             established
         });
+
+        // ✅ Send email to contact
+        if (contact?.email) {
+            try {
+                const emailSubject = 'Community Created Successfully!';
+                const emailText = `Hello ${contact.name},\n\nYour community "${name}" has been successfully created.\n\nThank you!`;
+                const emailHTML = `<p>Hello <strong>${contact.name}</strong>,</p>
+                       <p>Your community "<strong>${name}</strong>" has been successfully created.</p>
+                       <p>Thank you!</p>`;
+
+                console.log(`📧 Attempting to send email to: ${contact.email}...`);
+
+                await sendEmail(contact.email, emailSubject, emailText, emailHTML);
+
+                console.log(`✅ Email successfully sent to: ${contact.email}`);
+            } catch (emailErr) {
+                console.error(`❌ Failed to send email to ${contact.email}:`, emailErr.message);
+            }
+        }
+
 
         res.status(201).json({
             success: true,

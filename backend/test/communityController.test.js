@@ -6,6 +6,9 @@ const {
     deleteCommunity,
 } = require("../controllers/communityController");
 
+
+const sendEmail = require("../utils/sendEmail");
+jest.mock("../utils/sendEmail");
 const Community = require("../models/communities");
 
 jest.mock("../models/communities");
@@ -60,6 +63,36 @@ describe("Community Controller Unit Tests (with Cloudinary logic)", () => {
             data: mockCreated
         });
     });
+
+    it("should send an email after community creation", async () => {
+        req.body = {
+            name: "Galle Volunteers Network",
+            type: "Community Service",
+            mission: "Connect volunteers with local NGOs and projects",
+            description: "Youth volunteering network",
+            contact: { name: "Chamodi Silva", email: "info@gallevolunteers.lk" },
+            isPrivate: false,
+        };
+
+        // No files in this case
+        req.files = {};
+
+        const mockCreated = { ...req.body, _id: "mock-id" };
+        Community.create.mockResolvedValueOnce(mockCreated);
+        sendEmail.mockResolvedValueOnce(true); // Simulate successful email send
+
+        await createCommunity(req, res);
+
+        expect(Community.create).toHaveBeenCalled();
+        expect(sendEmail).toHaveBeenCalledWith(
+            "info@gallevolunteers.lk",
+            expect.stringContaining("Community Created Successfully"),
+            expect.any(String),
+            expect.any(String)
+        );
+        expect(res.status).toHaveBeenCalledWith(201);
+    });
+
 
     it("should handle validation error during create", async () => {
         const mockError = new Error("Validation failed");
