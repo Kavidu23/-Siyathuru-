@@ -1,16 +1,37 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { of, throwError } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { CommunityProfileComponent } from './community-profile.component';
+import { CommunityService } from '../services/community.service';
+
 
 describe('CommunityProfileComponent', () => {
   let component: CommunityProfileComponent;
   let fixture: ComponentFixture<CommunityProfileComponent>;
 
+  const communityServiceMock = {
+    getCommunityById: jasmine.createSpy('getCommunityById').and.returnValue(
+      of({
+        data: {
+          name: 'Test Community',
+          location: { coordinates: { latitude: 6.9271, longitude: 79.8612 } }
+        }
+      })
+    )
+  };
+
+  const activatedRouteMock = {
+    snapshot: { paramMap: { get: () => 'mock-id' } }
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommunityProfileComponent]
-    })
-      .compileComponents();
+      imports: [CommunityProfileComponent],
+      providers: [
+        { provide: CommunityService, useValue: communityServiceMock },
+        { provide: ActivatedRoute, useValue: activatedRouteMock }
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CommunityProfileComponent);
     component = fixture.componentInstance;
@@ -21,9 +42,12 @@ describe('CommunityProfileComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize map', () => {
-    expect(component.map).toBeDefined();
+  it('should fetch community on ngOnInit', () => {
+    component.ngOnInit();
+    expect(communityServiceMock.getCommunityById).toHaveBeenCalledWith('mock-id');
+    expect(component.community.name).toBe('Test Community');
   });
+
 
   it('should open and close image modal', () => {
     const testImage = 'test-image.jpg';
@@ -32,6 +56,4 @@ describe('CommunityProfileComponent', () => {
     component.closeImage();
     expect(component.selectedImage).toBeNull();
   });
-
-
 });

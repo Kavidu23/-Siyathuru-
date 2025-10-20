@@ -2,19 +2,23 @@
   <!-- Banner + Logo -->
   <div class="banner-container">
     <div class="banner">
-      <img src="banner.png" alt="Community Banner" class="banner-img" />
+      <img
+        src="{{ community.bannerImage }}"
+        alt="Community Banner"
+        class="banner-img"
+      />
     </div>
 
     <div class="community-logo">
-      <img src="profile.png" alt="Community Logo" />
+      <img src="{{ community.profileImage }}" alt="Community Logo" />
     </div>
   </div>
 
   <!-- Identity Section -->
   <div class="identity-card">
-    <h1 class="community-name">"TT" village Community</h1>
+    <h1 class="community-name">{{ community.name }}</h1>
     <p class="mission">
-      Empowering villagers to build stronger communities together.
+      {{ community.mission }}
     </p>
     <div class="verification">
       <span class="verified-badge">✔ Verified Community</span>
@@ -27,8 +31,11 @@
     <!-- Action Buttons -->
     <div class="action-buttons">
       <div class="buttonin">
-        <button class="btn-primary">
+        <button class="btn-primary" *ngIf="!community.isPrivate">
           <i class="bx bx-group"></i> Join Community
+        </button>
+        <button class="btn-primary" *ngIf="community.isPrivate">
+          <i class="bx bx-group"></i> Request to Join Community
         </button>
         <button class="btn-secondary">
           <i class="bxr bx-share"></i>
@@ -56,14 +63,10 @@
   <!-- About + Info -->
   <div class="about-section">
     <h2>About Us</h2>
-    <p>
-      Siyathuru Youth Network is a community-driven group focused on youth
-      empowerment, environmental sustainability, and skill development projects.
-      We bring together students and professionals for collective impact.
-    </p>
+    <p>{{ community.description }}</p>
     <div class="info-grid">
-      <div><strong>Type:</strong> Youth Club</div>
-      <div><strong>Location:</strong> Colombo, Sri Lanka</div>
+      <div><strong>Type:</strong>{{ community.Type }}</div>
+      <div><strong>Location:</strong></div>
       <div><strong>Contact:</strong> siyathuru&#64;gmail.com</div>
       <!--&#64;-->
     </div>

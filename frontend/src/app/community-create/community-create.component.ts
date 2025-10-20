@@ -9,8 +9,6 @@ import { Router } from '@angular/router';
 
 
 
-
-
 @Component({
   selector: 'app-community-create',
   standalone: true,

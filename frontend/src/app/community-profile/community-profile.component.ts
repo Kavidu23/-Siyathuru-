@@ -1,9 +1,12 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from "../footer/footer.component";
+import { CommunityService } from '../services/community.service';
+import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'app-community-profile',
@@ -12,11 +15,37 @@ import { FooterComponent } from "../footer/footer.component";
   templateUrl: './community-profile.component.html',
   styleUrls: ['./community-profile.component.css']
 })
-export class CommunityProfileComponent implements AfterViewInit {
+export class CommunityProfileComponent implements AfterViewInit, OnInit {
 
   map!: L.Map;
+  //hold the community
+  community: any = null; // to store fetched community
+  selectedImage: string | null = null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private communityService: CommunityService, private route: ActivatedRoute) { }
+
+  ngOnInit() {
+    // Fetch the "id" from the route parameter
+    const communityId = this.route.snapshot.paramMap.get('id');
+
+    if (!communityId) {
+      alert('Community can not be found');
+      return;
+    }
+
+    this.communityService.getCommunityById(communityId).subscribe({
+
+      next: (res) => {
+        this.community = res.data;
+      },
+
+      error: (err) => {
+        console.error('Failed to fetch community:', err);
+      }
+
+    });
+
+  }
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -33,7 +62,7 @@ export class CommunityProfileComponent implements AfterViewInit {
     });
   }
 
-  selectedImage: string | null = null;
+
 
   openImage(img: string) {
     this.selectedImage = img;
