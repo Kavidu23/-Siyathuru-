@@ -22,7 +22,7 @@ The technology stack is carefully selected to provide a robust, scalable, and se
 ### Frontend
 
 - Angular
-- Tailwind CSS for a responsive and mobile-first user interface (PWA ready).
+- CSS for a responsive and mobile-first user interface (PWA ready).
 
 ### Backend
 
