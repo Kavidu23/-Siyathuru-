@@ -18,7 +18,7 @@ export const routes: Routes = [
     { path: "ask-ai", component: AskaiComponent },
     { path: 'login', component: LoginComponent },
     { path: 'user-dashboard', component: UserDashboardComponent },
-    { path: 'community', component: CommunityProfileComponent }, //there should be the id pass
+    { path: 'community/:id', component: CommunityProfileComponent }, //there should be the id pass
     { path: 'create-community', component: CommunityCreateComponent },
     { path: 'community-dashboard', component: CommunityDashboardComponent },
     { path: 'chatbox', component: ChatboxComponent },

@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from "../footer/footer.component";
 import { CommonModule } from '@angular/common';
 import imageCompression from 'browser-image-compression';
+import { Router } from '@angular/router';
 
 
 
@@ -33,7 +34,7 @@ export class CommunityCreateComponent {
 
   communityTypes = ['Youth', 'Charity', 'Sports', 'Environmental', 'Education', 'Women', 'City', 'Village', 'Volunteer', 'Others'];
 
-  constructor(private fb: FormBuilder, private communityService: CommunityService) {
+  constructor(private fb: FormBuilder, private communityService: CommunityService, private router: Router) {
     this.communityForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       type: ['', Validators.required],
@@ -95,6 +96,7 @@ export class CommunityCreateComponent {
 
   onSubmit() {
     this.submitted = true;
+
     if (this.communityForm.value.otherType) {
       this.communityForm.value.type = this.communityForm.value.otherType;
     }
@@ -165,11 +167,21 @@ export class CommunityCreateComponent {
         alert('Community created successfully!');
         this.onReset();
         this.isLoading = false; // hide loading
+        const communityId = res.data._id;
+        this.router.navigate(['/community', communityId]);
+
       },
       error: err => {
+        this.isLoading = false; // hide loading first
+
+        if (err.error?.message === "Duplicate field value") {
+          alert('These details have been registered before');
+          console.error(err);
+          return; // stop further alerts
+        }
+
         console.error(err);
         alert('Failed to create community. Check console for details.');
-        this.isLoading = false; // hide loading
       }
     });
   }
