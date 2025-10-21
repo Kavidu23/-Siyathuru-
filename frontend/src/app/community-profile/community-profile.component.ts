@@ -62,6 +62,9 @@ export class CommunityProfileComponent implements AfterViewInit, OnInit {
   }
 
   initMap() {
+    if (this.map) {
+      this.map.remove(); // destroy previous map instance
+    }
     // Fallback: default to Sri Lanka center if coordinates not present
     const lat = this.community?.location?.coordinates?.latitude || 7.8731;
     const lon = this.community?.location?.coordinates?.longitude || 80.7718;

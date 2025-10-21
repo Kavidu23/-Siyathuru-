@@ -14,7 +14,11 @@ describe('CommunityProfileComponent', () => {
       of({
         data: {
           name: 'Test Community',
-          location: { coordinates: { latitude: 6.9271, longitude: 79.8612 } }
+          location: { coordinates: { latitude: 6.9271, longitude: 79.8612 } },
+          media: { facebook: '', instagram: '', whatsapp: '', reddit: '' },
+          contact: { name: 'Test User', phone: '0712345678', email: 'test@example.com' },
+          members: []
+
         }
       })
     )
