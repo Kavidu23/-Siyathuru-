@@ -7,6 +7,15 @@ import { FooterComponent } from "../footer/footer.component";
 import { CommunityService } from '../services/community.service';
 import { ActivatedRoute } from '@angular/router';
 
+// Fix Leaflet default icon path for Angular
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
+
 
 @Component({
   selector: 'app-community-profile',
@@ -37,6 +46,7 @@ export class CommunityProfileComponent implements AfterViewInit, OnInit {
 
       next: (res) => {
         this.community = res.data;
+        this.initMap();
       },
 
       error: (err) => {
@@ -48,11 +58,15 @@ export class CommunityProfileComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.initMap();
+
   }
 
   initMap() {
-    this.map = L.map('map').setView([7.8731, 80.7718], 7); // Sri Lanka center
+    // Fallback: default to Sri Lanka center if coordinates not present
+    const lat = this.community?.location?.coordinates?.latitude || 7.8731;
+    const lon = this.community?.location?.coordinates?.longitude || 80.7718;
+
+    this.map = L.map('map').setView([lat, lon], 13); // Zoom closer to marker
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(this.map);
@@ -60,6 +74,17 @@ export class CommunityProfileComponent implements AfterViewInit, OnInit {
     this.map.whenReady(() => {
       setTimeout(() => this.map.invalidateSize(), 500);
     });
+
+    // Optional: add a marker with popup (if you have coordinates from community)
+    if (this.community?.location?.coordinates) {
+      const { latitude, longitude } = this.community.location.coordinates;
+      L.marker([latitude, longitude])
+        .addTo(this.map)
+        .bindPopup(
+          `<b>${this.community.name} 🚩</b>`
+        )
+        .openPopup();
+    }
   }
 
 

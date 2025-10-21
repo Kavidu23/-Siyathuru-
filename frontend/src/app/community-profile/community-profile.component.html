@@ -3,22 +3,25 @@
   <div class="banner-container">
     <div class="banner">
       <img
-        src="{{ community.bannerImage }}"
+        [src]="community?.bannerImage || 'default-banner.jpg'"
         alt="Community Banner"
         class="banner-img"
       />
     </div>
 
     <div class="community-logo">
-      <img src="{{ community.profileImage }}" alt="Community Logo" />
+      <img
+        [src]="community?.profileImage || 'default-logo.jpg'"
+        alt="Community Logo"
+      />
     </div>
   </div>
 
   <!-- Identity Section -->
   <div class="identity-card">
-    <h1 class="community-name">{{ community.name }}</h1>
+    <h1 class="community-name">{{ community?.name || "No name" }}</h1>
     <p class="mission">
-      {{ community.mission }}
+      {{ community?.mission || "No mission" }}
     </p>
     <div class="verification">
       <span class="verified-badge">✔ Verified Community</span>
@@ -26,10 +29,13 @@
     </div>
     <div class="stats">
       <div>
-        <strong>{{ community.members }}</strong
-        ><span>Members</span>
+        <strong>{{ community?.members?.length || 0 }}</strong>
+        <span>Members</span>
       </div>
-      <div><strong>58</strong><span>Events</span></div>
+      <div>
+        <strong>58</strong>
+        <span>Events</span>
+      </div>
     </div>
 
     <!-- Action Buttons -->
@@ -41,23 +47,39 @@
         <button class="btn-primary" *ngIf="community.isPrivate">
           <i class="bx bx-group"></i> Request to Join Community
         </button>
-        <button class="btn-secondary">
-          <i class="bxr bx-share"></i>
-          <i class="bx bx-share-alt"></i> Share
-        </button>
       </div>
 
       <div class="social-icons">
-        <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+        <a
+          [href]="community.media.facebook"
+          *ngIf="community.media.facebook"
+          target="_blank"
+          aria-label="Facebook"
+        >
           <i class="fab fa-facebook"></i>
         </a>
-        <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+        <a
+          [href]="community.media.instagram"
+          *ngIf="community.media.instagram"
+          target="_blank"
+          aria-label="Instagram"
+        >
           <i class="fab fa-instagram"></i>
         </a>
-        <a href="https://wa.me/" target="_blank" aria-label="WhatsApp">
+        <a
+          [href]="community.media.whatsapp"
+          *ngIf="community.media.whatsapp"
+          target="_blank"
+          aria-label="WhatsApp"
+        >
           <i class="fab fa-whatsapp"></i>
         </a>
-        <a href="https://www.reddit.com/" target="_blank" aria-label="Reddit">
+        <a
+          [href]="community.media.reddit"
+          *ngIf="community.media.reddit"
+          target="_blank"
+          aria-label="Reddit"
+        >
           <i class="fab fa-reddit"></i>
         </a>
       </div>
@@ -67,11 +89,16 @@
   <!-- About + Info -->
   <div class="about-section">
     <h2>About Us</h2>
-    <p>{{ community.description }}</p>
+    <p>{{ community?.description || "No description" }}</p>
     <div class="info-grid">
-      <div><strong>Type:</strong>{{ community.Type }}</div>
-      <div><strong>Location:</strong></div>
-      <div><strong>Contact:</strong> siyathuru&#64;gmail.com</div>
+      <div><strong>Type: </strong>{{ community?.type || "No type" }}</div>
+      <div>
+        <strong>Location: </strong
+        >{{ community?.location.address || "No address" }}
+      </div>
+      <div>
+        <strong>Contact: </strong>{{ community?.contact.email || "No email" }}
+      </div>
       <!--&#64;-->
     </div>
     <div class="map-container">

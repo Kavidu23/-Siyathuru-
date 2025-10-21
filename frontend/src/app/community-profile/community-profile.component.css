@@ -169,24 +169,10 @@
 }
 
 /* Brand colors on hover */
-.social-icons a:nth-child(1){ color: #1877F2; } /* Facebook */
-.social-icons a:nth-child(2){ color: #E1306C; } /* Instagram */
-.social-icons a:nth-child(3){ color: #25D366; } /* WhatsApp */
-.social-icons a:nth-child(4){ color: #FF4500; } /* Reddit */
-
-/* Responsive tweak */
-@media (max-width: 600px) {
-  .action-buttons {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .buttonin {
-    justify-content: center;
-  }
-  .social-icons {
-    justify-content: center;
-  }
-}
+.social-icons a[aria-label="Facebook"] { color: #1877F2; }
+.social-icons a[aria-label="Instagram"] { color: #E1306C; }
+.social-icons a[aria-label="WhatsApp"] { color: #25D366; }
+.social-icons a[aria-label="Reddit"] { color: #FF4500; }
 
 
 /* About Section */
@@ -209,7 +195,13 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--spacing-sm);
   margin: var(--spacing-md) 0;
+  background-color: var(--primary-color);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-button);
+  color: white;
 }
+
+
 .map-container iframe {
   width: 100%;
   height: 200px;
@@ -342,4 +334,18 @@
 #map {
   width: 100%;
   height: 300px; /* Important: define height */
+}
+
+/* Responsive tweak */
+@media (max-width: 600px) {
+  .action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .buttonin {
+    justify-content: center;
+  }
+  .social-icons {
+    justify-content: center;
+  }
 }
