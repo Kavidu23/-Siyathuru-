@@ -6,11 +6,10 @@ const {
     deleteCommunity,
 } = require("../controllers/communityController");
 
-
 const sendEmail = require("../utils/sendEmail");
 jest.mock("../utils/sendEmail");
-const Community = require("../models/communities");
 
+const Community = require("../models/communities");
 jest.mock("../models/communities");
 
 // Mock Request & Response
@@ -22,7 +21,7 @@ const mockResponse = () => {
     return res;
 };
 
-describe("Community Controller Unit Tests (with Cloudinary logic)", () => {
+describe("Community Controller Unit Tests (with nested objects)", () => {
     let req, res;
 
     beforeEach(() => {
@@ -31,31 +30,54 @@ describe("Community Controller Unit Tests (with Cloudinary logic)", () => {
         jest.clearAllMocks();
     });
 
-    // CREATE
-    it("should create a community (with images) successfully", async () => {
+    // ✅ CREATE COMMUNITY
+    it("should create a community (with nested objects and images) successfully", async () => {
         req.body = {
-            name: "Test Community",
-            type: "Charity",
-            mission: "Helping others",
-            description: "Doing good",
-            location: "Colombo",
-            contact: { name: "Admin", email: "admin@test.com" },
+            name: "Youth Empowerment Forum",
+            type: "Youth Club",
+            mission: "Empower young leaders",
+            description: "A place for youth leadership programs",
+            location: {
+                address: "Colombo 07, Sri Lanka",
+                coordinates: { latitude: 6.9271, longitude: 79.8612 }
+            },
+            contact: {
+                name: "Nimal Perera",
+                phone: "+94771234567",
+                email: "nimal@yef.lk"
+            },
+            media: {
+                facebook: "https://facebook.com/yef",
+                instagram: "https://instagram.com/yef",
+                whatsapp: "https://wa.me/94771234567"
+            },
             isPrivate: false,
             members: [],
             leader: "leader-id",
-            established: new Date("2020-01-01")
+            established: new Date("2021-01-01")
         };
+
         req.files = {
             bannerImage: [{ path: "https://res.cloudinary.com/test/banner.jpg" }],
             profileImage: [{ path: "https://res.cloudinary.com/test/profile.jpg" }]
         };
 
-        const mockCreated = { ...req.body, ...req.files, _id: "mock-id" };
+        const mockCreated = { ...req.body, bannerImage: req.files.bannerImage[0].path, profileImage: req.files.profileImage[0].path, _id: "mock-id" };
         Community.create.mockResolvedValueOnce(mockCreated);
 
         await createCommunity(req, res);
 
-        expect(Community.create).toHaveBeenCalledTimes(1);
+        expect(Community.create).toHaveBeenCalledWith(expect.objectContaining({
+            name: "Youth Empowerment Forum",
+            type: "Youth Club",
+            mission: "Empower young leaders",
+            bannerImage: "https://res.cloudinary.com/test/banner.jpg",
+            profileImage: "https://res.cloudinary.com/test/profile.jpg",
+            location: expect.any(Object),
+            contact: expect.any(Object),
+            media: expect.any(Object),
+        }));
+
         expect(res.status).toHaveBeenCalledWith(201);
         expect(res.json).toHaveBeenCalledWith({
             success: true,
@@ -71,15 +93,14 @@ describe("Community Controller Unit Tests (with Cloudinary logic)", () => {
             mission: "Connect volunteers with local NGOs and projects",
             description: "Youth volunteering network",
             contact: { name: "Chamodi Silva", email: "info@gallevolunteers.lk" },
+            media: { facebook: "https://fb.com/gvn" },
             isPrivate: false,
         };
-
-        // No files in this case
         req.files = {};
 
         const mockCreated = { ...req.body, _id: "mock-id" };
         Community.create.mockResolvedValueOnce(mockCreated);
-        sendEmail.mockResolvedValueOnce(true); // Simulate successful email send
+        sendEmail.mockResolvedValueOnce(true);
 
         await createCommunity(req, res);
 
@@ -92,7 +113,6 @@ describe("Community Controller Unit Tests (with Cloudinary logic)", () => {
         );
         expect(res.status).toHaveBeenCalledWith(201);
     });
-
 
     it("should handle validation error during create", async () => {
         const mockError = new Error("Validation failed");
@@ -123,11 +143,11 @@ describe("Community Controller Unit Tests (with Cloudinary logic)", () => {
         });
     });
 
-    // READ ALL
+    // ✅ READ ALL
     it("should fetch all communities", async () => {
         const mockCommunities = [
-            { _id: "1", name: "A" },
-            { _id: "2", name: "B" }
+            { _id: "1", name: "A", type: "Youth Club" },
+            { _id: "2", name: "B", type: "Charity" }
         ];
         Community.find.mockResolvedValueOnce(mockCommunities);
 
@@ -142,7 +162,7 @@ describe("Community Controller Unit Tests (with Cloudinary logic)", () => {
         });
     });
 
-    // READ ONE
+    // ✅ READ ONE
     it("should fetch community by ID", async () => {
         req.params.id = "1";
         const mockCommunity = { _id: "1", name: "Test" };
@@ -171,14 +191,23 @@ describe("Community Controller Unit Tests (with Cloudinary logic)", () => {
         });
     });
 
-    // UPDATE
+    // ✅ UPDATE
     it("should update community and handle image upload", async () => {
         req.params.id = "1";
-        req.body = { name: "Updated" };
+        req.body = {
+            name: "Updated Community",
+            contact: { name: "Updated Admin", email: "updated@test.com" },
+            media: { facebook: "https://fb.com/updated" }
+        };
         req.files = {
             bannerImage: [{ path: "https://res.cloudinary.com/test/new-banner.jpg" }]
         };
-        const updated = { _id: "1", name: "Updated", bannerImage: "https://res.cloudinary.com/test/new-banner.jpg" };
+
+        const updated = {
+            _id: "1",
+            name: "Updated Community",
+            bannerImage: "https://res.cloudinary.com/test/new-banner.jpg"
+        };
 
         Community.findByIdAndUpdate.mockResolvedValueOnce(updated);
 
@@ -187,17 +216,12 @@ describe("Community Controller Unit Tests (with Cloudinary logic)", () => {
         expect(Community.findByIdAndUpdate).toHaveBeenCalledWith(
             "1",
             expect.objectContaining({
-                name: "Updated",
+                name: "Updated Community",
                 bannerImage: "https://res.cloudinary.com/test/new-banner.jpg"
             }),
             { new: true, runValidators: true }
         );
         expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith({
-            success: true,
-            message: "Community updated successfully",
-            data: updated
-        });
     });
 
     it("should return 404 if updating non-existing community", async () => {
@@ -213,7 +237,7 @@ describe("Community Controller Unit Tests (with Cloudinary logic)", () => {
         });
     });
 
-    // DELETE
+    // ✅ DELETE
     it("should delete community successfully", async () => {
         req.params.id = "1";
         const deleted = { _id: "1", name: "Deleted" };

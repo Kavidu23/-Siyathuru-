@@ -135,27 +135,22 @@ export class CommunityCreateComponent {
     if (this.f['mission'].value) formData.append('mission', this.f['mission'].value);
     if (this.f['description'].value) formData.append('description', this.f['description'].value);
 
-    // 6️⃣ Append nested objects
-    formData.append('contact', JSON.stringify({
-      name: this.f['contactName'].value,
-      phone: this.f['phone'].value,
-      email: this.f['email'].value
-    }));
+    // CONTACT
+    formData.append('contact[name]', this.f['contactName'].value);
+    formData.append('contact[phone]', this.f['phone'].value);
+    formData.append('contact[email]', this.f['email'].value);
 
-    formData.append('media', JSON.stringify({
-      facebook: this.f['facebook'].value || '',
-      instagram: this.f['instagram'].value || '',
-      whatsapp: this.f['whatsapp'].value || '',
-      reddit: this.f['reddit'].value || ''
-    }));
+    // MEDIA
+    formData.append('media[facebook]', this.f['facebook'].value || '');
+    formData.append('media[instagram]', this.f['instagram'].value || '');
+    formData.append('media[whatsapp]', this.f['whatsapp'].value || '');
+    formData.append('media[reddit]', this.f['reddit'].value || '');
 
-    formData.append('location', JSON.stringify({
-      address: this.f['address'].value,
-      coordinates: {
-        latitude: parseFloat(this.f['latitude'].value),
-        longitude: parseFloat(this.f['longitude'].value)
-      }
-    }));
+    // LOCATION
+    formData.append('location[address]', this.f['address'].value);
+    formData.append('location[coordinates][latitude]', this.f['latitude'].value);
+    formData.append('location[coordinates][longitude]', this.f['longitude'].value);
+
 
     formData.append('isPrivate', this.f['isPrivate'].value);
 
