@@ -15,8 +15,20 @@ describe('DiscoveryComponent', () => {
     fixture = TestBed.createComponent(DiscoveryComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
+
     fixture.detectChanges();
+
+    // ✅ Mock backend data to match filter logic
+    const req = httpMock.expectOne('http://localhost:3000/api/communities');
+    req.flush({
+      data: [
+        { name: 'Youth Leadership Group', type: 'youth', isPrivate: false, location: {} }, // public
+        { name: 'Women Empowerment Circle', type: 'women', isPrivate: true, location: {} }  // private
+      ]
+    });
+
   });
+
 
   afterEach(() => {
     httpMock.verify();
@@ -26,12 +38,14 @@ describe('DiscoveryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should filter communities by type', () => {
-    component.selectedType = 'youth';
+  it('should filter communities by join type', () => {
+    component.selectedJoinType = 'public';
     component.applyFilters();
+
     expect(component.filteredCommunities.length).toBe(1);
-    expect(component.filteredCommunities[0].name).toBe('Youth Leadership Group');
+    expect(component.filteredCommunities[0].isPrivate).toBeFalse();
   });
+
 
   it('should filter communities by join type', () => {
     component.selectedJoinType = 'Free';

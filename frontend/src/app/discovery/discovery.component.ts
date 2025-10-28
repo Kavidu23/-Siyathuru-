@@ -86,14 +86,18 @@ export class DiscoveryComponent implements AfterViewInit {
 
     this.filteredCommunities = this.communities.filter(community => {
       const matchesType = this.selectedType === 'all' || community.type?.toLowerCase() === this.selectedType.toLowerCase();
-      const matchesJoinType = this.selectedJoinType === 'all' ||
+      const matchesJoinType =
+        !this.selectedJoinType || this.selectedJoinType === 'all' ||
         (community.isPrivate ? 'request' : 'free') === this.selectedJoinType.toLowerCase();
+      const matchesLocation =
+        !this.searchQuery || community.location?.address?.toLowerCase().includes(this.searchQuery.toLowerCase());
 
-      return matchesType && matchesJoinType;  // ✅ distance removed
+      return matchesType && matchesJoinType && matchesLocation;
     });
 
     this.refreshMarkers();
   }
+
 
   refreshMarkers() {
     if (!this.map) return;

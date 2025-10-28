@@ -65,7 +65,7 @@
           <h3>{{ community.name }}</h3>
           <p class="address">{{ community.location.address }}</p>
           <p class="type" [ngClass]="{ private: community.isPrivate }">
-            Type: {{ community.isPrivate ? "Private" : "Public" }}
+            Type: {{ community.isPrivate ? "request" : "free" }}
           </p>
         </div>
       </div>
