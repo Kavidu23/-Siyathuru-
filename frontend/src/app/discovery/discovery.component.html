@@ -45,8 +45,14 @@
           <option value="request">On Request</option>
         </select>
       </div>
-
-      <button class="apply-btn" (click)="applyFilters()">Apply Filters</button>
+      <div class="filter-buttons">
+        <button class="apply-btn" (click)="applyFilters()">
+          Apply Filters
+        </button>
+        <button class="apply-btn" (click)="resetFilters()">
+          Reset Filters
+        </button>
+      </div>
     </aside>
 
     <!-- Map & Results -->

@@ -57,7 +57,7 @@ export class DiscoveryComponent implements AfterViewInit {
       return;
     }
 
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.searchQuery)}&countrycodes=LK&addressdetails=1&limit=5&featuretype=city`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.searchQuery)}&countrycodes=LK&addressdetails=1&limit=5`;
     this.http.get<any[]>(url).subscribe(results => {
       this.locationSuggestions = results;
     });
@@ -80,24 +80,20 @@ export class DiscoveryComponent implements AfterViewInit {
     }
   }
 
-  // Distance calculation removed since we no longer filter by distance
+
   applyFilters() {
     if (!this.communities.length) return;
 
     this.filteredCommunities = this.communities.filter(community => {
       const matchesType = this.selectedType === 'all' || community.type?.toLowerCase() === this.selectedType.toLowerCase();
-      const matchesJoinType =
-        !this.selectedJoinType || this.selectedJoinType === 'all' ||
+      const matchesJoinType = this.selectedJoinType === 'all' ||
         (community.isPrivate ? 'request' : 'free') === this.selectedJoinType.toLowerCase();
-      const matchesLocation =
-        !this.searchQuery || community.location?.address?.toLowerCase().includes(this.searchQuery.toLowerCase());
 
-      return matchesType && matchesJoinType && matchesLocation;
+      return matchesType && matchesJoinType;
     });
 
     this.refreshMarkers();
   }
-
 
   refreshMarkers() {
     if (!this.map) return;
@@ -122,4 +118,25 @@ export class DiscoveryComponent implements AfterViewInit {
       }
     });
   }
+
+  resetFilters() {
+    this.selectedType = 'all';
+    this.selectedJoinType = 'free';
+    this.searchQuery = '';
+    this.userCoords = null;
+    this.filteredCommunities = this.communities;
+
+    // Reset map view to default
+    if (this.map) {
+      this.map.setView([7.8731, 80.7718], 7);
+
+      // Remove all markers (but keep the tile layer)
+      this.map.eachLayer(layer => {
+        if ((layer as any)._latlng) this.map.removeLayer(layer);
+      });
+    }
+
+    this.refreshMarkers();
+  }
+
 }

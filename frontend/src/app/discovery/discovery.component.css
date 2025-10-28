@@ -28,7 +28,7 @@
   padding: var(--spacing-lg);
   border-radius: var(--border-radius-card);
   box-shadow: var(--box-shadow);
-  height: 400px;
+  height: 430px;
 }
 
 .filters-panel h2 {
@@ -126,6 +126,15 @@
 }
 
 /* --- Action Buttons --- */
+.filter-buttons{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
 .apply-btn {
   width: 100%;
   padding: var(--spacing-sm);
@@ -150,7 +159,7 @@
 }
 
 .map-wrapper {
-  height: 400px;
+  height: 430px;
   width: 100%;
   border-radius: var(--border-radius-card);
   overflow: hidden;
