@@ -162,14 +162,8 @@
   width: 100%;
   height: 100%;
 }
-/* --- Results Section --- */
-.results {
-  margin-top: var(--spacing-lg);
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-lg);
-  align-items: flex-start;
-}
+
+
 
 h2 {
   margin-top: var(--spacing-lg);
@@ -180,6 +174,15 @@ h2 {
 
 
 /* --- Community Card --- */
+
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem; /* consistent space between cards */
+  align-items: stretch;
+}
+
+
 .community-card {
   background: var(--background-color);
   border-radius: var(--border-radius-card);
