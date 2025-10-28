@@ -63,7 +63,7 @@ export class CommunityCreateComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      const options = { maxSizeMB: 4, maxWidthOrHeight: 2560, useWebWorker: true };
+      const options = { maxSizeMB: 4, maxWidthOrHeight: 1920, useWebWorker: true };
 
       // Disable input
       this.isBannerUploading = true;
