@@ -30,16 +30,6 @@
       </div>
 
       <div class="filter-group">
-        <label for="distance">Distance</label>
-        <select id="distance" [(ngModel)]="selectedDistance">
-          <option value="5">Within 5 km</option>
-          <option value="10">Within 10 km</option>
-          <option value="25">Within 25 km</option>
-          <option value="50">Within 50 km</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
         <label for="type">Type</label>
         <select id="type" [(ngModel)]="selectedType">
           <option value="all">All</option>
@@ -64,24 +54,25 @@
       <div class="map-wrapper">
         <div id="map"></div>
       </div>
-
-      <section class="results">
-        <h2>Communities</h2>
-        <div
-          class="community-card"
-          *ngFor="let community of filteredCommunities"
-        >
-          <img [src]="community.image" alt="{{ community.name }}" />
-          <div class="community-info">
-            <h3>{{ community.name }}</h3>
-            <p>{{ community.location }} · {{ community.joinType }}</p>
-          </div>
-        </div>
-
-        <p *ngIf="filteredCommunities.length === 0" class="no-results">
-          No communities found matching your criteria.
-        </p>
-      </section>
     </main>
   </div>
+  <h2>Communities</h2>
+  <section class="results">
+    <div class="community-grid">
+      <div class="community-card" *ngFor="let community of filteredCommunities">
+        <img [src]="community.profileImage" alt="{{ community.name }}" />
+        <div class="community-info">
+          <h3>{{ community.name }}</h3>
+          <p class="address">{{ community.location.address }}</p>
+          <p class="type" [ngClass]="{ private: community.isPrivate }">
+            Type: {{ community.isPrivate ? "Private" : "Public" }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <p *ngIf="filteredCommunities.length === 0" class="no-results">
+      No communities found matching your criteria.
+    </p>
+  </section>
 </section>

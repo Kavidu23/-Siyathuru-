@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from "../footer/footer.component";
+import { CommunityService } from '../services/community.service';
 
 @Component({
   selector: 'app-discovery',
@@ -13,25 +14,22 @@ import { FooterComponent } from "../footer/footer.component";
   styleUrls: ['./discovery.component.css']
 })
 export class DiscoveryComponent implements AfterViewInit {
-  selectedDistance = 10;
   selectedType = 'all';
   selectedJoinType = 'free';
-
   searchQuery = '';
+
   locationSuggestions: any[] = [];
+  userCoords: { lat: number; lon: number } | null = null;
 
-  communities = [
-    { name: 'Youth Leadership Group', location: 'Colombo', type: 'youth', joinType: 'Free', image: 'https://source.unsplash.com/400x200/?community,people', lat: 6.9271, lng: 79.8612 },
-    { name: 'Women Empowerment Hub', location: 'Kandy', type: 'women', joinType: 'On Request', image: 'https://source.unsplash.com/400x200/?teamwork,group', lat: 7.2906, lng: 80.6337 }
-  ];
-
-  filteredCommunities = [...this.communities];
+  communities: any[] = [];
+  filteredCommunities: any[] = [];
   map!: L.Map;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private communityService: CommunityService) { }
 
   ngAfterViewInit(): void {
     this.initMap();
+    this.fetchCommunities();
     this.detectUserLocation();
   }
 
@@ -40,38 +38,16 @@ export class DiscoveryComponent implements AfterViewInit {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(this.map);
-
-    this.refreshMarkers();
-
-    this.map.whenReady(() => {
-      setTimeout(() => this.map.invalidateSize(), 500);
-    });
   }
 
-  applyFilters() {
-    this.filteredCommunities = this.communities.filter(community => {
-      const matchesType = this.selectedType === 'all' || community.type === this.selectedType;
-      const matchesJoinType = this.selectedJoinType === 'all' || community.joinType.toLowerCase() === this.selectedJoinType.toLowerCase();
-      return matchesType && matchesJoinType;
-    });
-
-    this.refreshMarkers();
-  }
-
-  refreshMarkers() {
-    if (!this.map) return;
-    this.map.eachLayer(layer => {
-      if ((layer as any)._latlng) this.map.removeLayer(layer);
-    });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(this.map);
-
-    this.filteredCommunities.forEach(community => {
-      L.marker([community.lat, community.lng])
-        .addTo(this.map)
-        .bindPopup(`<b>${community.name}</b><br>${community.location}`);
+  fetchCommunities() {
+    this.communityService.getAllCommunities().subscribe({
+      next: (res: any) => {
+        this.communities = res.data || [];
+        this.filteredCommunities = this.communities;
+        this.refreshMarkers();
+      },
+      error: err => console.error('Failed to load communities', err)
     });
   }
 
@@ -81,7 +57,7 @@ export class DiscoveryComponent implements AfterViewInit {
       return;
     }
 
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.searchQuery)}&countrycodes=LK&addressdetails=1&limit=5`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.searchQuery)}&countrycodes=LK&addressdetails=1&limit=5&featuretype=city`;
     this.http.get<any[]>(url).subscribe(results => {
       this.locationSuggestions = results;
     });
@@ -90,14 +66,56 @@ export class DiscoveryComponent implements AfterViewInit {
   selectLocation(suggestion: any) {
     this.searchQuery = suggestion.display_name;
     this.locationSuggestions = [];
-    this.map.setView([suggestion.lat, suggestion.lon], 12);
+    this.userCoords = { lat: parseFloat(suggestion.lat), lon: parseFloat(suggestion.lon) };
+    this.map.setView([this.userCoords.lat, this.userCoords.lon], 12);
+    this.applyFilters();
   }
 
   detectUserLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
-        this.map.setView([position.coords.latitude, position.coords.longitude], 12);
+        this.userCoords = { lat: position.coords.latitude, lon: position.coords.longitude };
+        this.map.setView([this.userCoords.lat, this.userCoords.lon], 12);
       });
     }
+  }
+
+  // Distance calculation removed since we no longer filter by distance
+  applyFilters() {
+    if (!this.communities.length) return;
+
+    this.filteredCommunities = this.communities.filter(community => {
+      const matchesType = this.selectedType === 'all' || community.type?.toLowerCase() === this.selectedType.toLowerCase();
+      const matchesJoinType = this.selectedJoinType === 'all' ||
+        (community.isPrivate ? 'request' : 'free') === this.selectedJoinType.toLowerCase();
+
+      return matchesType && matchesJoinType;  // ✅ distance removed
+    });
+
+    this.refreshMarkers();
+  }
+
+  refreshMarkers() {
+    if (!this.map) return;
+
+    // Remove existing markers
+    this.map.eachLayer(layer => {
+      if ((layer as any)._latlng) this.map.removeLayer(layer);
+    });
+
+    // Re-add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    this.filteredCommunities.forEach(community => {
+      const lat = community.location?.coordinates?.latitude;
+      const lon = community.location?.coordinates?.longitude;
+      if (lat && lon) {
+        L.marker([lat, lon])
+          .addTo(this.map)
+          .bindPopup(`<b>${community.name}</b><br>${community.type}<br>${community.location?.address || ''}`);
+      }
+    });
   }
 }

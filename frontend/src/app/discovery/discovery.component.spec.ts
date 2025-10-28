@@ -45,8 +45,6 @@ describe('DiscoveryComponent', () => {
     expect(component.locationSuggestions.length).toBe(0);
   });
 
-
-
   it('should update searchQuery and clear suggestions on selectLocation', () => {
     const suggestion = { display_name: 'Kandy, Sri Lanka', lat: '7.2906', lon: '80.6337' };
     component.selectLocation(suggestion);

@@ -15,7 +15,10 @@
     <div class="banner upload-banner">
       <label for="bannerUpload" class="upload-banner-label">
         <i class="bx bx-image-add"></i>
-        <span>Click here to upload banner image</span>
+        <span id="uploading2" *ngIf="!isBannerUploading"
+          >Click here to upload banner image</span
+        >
+        <span id="uploading" *ngIf="isBannerUploading">Uploading...</span>
       </label>
       <input
         type="file"
@@ -23,6 +26,7 @@
         (change)="onBannerSelected($event)"
         hidden
         #bannerInput
+        [disabled]="isBannerUploading"
       />
       <img *ngIf="bannerPreview" [src]="bannerPreview" class="preview-image" />
     </div>
@@ -48,6 +52,7 @@
         id="logoUpload"
         (change)="onProfileSelected($event)"
         hidden
+        [disabled]="isProfileUploading"
       />
     </div>
   </div>

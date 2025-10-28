@@ -29,6 +29,8 @@ export class CommunityCreateComponent {
 
   isLoading = false;
   submitted = false;
+  isBannerUploading = false;
+  isProfileUploading = false;
 
   communityTypes = ['Youth', 'Charity', 'Sports', 'Environmental', 'Education', 'Women', 'City', 'Village', 'Volunteer', 'Others'];
 
@@ -61,15 +63,20 @@ export class CommunityCreateComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      const options = { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true };
+      const options = { maxSizeMB: 4, maxWidthOrHeight: 2560, useWebWorker: true };
+
+      // Disable input
+      this.isBannerUploading = true;
 
       try {
         this.bannerFile = await imageCompression(file, options);
         const reader = new FileReader();
         reader.onload = () => (this.bannerPreview = reader.result as string);
         reader.readAsDataURL(this.bannerFile);
+        this.isBannerUploading = false;
       } catch (error) {
         console.error("Error compressing banner:", error);
+        this.isBannerUploading = false;
       }
     }
   }
@@ -78,15 +85,19 @@ export class CommunityCreateComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      const options = { maxSizeMB: 0.5, maxWidthOrHeight: 800, useWebWorker: true };
+      const options = { maxSizeMB: 1, maxWidthOrHeight: 800, useWebWorker: true };
+
+      this.isProfileUploading = true;
 
       try {
         this.profileFile = await imageCompression(file, options);
         const reader = new FileReader();
         reader.onload = () => (this.profilePreview = reader.result as string);
         reader.readAsDataURL(this.profileFile);
+        this.isProfileUploading = false;
       } catch (error) {
         console.error("Error compressing profile:", error);
+        this.isProfileUploading = false;
       }
     }
   }
