@@ -38,20 +38,22 @@ describe('DiscoveryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should filter communities by join type', () => {
-    component.selectedJoinType = 'public';
+  it('should filter communities by join type - free', () => {
+    component.selectedJoinType = 'free';
     component.applyFilters();
 
     expect(component.filteredCommunities.length).toBe(1);
     expect(component.filteredCommunities[0].isPrivate).toBeFalse();
   });
 
-
-  it('should filter communities by join type', () => {
-    component.selectedJoinType = 'Free';
+  it('should filter communities by join type - request', () => {
+    component.selectedJoinType = 'request';
     component.applyFilters();
-    expect(component.filteredCommunities.every(c => c.joinType === 'Free')).toBeTrue();
+
+    expect(component.filteredCommunities.length).toBe(1);
+    expect(component.filteredCommunities[0].isPrivate).toBeTrue();
   });
+
 
   it('should return no suggestions if search query is less than 3 chars', () => {
     component.searchQuery = 'co';
