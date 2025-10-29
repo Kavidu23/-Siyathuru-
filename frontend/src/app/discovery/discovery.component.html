@@ -66,7 +66,11 @@
   <h2>Communities</h2>
   <section class="results">
     <div class="community-grid">
-      <div class="community-card" *ngFor="let community of filteredCommunities">
+      <div
+        [routerLink]="['/community', community._id]"
+        class="community-card"
+        *ngFor="let community of filteredCommunities"
+      >
         <img [src]="community.profileImage" alt="{{ community.name }}" />
         <div class="community-info">
           <h3>{{ community.name }}</h3>

@@ -5,11 +5,12 @@ import * as L from 'leaflet';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from "../footer/footer.component";
 import { CommunityService } from '../services/community.service';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-discovery',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, FooterComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, FooterComponent, RouterLink],
   templateUrl: './discovery.component.html',
   styleUrls: ['./discovery.component.css']
 })

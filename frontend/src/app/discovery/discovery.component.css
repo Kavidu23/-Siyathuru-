@@ -200,6 +200,7 @@ h2 {
   padding: var(--spacing-md);
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
 
 .community-card:hover {
