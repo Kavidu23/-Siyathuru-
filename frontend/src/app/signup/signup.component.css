@@ -165,6 +165,21 @@
   color: #555;
 }
 
+.radio-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.radio-label input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #00616e; /* theme color */
+}
+
 /* Animations */
 @keyframes fadeInScale {
   from {
