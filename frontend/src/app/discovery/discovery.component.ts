@@ -66,9 +66,12 @@ export class DiscoveryComponent implements AfterViewInit {
   selectLocation(suggestion: any) {
     this.searchQuery = suggestion.display_name;
     this.locationSuggestions = [];
-    this.userCoords = { lat: parseFloat(suggestion.lat), lon: parseFloat(suggestion.lon) };
-    this.map.setView([this.userCoords.lat, this.userCoords.lon], 12);
-    this.applyFilters();
+
+    // Just store selected coordinates (no map movement yet)
+    this.userCoords = {
+      lat: parseFloat(suggestion.lat),
+      lon: parseFloat(suggestion.lon)
+    };
   }
 
   detectUserLocation() {
@@ -80,37 +83,92 @@ export class DiscoveryComponent implements AfterViewInit {
     }
   }
 
-
   applyFilters() {
     if (!this.communities.length) return;
 
+    const radiusKm = 50; // Adjust radius if needed
+    const hasLocationFilter = !!this.userCoords;
+
     this.filteredCommunities = this.communities.filter(community => {
-      const matchesType = this.selectedType === 'all' || community.type?.toLowerCase() === this.selectedType.toLowerCase();
-      const matchesJoinType = this.selectedJoinType === 'all' ||
+      const matchesType =
+        this.selectedType === 'all' ||
+        community.type?.toLowerCase() === this.selectedType.toLowerCase();
+
+      const matchesJoinType =
+        this.selectedJoinType === 'all' ||
         (community.isPrivate ? 'request' : 'free') === this.selectedJoinType.toLowerCase();
 
-      return matchesType && matchesJoinType;
+      let matchesLocation = true;
+
+      // Only apply location filter if user selected a city
+      if (hasLocationFilter && community.location?.coordinates) {
+        const coords = community.location.coordinates;
+        const lat = coords.latitude;
+        const lon = coords.longitude;
+
+        if (lat && lon && this.userCoords) {
+          const userLat = this.userCoords.lat;
+          const userLon = this.userCoords.lon;
+          const distance = this.getDistanceFromLatLonInKm(
+            userLat,
+            userLon,
+            lat,
+            lon
+          );
+          matchesLocation = distance <= radiusKm;
+        } else {
+          matchesLocation = false;
+        }
+      }
+
+      return matchesType && matchesJoinType && matchesLocation;
     });
 
+    // Move map to selected area if available
+    if (this.userCoords) {
+      this.map.setView([this.userCoords.lat, this.userCoords.lon], 12);
+    }
+
+    // Refresh markers for filtered communities
     this.refreshMarkers();
+  }
+
+  getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371; // Earth radius in km
+    const dLat = this.deg2rad(lat2 - lat1);
+    const dLon = this.deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) *
+      Math.cos(this.deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  deg2rad(deg: number) {
+    return deg * (Math.PI / 180);
   }
 
   refreshMarkers() {
     if (!this.map) return;
 
-    // Remove existing markers
+    // Remove only existing markers
+    const layersToRemove: L.Layer[] = [];
     this.map.eachLayer(layer => {
-      if ((layer as any)._latlng) this.map.removeLayer(layer);
+      if ((layer as any)._latlng) {
+        layersToRemove.push(layer);
+      }
     });
+    layersToRemove.forEach(l => this.map.removeLayer(l));
 
-    // Re-add tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(this.map);
-
+    // Add markers for filtered communities
     this.filteredCommunities.forEach(community => {
-      const lat = community.location?.coordinates?.latitude;
-      const lon = community.location?.coordinates?.longitude;
+      const coords = community.location?.coordinates;
+      if (!coords) return;
+      const lat = coords.latitude;
+      const lon = coords.longitude;
+
       if (lat && lon) {
         L.marker([lat, lon])
           .addTo(this.map)
@@ -130,13 +188,16 @@ export class DiscoveryComponent implements AfterViewInit {
     if (this.map) {
       this.map.setView([7.8731, 80.7718], 7);
 
-      // Remove all markers (but keep the tile layer)
+      // Remove all markers (but keep tile layer)
+      const layersToRemove: L.Layer[] = [];
       this.map.eachLayer(layer => {
-        if ((layer as any)._latlng) this.map.removeLayer(layer);
+        if ((layer as any)._latlng) {
+          layersToRemove.push(layer);
+        }
       });
+      layersToRemove.forEach(l => this.map.removeLayer(l));
     }
 
     this.refreshMarkers();
   }
-
 }
