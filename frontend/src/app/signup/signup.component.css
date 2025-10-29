@@ -33,7 +33,7 @@
   background: white;
   padding: 40px;
   border-radius: 20px;
-  width: 450px; /* slightly bigger than login */
+  width: 500px; /* slightly bigger than login */
   max-width: 95%;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
   z-index: 10;
@@ -167,10 +167,10 @@
 
 .radio-label {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   font-size: 14px;
-  color: #333;
+  color: #00616e;
   cursor: pointer;
 }
 
