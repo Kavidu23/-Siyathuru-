@@ -54,4 +54,8 @@ export class HomeComponent implements OnInit {
   openSignupModal() {
     this.modalService.openSignup();
   }
+
+  openvid() {
+    window.open('https://youtu.be/idyCXAGOJ2k', '_blank');
+  }
 }
