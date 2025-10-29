@@ -33,8 +33,9 @@
         <label for="type">Type</label>
         <select id="type" [(ngModel)]="selectedType">
           <option value="all">All</option>
-          <option value="youth">Youth</option>
-          <option value="women">Women</option>
+          <option *ngFor="let type of communities" value="{{ type.type }}">
+            {{ type.type }}
+          </option>
         </select>
       </div>
 
