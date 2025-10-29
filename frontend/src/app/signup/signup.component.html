@@ -1,3 +1,14 @@
+<!-- Loading overlay -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-dots">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <span>Creating your account...</span>
+</div>
+
 <div class="signup-modal" [class.visible]="isVisible" *ngIf="isVisible">
   <div class="login-overlay" (click)="closeSignup()"></div>
 
@@ -9,38 +20,122 @@
       <p>Join Siyathuru and connect with your community</p>
     </div>
 
-    <form class="signup-form">
-      <input type="text" placeholder="Full Name" required />
-      <input type="email" placeholder="Email Address" required />
-      <input type="text" placeholder="Phone Number" required />
-      <input type="password" placeholder="Password" required />
-      <input type="password" placeholder="Re-Enter Password" required />
+    <form class="signup-form" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <!-- Full Name -->
+      <input formControlName="username" type="text" placeholder="Full Name" />
+      <div
+        *ngIf="(f['username'].dirty || submitted) && f['username'].invalid"
+        class="error"
+      >
+        Name is required (min 3 characters)
+      </div>
+
+      <!-- Email -->
+      <input formControlName="email" type="email" placeholder="Email Address" />
+      <div
+        *ngIf="(f['email'].dirty || submitted) && f['email'].invalid"
+        class="error"
+      >
+        Enter a valid email address
+      </div>
+
+      <!-- Phone -->
+      <input formControlName="phone" type="text" placeholder="Phone Number" />
+      <div
+        *ngIf="(f['phone'].dirty || submitted) && f['phone'].invalid"
+        class="error"
+      >
+        Enter a valid 10-digit phone number
+      </div>
+
+      <!-- Password -->
       <input
+        formControlName="password"
+        type="password"
+        placeholder="Password"
+      />
+      <div
+        *ngIf="(f['password'].dirty || submitted) && f['password'].invalid"
+        class="error"
+      >
+        Password is required (min 6 characters)
+      </div>
+
+      <!-- Re-enter Password -->
+      <input
+        formControlName="confirmPassword"
+        type="password"
+        placeholder="Re-Enter Password"
+      />
+      <div
+        *ngIf="
+          (f['confirmPassword'].dirty || submitted) &&
+          f['confirmPassword'].invalid
+        "
+        class="error"
+      >
+        Passwords must match
+      </div>
+
+      <!-- Latitude -->
+      <input
+        formControlName="latitude"
         type="number"
-        name="latitude"
         placeholder="Latitude"
         step="any"
-        required
       />
+      <div
+        *ngIf="(f['latitude'].dirty || submitted) && f['latitude'].invalid"
+        class="error"
+      >
+        Enter a valid latitude (-90 to 90)
+      </div>
+
+      <!-- Longitude -->
       <input
+        formControlName="longitude"
         type="number"
-        name="longitude"
         placeholder="Longitude"
         step="any"
-        required
       />
-      <input type="number" placeholder="Age" />
+      <div
+        *ngIf="(f['longitude'].dirty || submitted) && f['longitude'].invalid"
+        class="error"
+      >
+        Enter a valid longitude (-180 to 180)
+      </div>
+
+      <!-- Age -->
+      <input formControlName="age" type="number" placeholder="Age" />
+      <div
+        *ngIf="(f['age'].dirty || submitted) && f['age'].invalid"
+        class="error"
+      >
+        Age must be between 13 and 120
+      </div>
 
       <!-- Role selection -->
-      <label class="radio-label">
-        Member
-        <input type="radio" name="role" value="member" />
+      <div class="radio-group">
+        <label>
+          <input type="radio" formControlName="memberType" value="member" />
+          Member
+        </label>
+        <label>
+          <input type="radio" formControlName="memberType" value="leader" />
+          Leader
+        </label>
+      </div>
+      <div
+        *ngIf="(f['memberType'].dirty || submitted) && f['memberType'].invalid"
+        class="error"
+      >
+        Select a role
+      </div>
 
-        Leader
-        <input type="radio" name="role" value="leader" />
-      </label>
-
-      <button type="submit" class="signup-btn">Sign Up</button>
+      <!-- Submit -->
+      <button type="submit" class="signup-btn" [disabled]="isLoading">
+        Sign Up
+      </button>
     </form>
 
     <div class="google-login">

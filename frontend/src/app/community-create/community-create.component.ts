@@ -132,7 +132,7 @@ export class CommunityCreateComponent {
     this.isLoading = true;
 
     // 4️⃣ Create FormData
-    const formData = new FormData();   //work well with multipart data like file uploads
+    const formData = new FormData();
     formData.append('bannerImage', this.bannerFile);
     formData.append('profileImage', this.profileFile);
 

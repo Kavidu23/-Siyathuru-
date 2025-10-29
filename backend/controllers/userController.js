@@ -1,5 +1,6 @@
 const User = require("../models/user.js");
 const bcrypt = require("bcryptjs");
+const sendEmail = require('../utils/sendEmail');
 
 // CREATE a new user
 const createUser = async (req, res) => {
@@ -8,6 +9,9 @@ const createUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Generate 6-digit verification code
+    const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
     const newUser = await User.create({
       name,
       email,
@@ -15,12 +19,30 @@ const createUser = async (req, res) => {
       password: hashedPassword,
       role,
       age,
-      location
+      location,
+      verificationCode // store in DB temporarily
     });
+
+    // ✅ Send verification code via email
+    if (newUser.email) {
+      try {
+        const emailSubject = 'Verify Your Account';
+        const emailText = `Hello ${newUser.name},\n\nYour verification code is: ${verificationCode}\n\nThank you!`;
+        const emailHTML = `<p>Hello <strong>${newUser.name}</strong>,</p>
+                           <p>Your verification code is: <strong>${verificationCode}</strong></p>
+                           <p>Thank you!</p>`;
+
+        console.log(`📧 Sending verification code to: ${newUser.email}...`);
+        await sendEmail(newUser.email, emailSubject, emailText, emailHTML);
+        console.log(`✅ Verification email sent to: ${newUser.email}`);
+      } catch (emailErr) {
+        console.error(`❌ Failed to send email to ${newUser.email}:`, emailErr.message);
+      }
+    }
 
     res.status(201).json({
       success: true,
-      message: "User created successfully",
+      message: "User created successfully. Please check your email for verification code.",
       data: {
         _id: newUser._id,
         name: newUser.name,
@@ -53,6 +75,7 @@ const createUser = async (req, res) => {
     });
   }
 };
+
 
 // READ ALL USERS
 const getUsers = async (req, res) => {
@@ -144,6 +167,29 @@ const loginUser = async (req, res) => {
   }
 };
 
+// VERIFY user account
+const verifyUser = async (req, res) => {
+  try {
+    const { email, code } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(404).json({ success: false, error: "User not found" });
+
+    if (user.verificationCode !== Number(code)) {
+      return res.status(400).json({ success: false, error: "Invalid verification code" });
+    }
+
+    // Verification successful, remove code
+    user.verificationCode = undefined;
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Account verified successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: "Server error", details: err.message });
+  }
+};
+
+
 module.exports = {
   createUser,
   getUsers,
@@ -151,4 +197,5 @@ module.exports = {
   updateUser,
   deleteUser,
   loginUser,
+  verifyUser,
 };

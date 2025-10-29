@@ -11,6 +11,10 @@ const bcrypt = require("bcryptjs");
 
 jest.mock("../models/user"); // Mock Mongoose model
 jest.mock("bcryptjs");       // Mock bcrypt
+// Mock the sendEmail module
+jest.mock('../utils/sendEmail', () => jest.fn().mockResolvedValue(true));
+const sendEmail = require('../utils/sendEmail'); // now this is a mocked function
+
 
 // Helpers to create fake req/res
 const mockRequest = () => ({ body: {}, params: {} });
@@ -63,7 +67,7 @@ describe("User Controller Unit Tests", () => {
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
-      message: "User created successfully",
+      message: "User created successfully. Please check your email for verification code.",
       data: {
         _id: "fake-id",
         name: userData.name,
