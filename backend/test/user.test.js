@@ -6,7 +6,7 @@ jest.mock("../models/user");
 
 describe("User Model (mocked) - Unit Tests", () => {
     afterEach(() => {
-        jest.clearAllMocks(); // reset mocks between tests
+        jest.clearAllMocks();
     });
 
     it("should create & save a user successfully", async () => {
@@ -16,9 +16,12 @@ describe("User Model (mocked) - Unit Tests", () => {
             email: "john.doe@example.com",
             pnumber: "1234567890",
             password: "password",
-            city: "Test City",
+            role: "member",
             age: 25,
-            role: "member"
+            location: {
+                address: "Test City",
+                coordinates: { latitude: 7.123, longitude: 80.456 }
+            }
         };
 
         User.create.mockResolvedValue(fakeUser);
@@ -31,8 +34,18 @@ describe("User Model (mocked) - Unit Tests", () => {
 
     it("should fetch all users", async () => {
         const fakeUsers = [
-            { _id: new mongoose.Types.ObjectId(), name: "User A", email: "a@test.com" },
-            { _id: new mongoose.Types.ObjectId(), name: "User B", email: "b@test.com" }
+            {
+                _id: new mongoose.Types.ObjectId(),
+                name: "User A",
+                email: "a@test.com",
+                location: { address: "City A", coordinates: { latitude: 7, longitude: 80 } }
+            },
+            {
+                _id: new mongoose.Types.ObjectId(),
+                name: "User B",
+                email: "b@test.com",
+                location: { address: "City B", coordinates: { latitude: 8, longitude: 81 } }
+            }
         ];
 
         User.find.mockResolvedValue(fakeUsers);
@@ -45,7 +58,12 @@ describe("User Model (mocked) - Unit Tests", () => {
 
     it("should fetch a user by ID", async () => {
         const userId = new mongoose.Types.ObjectId();
-        const fakeUser = { _id: userId, name: "User X", email: "x@test.com" };
+        const fakeUser = {
+            _id: userId,
+            name: "User X",
+            email: "x@test.com",
+            location: { address: "City X", coordinates: { latitude: 7.5, longitude: 80.5 } }
+        };
 
         User.findById.mockResolvedValue(fakeUser);
 
@@ -57,20 +75,33 @@ describe("User Model (mocked) - Unit Tests", () => {
 
     it("should update a user", async () => {
         const userId = new mongoose.Types.ObjectId();
-        const updateData = { city: "New City" };
+        const updateData = {
+            location: { address: "New City", coordinates: { latitude: 7.9, longitude: 80.9 } }
+        };
         const updatedUser = { _id: userId, name: "John Doe", ...updateData };
 
         User.findByIdAndUpdate.mockResolvedValue(updatedUser);
 
-        const result = await User.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true });
+        const result = await User.findByIdAndUpdate(userId, updateData, {
+            new: true,
+            runValidators: true
+        });
 
         expect(result).toEqual(updatedUser);
-        expect(User.findByIdAndUpdate).toHaveBeenCalledWith(userId, updateData, { new: true, runValidators: true });
+        expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
+            userId,
+            updateData,
+            { new: true, runValidators: true }
+        );
     });
 
     it("should delete a user", async () => {
         const userId = new mongoose.Types.ObjectId();
-        const deletedUser = { _id: userId, name: "Deleted User", email: "deleted@test.com" };
+        const deletedUser = {
+            _id: userId,
+            name: "Deleted User",
+            email: "deleted@test.com"
+        };
 
         User.findByIdAndDelete.mockResolvedValue(deletedUser);
 

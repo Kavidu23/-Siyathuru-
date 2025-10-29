@@ -1,5 +1,3 @@
-// test/userController.test.js
-
 const {
   createUser,
   getUsers,
@@ -43,7 +41,9 @@ describe("User Controller Unit Tests", () => {
       email: "test@example.com",
       pnumber: "1234567890",
       password: "password123",
-      city: "Test City",
+      location: {
+        coordinates: { latitude: 7.1, longitude: 80.8 }
+      },
       age: 25,
       role: "member",
     };
@@ -69,7 +69,9 @@ describe("User Controller Unit Tests", () => {
         name: userData.name,
         email: userData.email,
         pnumber: userData.pnumber,
-        city: userData.city,
+        location: {
+          coordinates: { latitude: 7.1, longitude: 80.8 }
+        },
         age: userData.age,
         role: userData.role,
       },
@@ -118,7 +120,9 @@ describe("User Controller Unit Tests", () => {
       email: "test@gmail.com",
       password: "hashed-password",
       pnumber: "123456789",
-      city: "City",
+      location: {
+        coordinates: { latitude: 7.1, longitude: 80.8 }
+      },
       age: 25,
       role: "user",
     };
@@ -138,7 +142,9 @@ describe("User Controller Unit Tests", () => {
         name: mockUser.name,
         email: mockUser.email,
         pnumber: mockUser.pnumber,
-        city: mockUser.city,
+        location: {
+          coordinates: { latitude: 7.1, longitude: 80.8 }
+        },
         age: mockUser.age,
         role: mockUser.role,
       },
@@ -146,20 +152,46 @@ describe("User Controller Unit Tests", () => {
   });
 
   // READ ALL USERS
-  it("should return all users with 200 status", async () => {
-    const mockUsers = [{ _id: "1", name: "User 1" }, { _id: "2", name: "User 2" }];
-    User.find.mockResolvedValueOnce(mockUsers);
+  // LOGIN USER
+  it("should login a user and return 200 status", async () => {
+    const loginData = { email: "test@gmail.com", password: "password123" };
+    req.body = loginData;
 
-    await getUsers(req, res);
+    const mockUser = {
+      _id: "fake-id",
+      name: "Test User",
+      email: "test@gmail.com",
+      password: "hashed-password",
+      pnumber: "123456789",
+      location: {
+        coordinates: { latitude: 7.1, longitude: 80.8 }
+      },
+      age: 25,
+      role: "user",
+    };
 
-    expect(User.find).toHaveBeenCalledTimes(1);
+    User.findOne.mockResolvedValueOnce(mockUser);
+
+    await loginUser(req, res);
+
+    expect(User.findOne).toHaveBeenCalledWith({ email: loginData.email });
+    expect(bcrypt.compare).toHaveBeenCalledWith(loginData.password, mockUser.password);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
-      message: "Users fetched successfully",
-      data: mockUsers,
+      message: "Login successful",
+      data: {
+        _id: mockUser._id,
+        name: mockUser.name,
+        email: mockUser.email,
+        pnumber: mockUser.pnumber,
+        location: mockUser.location, // updated to match controller
+        age: mockUser.age,
+        role: mockUser.role,
+      },
     });
   });
+
 
   // READ ONE USER
   it("should fetch a user by ID", async () => {

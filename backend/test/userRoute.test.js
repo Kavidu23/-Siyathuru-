@@ -15,7 +15,7 @@ jest.mock("../controllers/userController");
 // Utility to find route by path & method
 const findRoute = (route, method) => {
     return router.stack.find(
-        (s) => s.route.path === route && s.route.methods[method.toLowerCase()]
+        (s) => s.route?.path === route && s.route?.methods[method.toLowerCase()]
     );
 };
 

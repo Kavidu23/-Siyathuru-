@@ -6,7 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FeedbackService {
-  private baseUrl = 'http://localhost:3000/api/feedbacks';
+  // Base URL automatically switches for local or Docker
+  private baseUrl = window.location.hostname.includes('localhost')
+    ? 'http://localhost:3000/api/feedbacks'
+    : 'http://backend:3000/api/feedbacks'; // backend service name in Docker
 
   constructor(private http: HttpClient) { }
 
