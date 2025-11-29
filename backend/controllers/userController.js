@@ -5,7 +5,7 @@ const sendEmail = require('../utils/sendEmail');
 // CREATE a new user
 const createUser = async (req, res) => {
   try {
-    const { name, email, pnumber, password, role, age, location } = req.body;
+    const { profileImage, name, email, pnumber, password, role, age, location } = req.body;
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -13,6 +13,7 @@ const createUser = async (req, res) => {
     const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
     const newUser = await User.create({
+      profileImage,
       name,
       email,
       pnumber,
