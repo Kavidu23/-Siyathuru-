@@ -9,6 +9,7 @@
   <span>Creating your account...</span>
 </div>
 
+<!-- Signup Modal -->
 <div class="signup-modal" [class.visible]="isVisible" *ngIf="isVisible">
   <div class="login-overlay" (click)="closeSignup()"></div>
 
@@ -20,116 +21,111 @@
       <p>Join Siyathuru and connect with your community</p>
     </div>
 
-    <form class="signup-form" [formGroup]="userForm" (ngSubmit)="onSubmit()">
-      <!-- Full Name -->
-      <input formControlName="username" type="text" placeholder="Full Name" />
-      <div
-        *ngIf="(f['username'].dirty || submitted) && f['username'].invalid"
-        class="error"
-      >
-        Name is required (min 3 characters)
-      </div>
-
-      <!-- Email -->
-      <input formControlName="email" type="email" placeholder="Email Address" />
-      <div
-        *ngIf="(f['email'].dirty || submitted) && f['email'].invalid"
-        class="error"
-      >
-        Enter a valid email address
-      </div>
-
-      <!-- Phone -->
-      <input formControlName="phone" type="text" placeholder="Phone Number" />
-      <div
-        *ngIf="(f['phone'].dirty || submitted) && f['phone'].invalid"
-        class="error"
-      >
-        Enter a valid 10-digit phone number
-      </div>
-
-      <!-- Password -->
+    <!-- Profile Photo Upload -->
+    <div class="photo-upload">
+      <label for="profilePic" class="photo-preview">
+        <!-- Show image if uploaded -->
+        <img
+          *ngIf="!profilePreview"
+          src="default-logo.jpg"
+          alt="Default profile"
+        />
+        <img
+          *ngIf="profilePreview"
+          [src]="profilePreview"
+          alt="Profile photo"
+        />
+      </label>
+      <span class="upload-logo-text">Upload Profile Photo</span>
       <input
-        formControlName="password"
-        type="password"
-        placeholder="Password"
+        id="profilePic"
+        type="file"
+        accept="image/*"
+        (change)="onProfileSelected($event)"
+        [disabled]="isProfileUploading"
       />
-      <div
-        *ngIf="(f['password'].dirty || submitted) && f['password'].invalid"
-        class="error"
-      >
-        Password is required (min 6 characters)
+    </div>
+
+    <!-- Signup Form -->
+    <form
+      class="signup-form two-column"
+      [formGroup]="userForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <!-- LEFT COLUMN -->
+      <div class="column">
+        <input formControlName="username" type="text" placeholder="Full Name" />
+        <div class="error" *ngIf="submitted && f['username'].errors">
+          <small>Username is required.</small>
+        </div>
+        <input
+          formControlName="email"
+          type="email"
+          placeholder="Email Address"
+        />
+        <div class="error" *ngIf="submitted && f['email'].errors">
+          <small>Email is required.</small>
+        </div>
+        <input formControlName="phone" type="text" placeholder="Phone Number" />
+        <div class="error" *ngIf="submitted && f['phone'].errors">
+          <small>Phone number is required.</small>
+        </div>
+        <input formControlName="age" type="number" placeholder="Age" />
+        <div class="error" *ngIf="submitted && f['age'].errors">
+          <small>Age is required.</small>
+        </div>
+        <!-- Role -->
+        <div class="radio-group">
+          <label>
+            <input type="radio" formControlName="memberType" value="member" />
+            Member
+          </label>
+          <label>
+            <input type="radio" formControlName="memberType" value="leader" />
+            Leader
+          </label>
+        </div>
+        <div class="error" *ngIf="submitted && f['memberType'].errors">
+          <small>Member type is required.</small>
+        </div>
       </div>
 
-      <!-- Re-enter Password -->
-      <input
-        formControlName="confirmPassword"
-        type="password"
-        placeholder="Re-Enter Password"
-      />
-      <div
-        *ngIf="
-          (f['confirmPassword'].dirty || submitted) &&
-          f['confirmPassword'].invalid
-        "
-        class="error"
-      >
-        Passwords must match
-      </div>
-
-      <!-- Latitude -->
-      <input
-        formControlName="latitude"
-        type="number"
-        placeholder="Latitude"
-        step="any"
-      />
-      <div
-        *ngIf="(f['latitude'].dirty || submitted) && f['latitude'].invalid"
-        class="error"
-      >
-        Enter a valid latitude (-90 to 90)
-      </div>
-
-      <!-- Longitude -->
-      <input
-        formControlName="longitude"
-        type="number"
-        placeholder="Longitude"
-        step="any"
-      />
-      <div
-        *ngIf="(f['longitude'].dirty || submitted) && f['longitude'].invalid"
-        class="error"
-      >
-        Enter a valid longitude (-180 to 180)
-      </div>
-
-      <!-- Age -->
-      <input formControlName="age" type="number" placeholder="Age" />
-      <div
-        *ngIf="(f['age'].dirty || submitted) && f['age'].invalid"
-        class="error"
-      >
-        Age must be between 13 and 120
-      </div>
-
-      <!-- Role selection -->
-      <div class="radio-group">
-        <label>
-          <input type="radio" formControlName="memberType" value="member" />
-          Member
-        </label>
-        <label>
-          <input type="radio" formControlName="memberType" value="leader" />
-          Leader
-        </label>
-      </div>
-      <div
-        *ngIf="(f['memberType'].dirty || submitted) && f['memberType'].invalid"
-        class="error"
-      >
-        Select a role
+      <!-- RIGHT COLUMN -->
+      <div class="column">
+        <input
+          formControlName="password"
+          type="password"
+          placeholder="Password"
+        />
+        <div class="error" *ngIf="submitted && f['password'].errors">
+          <small>Password is required.</small>
+        </div>
+        <input
+          formControlName="confirmPassword"
+          type="password"
+          placeholder="Re-Enter Password"
+        />
+        <div class="error" *ngIf="submitted && f['confirmPassword'].errors">
+          <small>Confirm password is required.</small>
+        </div>
+        <input
+          formControlName="latitude"
+          type="number"
+          placeholder="Latitude"
+          step="any"
+        />
+        <div class="error" *ngIf="submitted && f['latitude'].errors">
+          <small>Latitude is required.</small>
+        </div>
+        <input
+          formControlName="longitude"
+          type="number"
+          placeholder="Longitude"
+          step="any"
+        />
+        <div class="error" *ngIf="submitted && f['longitude'].errors">
+          <small>Longitude is required.</small>
+        </div>
       </div>
 
       <!-- Submit -->
@@ -137,17 +133,7 @@
         Sign Up
       </button>
     </form>
-
-    <div class="google-login">
-      <button class="google-btn">
-        <img
-          src="https://www.google.com/images/branding/product/2x/gsa_24dp.png"
-          alt="Google logo"
-        />
-        Sign up with Google
-      </button>
-    </div>
-
+    <br />
     <div class="links">
       <p>
         Already have an account?

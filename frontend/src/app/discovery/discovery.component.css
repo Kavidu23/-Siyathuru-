@@ -187,8 +187,9 @@ h2 {
 .community-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem; /* consistent space between cards */
+  gap: 1rem; /* consistent space between cards */
   align-items: stretch;
+  width: 100%;
 }
 
 

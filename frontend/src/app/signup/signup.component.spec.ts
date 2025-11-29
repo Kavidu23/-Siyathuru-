@@ -4,7 +4,7 @@ import { ModalService } from '../modal.service';
 import { BehaviorSubject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
-// --- Mock Service ---
+// --- Mock ModalService ---
 class MockModalService {
   private subject = new BehaviorSubject<boolean>(false);
   signupVisible$ = this.subject.asObservable();
@@ -25,7 +25,7 @@ describe('SignupComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SignupComponent, CommonModule],
-      providers: [{ provide: ModalService, useClass: MockModalService }]
+      providers: [{ provide: ModalService, useClass: MockModalService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignupComponent);
@@ -35,7 +35,7 @@ describe('SignupComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
@@ -54,9 +54,9 @@ describe('SignupComponent', () => {
     expect(modalService.closeSignup).toHaveBeenCalledTimes(1);
   });
 
-  it('should update isVisible when signupVisible$ emits', () => {
+  it('should update isVisible when signupVisible$ emits true', () => {
     expect(component.isVisible).toBeFalse();
-    modalService.emit(true); // simulate stream change
+    modalService.emit(true);
     expect(component.isVisible).toBeTrue();
   });
 

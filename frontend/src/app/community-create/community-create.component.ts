@@ -2,19 +2,17 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommunityService } from '../services/community.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FooterComponent } from "../footer/footer.component";
+import { FooterComponent } from '../footer/footer.component';
 import { CommonModule } from '@angular/common';
 import imageCompression from 'browser-image-compression';
 import { Router } from '@angular/router';
-
-
 
 @Component({
   selector: 'app-community-create',
   standalone: true,
   imports: [ReactiveFormsModule, FooterComponent, CommonModule],
   templateUrl: './community-create.component.html',
-  styleUrls: ['./community-create.component.css']
+  styleUrls: ['./community-create.component.css'],
 })
 export class CommunityCreateComponent {
   communityForm: FormGroup;
@@ -26,15 +24,29 @@ export class CommunityCreateComponent {
   bannerPreview: string | null = null;
   profilePreview: string | null = null;
 
-
   isLoading = false;
   submitted = false;
   isBannerUploading = false;
   isProfileUploading = false;
 
-  communityTypes = ['Youth', 'Charity', 'Sports', 'Environmental', 'Education', 'Women', 'City', 'Village', 'Volunteer', 'Others'];
+  communityTypes = [
+    'Youth',
+    'Charity',
+    'Sports',
+    'Environmental',
+    'Education',
+    'Women',
+    'City',
+    'Village',
+    'Volunteer',
+    'Others',
+  ];
 
-  constructor(private fb: FormBuilder, private communityService: CommunityService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private communityService: CommunityService,
+    private router: Router
+  ) {
     this.communityForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       type: ['', Validators.required],
@@ -42,16 +54,39 @@ export class CommunityCreateComponent {
       mission: ['', Validators.maxLength(500)],
       description: ['', Validators.maxLength(1000)],
       address: ['', Validators.required],
-      latitude: ['', [Validators.required, Validators.pattern(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/)]],
-      longitude: ['', [Validators.required, Validators.pattern(/^[-+]?((1[0-7]\d)|([1-9]?\d))(\.\d+)?|180(\.0+)?$/)]],
+      latitude: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/),
+        ],
+      ],
+      longitude: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(
+            /^[-+]?((1[0-7]\d)|([1-9]?\d))(\.\d+)?|180(\.0+)?$/
+          ),
+        ],
+      ],
       contactName: ['', [Validators.required, Validators.minLength(3)]],
       phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
-      facebook: ['', Validators.pattern(/https?:\/\/(www\.)?facebook\.com\/.+/)],
-      instagram: ['', Validators.pattern(/https?:\/\/(www\.)?instagram\.com\/.+/)],
+      facebook: [
+        '',
+        Validators.pattern(/https?:\/\/(www\.)?facebook\.com\/.+/),
+      ],
+      instagram: [
+        '',
+        Validators.pattern(/https?:\/\/(www\.)?instagram\.com\/.+/),
+      ],
       whatsapp: ['', Validators.pattern(/https?:\/\/wa\.me\/\d+/)],
-      reddit: ['', Validators.pattern(/https?:\/\/(www\.)?reddit\.com\/user\/.+/)],
-      isPrivate: [false]
+      reddit: [
+        '',
+        Validators.pattern(/https?:\/\/(www\.)?reddit\.com\/user\/.+/),
+      ],
+      isPrivate: [false],
     });
   }
 
@@ -63,7 +98,11 @@ export class CommunityCreateComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      const options = { maxSizeMB: 4, maxWidthOrHeight: 1920, useWebWorker: true };
+      const options = {
+        maxSizeMB: 4,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
 
       // Disable input
       this.isBannerUploading = true;
@@ -75,7 +114,7 @@ export class CommunityCreateComponent {
         reader.readAsDataURL(this.bannerFile);
         this.isBannerUploading = false;
       } catch (error) {
-        console.error("Error compressing banner:", error);
+        console.error('Error compressing banner:', error);
         this.isBannerUploading = false;
       }
     }
@@ -85,7 +124,11 @@ export class CommunityCreateComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      const options = { maxSizeMB: 1, maxWidthOrHeight: 800, useWebWorker: true };
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 800,
+        useWebWorker: true,
+      };
 
       this.isProfileUploading = true;
 
@@ -96,12 +139,11 @@ export class CommunityCreateComponent {
         reader.readAsDataURL(this.profileFile);
         this.isProfileUploading = false;
       } catch (error) {
-        console.error("Error compressing profile:", error);
+        console.error('Error compressing profile:', error);
         this.isProfileUploading = false;
       }
     }
   }
-
 
   onSubmit() {
     this.submitted = true;
@@ -117,14 +159,16 @@ export class CommunityCreateComponent {
     }
 
     // 2️⃣ Validate 'Others' type
-    if (this.communityForm.value.type === 'Others' && !this.communityForm.value.otherType) {
+    if (
+      this.communityForm.value.type === 'Others' &&
+      !this.communityForm.value.otherType
+    ) {
       alert('Please specify your community type.');
       return;
     }
 
-    // 3️⃣ Validate form
     if (this.communityForm.invalid) {
-      alert('All required fields must be completed with correct details. Please check again.');
+      this.communityForm.markAllAsTouched(); // ensures all errors show
       return;
     }
 
@@ -143,8 +187,10 @@ export class CommunityCreateComponent {
       formData.append('otherType', this.f['otherType'].value);
     }
 
-    if (this.f['mission'].value) formData.append('mission', this.f['mission'].value);
-    if (this.f['description'].value) formData.append('description', this.f['description'].value);
+    if (this.f['mission'].value)
+      formData.append('mission', this.f['mission'].value);
+    if (this.f['description'].value)
+      formData.append('description', this.f['description'].value);
 
     // CONTACT
     formData.append('contact[name]', this.f['contactName'].value);
@@ -159,26 +205,30 @@ export class CommunityCreateComponent {
 
     // LOCATION
     formData.append('location[address]', this.f['address'].value);
-    formData.append('location[coordinates][latitude]', this.f['latitude'].value);
-    formData.append('location[coordinates][longitude]', this.f['longitude'].value);
-
+    formData.append(
+      'location[coordinates][latitude]',
+      this.f['latitude'].value
+    );
+    formData.append(
+      'location[coordinates][longitude]',
+      this.f['longitude'].value
+    );
 
     formData.append('isPrivate', this.f['isPrivate'].value);
 
     // 7️⃣ Submit form
     this.communityService.createCommunity(formData).subscribe({
-      next: res => {
+      next: (res) => {
         alert('Community created successfully!');
         this.onReset();
         this.isLoading = false; // hide loading
         const communityId = res.data._id;
         this.router.navigate(['/community', communityId]);
-
       },
-      error: err => {
+      error: (err) => {
         this.isLoading = false; // hide loading first
 
-        if (err.error?.message === "Duplicate field value") {
+        if (err.error?.message === 'Duplicate field value') {
           alert('These details have been registered before');
           console.error(err);
           return; // stop further alerts
@@ -186,10 +236,9 @@ export class CommunityCreateComponent {
 
         console.error(err);
         alert('Failed to create community. Check console for details.');
-      }
+      },
     });
   }
-
 
   onReset() {
     this.submitted = false;
