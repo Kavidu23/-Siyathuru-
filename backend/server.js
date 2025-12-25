@@ -1,7 +1,8 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors"); // <-- import cors
+const cors = require("cors");
 require("dotenv").config();
+
+const connectDB = require("./db");
 
 const userRoutes = require("./routes/userRoutes");
 const communityRoutes = require("./routes/communityRoutes");
@@ -14,28 +15,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Enable CORS for Angular frontend
-app.use(cors({
-  origin: "http://localhost:4200",
-  methods: ["GET", "POST", "PUT", "DELETE"]
-}));
+app.use(
+  cors({
+    origin: "http://localhost:4200",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 
 // Middleware
 app.use(express.json());
 
-// Pick the right MongoDB URI automatically
-let mongoUri;
-
-if (process.env.DOCKERIZED === "1") {
-  mongoUri = process.env.MONGO_URI_DOCKER;
-} else {
-  mongoUri = process.env.MONGO_URI_LOCAL;
-}
-
-// Connect to MongoDB
-mongoose
-  .connect(mongoUri, { dbName: "Siyathuru" })
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+// Connect to MongoDB (ONLY ONCE, via db.js)
+connectDB();
 
 // Routes
 app.use("/api/users", userRoutes);
@@ -46,4 +37,6 @@ app.use("/api/alerts", alertRoutes);
 app.use("/api/feedbacks", feedbackRoutes);
 
 // Start server
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on port ${PORT}`)
+);

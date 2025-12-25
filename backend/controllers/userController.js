@@ -1,6 +1,7 @@
 const User = require("../models/user.js");
 const bcrypt = require("bcryptjs");
 const sendEmail = require('../utils/sendEmail');
+const jwt = require("jsonwebtoken");
 
 // CREATE a new user
 const createUser = async (req, res) => {
@@ -144,15 +145,31 @@ const deleteUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ success: false, error: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ success: false, error: "Invalid credentials" });
 
+    if (user.verificationCode) {
+      return res.status(400).json({ success: false, error: "Account not verified yet" });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }      // token expires in 1 hour
+    );
+
     res.status(200).json({
       success: true,
       message: "Login successful",
+      token,
       data: {
         _id: user._id,
         name: user.name,

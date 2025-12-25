@@ -8,15 +8,13 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   imports: [CommonModule],
-  standalone: true
-
+  standalone: true,
 })
 export class LoginComponent implements OnInit, OnDestroy {
-
   isVisible = false;
   subscription!: Subscription;
 
-  constructor(private modalService: ModalService) { }
+  constructor(private modalService: ModalService) {}
 
   // switch to signup modal
   OpenSignup() {
@@ -25,7 +23,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscription = this.modalService.loginVisible$.subscribe(visible => {
+    this.subscription = this.modalService.loginVisible$.subscribe((visible) => {
       this.isVisible = visible;
     });
   }
