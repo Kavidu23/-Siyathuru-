@@ -259,5 +259,6 @@ module.exports = {
     getCommunityById,
     updateCommunity,
     deleteCommunity,
-    joinCommunity
+    joinCommunity,
+    leaveCommunity
 };
