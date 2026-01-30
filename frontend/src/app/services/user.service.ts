@@ -18,6 +18,21 @@ export class UserService {
     return this.http.post<any>(this.baseUrl, user);
   }
 
+  // Verify user account with code
+  verifyUser(payload: { email: string; code: number }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/verify`, payload);
+  }
+
+  // Upload profile image and return URL
+  uploadProfileImage(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const uploadUrl = window.location.hostname.includes('localhost')
+      ? 'http://localhost:3000/api/upload'
+      : 'http://backend:3000/api/upload';
+    return this.http.post<any>(uploadUrl, formData);
+  }
+
   // Get all users
   getUsers(): Observable<any[]> {
     return this.http.get<any[]>(this.baseUrl);

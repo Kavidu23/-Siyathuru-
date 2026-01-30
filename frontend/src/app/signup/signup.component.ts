@@ -14,6 +14,7 @@ import {
 } from '@angular/forms';
 
 import { HttpClient } from '@angular/common/http';
+import { UserService } from '../services/user.service';
 import { ModalService } from '../modal.service';
 import { Subscription } from 'rxjs';
 import imageCompression from 'browser-image-compression';
@@ -32,11 +33,14 @@ export class SignupComponent implements OnInit, OnDestroy {
   @Output() switchToLogin = new EventEmitter<void>();
 
   userForm!: FormGroup;
+  verifyForm!: FormGroup;
   isVisible: boolean = false;
   isLoading: boolean = false;
   isProfileUploading = false;
   submitted = false;
   cities: any[] = [];
+  verificationPending = false;
+  createdEmail: string | null = null;
 
   profileFile: File | null = null;
   profilePreview: string | ArrayBuffer | null = null;
@@ -47,6 +51,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private modalService: ModalService,
     private http: HttpClient,
+    private userService: UserService,
   ) {
     this.initForm();
   }
@@ -187,12 +192,43 @@ export class SignupComponent implements OnInit, OnDestroy {
       // profileImage: (you may upload to cloudinary first and set URL here)
     };
 
-    // POST to backend API
-    this.http.post<any>('http://localhost:3000/api/users', payload).subscribe(
+    // Upload profile image if selected, then create user
+    if (this.profileFile) {
+      this.userService.uploadProfileImage(this.profileFile).subscribe(
+        (uploadRes) => {
+          payload.profileImage = uploadRes.data?.url || uploadRes.url;
+          this.submitUserWithImage(payload);
+        },
+        (uploadErr) => {
+          console.warn(
+            'Image upload failed, creating user without image:',
+            uploadErr,
+          );
+          this.submitUserWithImage(payload);
+        },
+      );
+    } else {
+      this.submitUserWithImage(payload);
+    }
+  }
+
+  // Helper method to submit user after image upload
+  submitUserWithImage(payload: any) {
+    this.isLoading = true;
+    this.userService.createUser(payload).subscribe(
       (res) => {
         this.isLoading = false;
-        alert(res?.message || 'Account Created Successfully!');
-        this.closeSignup();
+        this.resetUserForm();
+        this.createdEmail = payload.email;
+        this.verificationPending = true;
+        this.verifyForm = this.fb.group({
+          email: [payload.email, [Validators.required, Validators.email]],
+          code: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
+        });
+        alert(
+          res?.message ||
+            'Account created. Enter verification code sent to your email.',
+        );
       },
       (err) => {
         this.isLoading = false;
@@ -200,6 +236,67 @@ export class SignupComponent implements OnInit, OnDestroy {
         alert(err?.error?.error || 'Failed to create account.');
       },
     );
+  }
+
+  // Verify OTP/code with backend
+  verifyCode() {
+    if (!this.verifyForm) return;
+    if (this.verifyForm.invalid) {
+      this.verifyForm.markAllAsTouched();
+      alert('Please enter the 6-digit verification code.');
+      return;
+    }
+
+    const payload = {
+      email: this.verifyForm.value.email,
+      code: Number(this.verifyForm.value.code),
+    };
+
+    this.isLoading = true;
+    this.userService.verifyUser(payload).subscribe(
+      (res) => {
+        this.isLoading = false;
+        const verified = res?.data?.isVerified ?? true;
+        alert(res?.message || 'Account verified successfully.');
+        if (verified) {
+          // reset all forms and state after successful verification
+          this.resetAllForms();
+          this.closeSignup();
+        } else {
+          alert('Verification did not mark the account as verified.');
+        }
+      },
+      (err) => {
+        this.isLoading = false;
+        console.error('Verification error:', err);
+        alert(err?.error?.error || 'Verification failed.');
+      },
+    );
+  }
+
+  // Reset only the signup form (keep verification flow intact)
+  resetUserForm() {
+    if (this.userForm) {
+      this.userForm.reset();
+    }
+    this.submitted = false;
+    this.profileFile = null;
+    this.profilePreview = null;
+  }
+
+  // Reset verification form/state
+  resetVerifyForm() {
+    if (this.verifyForm) {
+      this.verifyForm.reset();
+    }
+    this.verificationPending = false;
+    this.createdEmail = null;
+  }
+
+  // Reset everything
+  resetAllForms() {
+    this.resetUserForm();
+    this.resetVerifyForm();
   }
 
   //city select handler

@@ -16,13 +16,18 @@
   <div class="signup-box">
     <button class="close-btn" (click)="closeSignup()">×</button>
 
-    <div class="login-header">
+    <div class="login-header" *ngIf="verificationPending">
+      <h2>Verify Your Account</h2>
+      <p>Enter the 6-digit code sent to your email</p>
+    </div>
+
+    <div class="login-header" *ngIf="!verificationPending">
       <h2>Create Your Account</h2>
       <p>Join Siyathuru and connect with your community</p>
     </div>
 
     <!-- Profile Photo Upload -->
-    <div class="photo-upload">
+    <div class="photo-upload" *ngIf="!verificationPending">
       <label for="profilePic" class="photo-preview">
         <img
           *ngIf="!profilePreview"
@@ -50,6 +55,7 @@
       class="signup-form two-column"
       [formGroup]="userForm"
       (ngSubmit)="onSubmit()"
+      *ngIf="!verificationPending"
     >
       <!-- LEFT COLUMN -->
       <div class="column">
@@ -144,8 +150,49 @@
       </button>
     </form>
 
+    <div class="verify-form-container" *ngIf="verificationPending">
+      <form
+        class="verify-form"
+        [formGroup]="verifyForm"
+        (ngSubmit)="verifyCode()"
+      >
+        <p class="verify-instructions">
+          Enter the 6-digit verification code sent to {{ createdEmail }}
+        </p>
+        <input
+          formControlName="code"
+          type="text"
+          placeholder="Verification code"
+          class="verify-input"
+          maxlength="6"
+        />
+        <div
+          class="error"
+          *ngIf="
+            verifyForm &&
+            verifyForm.controls['code']?.touched &&
+            verifyForm.controls['code']?.invalid
+          "
+        >
+          <small>Enter the 6-digit code.</small>
+        </div>
+        <div class="verify-button-group">
+          <button type="submit" class="signup-btn" [disabled]="isLoading">
+            Verify
+          </button>
+          <button
+            type="button"
+            class="signup-btn signup-btn-secondary"
+            (click)="verificationPending = false"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
     <br />
-    <div class="links">
+    <div class="links" *ngIf="!verificationPending">
       <p>
         Already have an account?
         <a href="javascript:void(0)" (click)="openLogin()">Login</a>

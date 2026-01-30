@@ -10,6 +10,7 @@ const eventsRoutes = require("./routes/eventsRoutes");
 const requestsRoutes = require("./routes/requestsRoutes");
 const alertRoutes = require("./routes/alertRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ connectDB();
 
 // Routes
 app.use("/api/users", userRoutes);
+app.use("/api/upload", uploadRoutes);
 app.use("/api/communities", communityRoutes);
 app.use("/api/events", eventsRoutes);
 app.use("/api/requests", requestsRoutes);

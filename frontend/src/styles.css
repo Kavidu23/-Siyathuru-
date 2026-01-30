@@ -1,71 +1,63 @@
 :root {
   /* Color Variables */
   --primary-color: #00616e;
-  --primary-color-dark: #004d52; 
-  --primary-color-light: #e6f7f9; 
+  --primary-color-dark: #004d52;
+  --primary-color-light: #e6f7f9;
   --primary-color-hover: #00474a;
-  --text-color: #333; 
+  --text-color: #333;
   --secondary-text-color: #555;
   --background-color: white;
   --border-color-light: #ddd;
   --rd--ark-mode-bg: #f44336;
   --rd--ark-mode-bg--hover: #d7372c;
-  
+
   /* Spacing and Sizing */
   --spacing-sm: 10px;
   --spacing-md: 15px; /*Can be apply for card h2*/
   --spacing-lg: 20px;
-  
+
   /* Radius Variables */
   --border-radius-button: 8px;
   --border-radius-input: 10px;
   --border-radius-card: 20px;
-  
+
   /* Utility Variables */
   --transition-duration: 0.2s;
   --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
   --box-shadow-strong: 0 6px 15px rgba(0, 0, 0, 0.12); /* For cards */
 
-
   --main--font--size: 14px;
   --header--font--size: 30px;
   --inside--button-font--size: 18px;
-  --some--h2-set:20px;
-  --very-small:10px;
+  --some--h2-set: 20px;
+  --very-small: 10px;
 
-
-  --font--weight:600;
+  --font--weight: 600;
 
   --margin-sm: 10px; /*Can be apply for top of the small button*/
   --margin--sm: 5px;
   --margin-lg: 20px;
   --margin--lg: 15px;
-
-
 }
 
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-    font-family: "Roboto", sans-serif;
-    margin-left: 10px;
-    margin-right: 10px;
-    background-color: #fffcfc; /* Sets a base background color */
-    background-image: url("https://www.transparenttextures.com/patterns/church.png"); /* Sets a background pattern image */
-
+body {
+  font-family: "Roboto", sans-serif;
+  margin-left: 10px;
+  margin-right: 10px;
+  background-color: #fffcfc; /* Sets a base background color */
+  background-image: url("https://www.transparenttextures.com/patterns/church.png"); /* Sets a background pattern image */
 }
 
-a{
-    text-decoration: none;
-    color: black;
+a {
+  text-decoration: none;
+  color: black;
 }
-
-
 
 /*Overlay*/
 .loading-overlay {
@@ -79,9 +71,10 @@ a{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 100000; /* ensure overlay sits above modals */
+  pointer-events: auto;
   gap: 20px;
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   color: var(--primary-color);
 }
 
@@ -116,12 +109,32 @@ a{
   animation-delay: 0.4s;
 }
 
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
 
 /* Error message style */
-.error {          /* Bootstrap-like red for errors */
-  font-size: 0.875rem;       /* Slightly smaller text */
-  margin-top: 4px;           /* Space above error */
-  margin-bottom: 8px;        /* Space below input */
+.error {
+  /* Bootstrap-like red for errors */
+  font-size: 0.875rem; /* Slightly smaller text */
+  margin-top: 4px; /* Space above error */
+  margin-bottom: 8px; /* Space below input */
   display: block;
-  font-weight: 500;          /* Slight emphasis */
+  font-weight: 500; /* Slight emphasis */
 }
