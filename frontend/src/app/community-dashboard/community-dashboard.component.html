@@ -1,35 +1,23 @@
 <div class="dashboard community-dashboard">
   <!-- Header -->
   <div class="profile-info">
-    <img
-      [src]="userData?.profileImage || 'assets/default-avatar.jpg'"
-      alt="Leader"
-      class="profile-pic"
-    />
+    <img src="leader-profile.jpg" alt="Leader" class="profile-pic" />
     <div class="text">
-      <h3>Hi 👋, {{ userData?.name || 'User' }}!</h3>
-      <p *ngIf="selectedCommunity">
-        Community Leader Dashboard — Manage
-        <strong>{{ selectedCommunity.name }}</strong>
-      </p>
-      <p *ngIf="!selectedCommunity">
-        You are not a leader of any community yet
-      </p>
+      <h3>Hi 👋, Chamika!</h3>
+      <p>Community Leader Dashboard — Manage "TT" village</p>
     </div>
   </div>
 
   <!-- Immediate Action Center -->
-  <section class="cardt immediate-actions" *ngIf="selectedCommunity">
+  <section class="cardt immediate-actions">
     <div class="immediate-grid">
       <div class="action-card urgent-requests">
         <div class="metric">
-          <h2>{{ getPendingRequests() }}</h2>
+          <h2>8</h2>
           <p>Pending Join Requests</p>
         </div>
         <div class="action-cta">
-          <button class="btn-primary" (click)="viewCommunity(selectedCommunity._id)">
-            Review Requests
-          </button>
+          <button class="btn-primary">Review Requests</button>
         </div>
       </div>
 
@@ -39,9 +27,7 @@
           <p>New Event</p>
         </div>
         <div class="action-cta">
-          <button class="btn-primary" (click)="viewCommunity(selectedCommunity._id)">
-            Post New Event
-          </button>
+          <button class="btn-primary">Post New Event</button>
         </div>
       </div>
 
@@ -51,39 +37,26 @@
           <p>Emergency Alert</p>
         </div>
         <div class="action-cta">
-          <button class="btn-alert" (click)="viewCommunity(selectedCommunity._id)">
-            Send Emergency Alert
-          </button>
+          <button class="btn-alert">Send Emergency Alert</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- No Community Message -->
-  <section class="card" *ngIf="!selectedCommunity">
-    <div style="text-align: center; padding: 2rem">
-      <h3>No Communities Found</h3>
-      <p>You haven't created or joined any communities yet</p>
-      <button class="btn-primary" (click)="navigateToCreateCommunity()">
-        Create Your First Community
-      </button>
-    </div>
-  </section>
-
   <!-- Community Health Snapshot -->
-  <section class="card health-snapshot" *ngIf="selectedCommunity">
+  <section class="card health-snapshot">
     <h2>Community Health Snapshot</h2>
     <div class="health-grid">
       <div class="stat-card">
-        <h3>{{ getTotalMembers() }}</h3>
+        <h3>1,245</h3>
         <p>Total Members</p>
       </div>
       <div class="stat-card">
-        <h3>{{ getUpcomingEvents().length }}</h3>
+        <h3>4</h3>
         <p>Upcoming Events (30 days)</p>
       </div>
       <div class="stat-card">
-        <h3>{{ selectedCommunity.engagementRate || 72 }}%</h3>
+        <h3>72%</h3>
         <p>Engagement Rate</p>
       </div>
       <div class="stat-card">
@@ -94,107 +67,38 @@
   </section>
 
   <!-- Upcoming Activities & Management -->
-  <section class="card upcoming-management" *ngIf="selectedCommunity">
+  <section class="card upcoming-management">
     <h2>Your Upcoming Events</h2>
-    <div class="upcoming-list" *ngIf="getUpcomingEvents().length > 0">
-      <div class="upcoming-item" *ngFor="let event of getUpcomingEvents()">
+    <div class="upcoming-list">
+      <div class="upcoming-item">
         <div class="upcoming-info">
-          <strong>{{ event.title || 'Event' }}</strong>
-          <span
-            >{{ event.date || 'TBD' }} ·
-            RSVP: {{ event.rsvps?.length || 0 }}</span
-          >
+          <strong>🏖️ Beach Cleanup</strong>
+          <span>Oct 15, 2025 · RSVP: 48</span>
         </div>
         <div class="upcoming-actions">
-          <button class="view-btn" (click)="viewCommunity(selectedCommunity._id)">
-            View
-          </button>
-          <button class="edit-link" (click)="editCommunity(selectedCommunity._id)">
-            Edit
-          </button>
+          <a href="#" class="view-btn">View</a>
+          <a href="#" class="edit-link">Edit</a>
         </div>
       </div>
-    </div>
-    <div *ngIf="getUpcomingEvents().length === 0" style="padding: 1rem">
-      <p>No upcoming events scheduled</p>
-      <button class="btn-primary" (click)="viewCommunity(selectedCommunity._id)">
-        Create Event
-      </button>
-    </div>
-  </section>
-
-  <!-- Member Management & Alerts -->
-  <section class="card member-management" *ngIf="selectedCommunity">
-    <h2>Member Management</h2>
-    <div class="members-grid">
-      <div class="members-overview">
-        <p><strong>Active:</strong> {{ getTotalMembers() }}</p>
-        <p><strong>Pending Requests:</strong> {{ getPendingRequests() }}</p>
-        <p><strong>Banned:</strong> 0</p>
-        <div class="member-actions">
-          <button class="btn-primary" (click)="viewCommunity(selectedCommunity._id)">
-            View Members
-          </button>
-          <button class="btn-secondary" (click)="viewCommunity(selectedCommunity._id)">
-            Invite Members
-          </button>
+      <div class="upcoming-item">
+        <div class="upcoming-info">
+          <strong>🧒 Youth Forum 2025</strong>
+          <span>Nov 05, 2025 · RSVP: 32</span>
+        </div>
+        <div class="upcoming-actions">
+          <a href="#" class="view-btn">View</a>
+          <a href="#" class="edit-link">Edit</a>
         </div>
       </div>
 
-      <div class="alerts-overview">
-        <strong>Community Alerts</strong>
-        <div class="alert-row">
-          <div class="alert-pill">Event Reminder</div>
-          <div class="alert-pill warn">Safety Notice</div>
+      <div class="upcoming-item">
+        <div class="upcoming-info">
+          <strong>🌳 Tree Planting Day</strong>
+          <span>Dec 12, 2025 · RSVP: 15</span>
         </div>
-        <div style="margin-top: 10px">
-          <button class="btn-secondary" [routerLink]="['/chatbox']">
-            Open Chat
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- AI & Insights Corner -->
-  <section class="card ai-insights" *ngIf="selectedCommunity">
-    <h2>AI & Insights</h2>
-
-    <div class="ai-grid">
-      <div class="ai-card">
-        <h4>AI Collaboration Suggestions</h4>
-        <ul class="ai-list">
-          <li>Green Life — Nearby partner (2 km)</li>
-          <li>City Volunteers — Similar events</li>
-          <li>Health First — Good for joint clinics</li>
-        </ul>
-      </div>
-
-      <div class="ai-card">
-        <h4>Member Growth (Last 30 days)</h4>
-        <div class="mini-chart">
-          <!-- placeholder for small chart -->
-          <div class="chart-line"></div>
-        </div>
-        <div class="muted">
-          <p class="mute">+6% growth vs last month</p>
-          <p id="view" [routerLink]="['/chart']" style="cursor: pointer">
-            View More
-          </p>
-        </div>
-      </div>
-
-      <div class="ai-card moderation">
-        <h4>AI Moderation Alerts</h4>
-        <p>1 image pending review</p>
-        <button class="btn-secondary" (click)="viewCommunity(selectedCommunity._id)">
-          Review Images
-        </button>
-      </div>
-    </div>
-  </section>
-  <app-footer></app-footer>
-</div>
+        <div class="upcoming-actions">
+          <a href="#" class="view-btn">View</a>
+          <a href="#" class="edit-link">Edit</a>
         </div>
       </div>
     </div>
