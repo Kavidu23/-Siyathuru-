@@ -100,10 +100,7 @@
       <div class="upcoming-item" *ngFor="let event of getUpcomingEvents()">
         <div class="upcoming-info">
           <strong>{{ event.title || 'Event' }}</strong>
-          <span
-            >{{ event.date || 'TBD' }} ·
-            RSVP: {{ event.rsvps?.length || 0 }}</span
-          >
+          <span>{{ event.date || 'TBD' }} · RSVP: {{ event.rsvps?.length || 0 }}</span>
         </div>
         <div class="upcoming-actions">
           <button class="view-btn" (click)="viewCommunity(selectedCommunity._id)">
@@ -159,7 +156,6 @@
   <!-- AI & Insights Corner -->
   <section class="card ai-insights" *ngIf="selectedCommunity">
     <h2>AI & Insights</h2>
-
     <div class="ai-grid">
       <div class="ai-card">
         <h4>AI Collaboration Suggestions</h4>
@@ -173,7 +169,6 @@
       <div class="ai-card">
         <h4>Member Growth (Last 30 days)</h4>
         <div class="mini-chart">
-          <!-- placeholder for small chart -->
           <div class="chart-line"></div>
         </div>
         <div class="muted">
@@ -193,74 +188,6 @@
       </div>
     </div>
   </section>
-  <app-footer></app-footer>
-</div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Member Management & Alerts -->
-  <section class="card member-management">
-    <h2>Member Management</h2>
-    <div class="members-grid">
-      <div class="members-overview">
-        <p><strong>Active:</strong> 1,120</p>
-        <p><strong>Pending Requests:</strong> 8</p>
-        <p><strong>Banned:</strong> 2</p>
-        <div class="member-actions">
-          <button class="btn-primary">View Members</button>
-          <button class="btn-secondary">Invite Members</button>
-        </div>
-      </div>
-
-      <div class="alerts-overview">
-        <strong>Community Alerts</strong>
-        <div class="alert-row">
-          <div class="alert-pill">Event Reminder</div>
-          <div class="alert-pill warn">Safety Notice</div>
-        </div>
-        <div style="margin-top: 10px">
-          <button class="btn-secondary" [routerLink]="['/chatbox']">
-            Open Chat
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- AI & Insights Corner -->
-  <section class="card ai-insights">
-    <h2>AI & Insights</h2>
-
-    <div class="ai-grid">
-      <div class="ai-card">
-        <h4>AI Collaboration Suggestions</h4>
-        <ul class="ai-list">
-          <li>Green Life — Nearby partner (2 km)</li>
-          <li>City Volunteers — Similar events</li>
-          <li>Health First — Good for joint clinics</li>
-        </ul>
-      </div>
-
-      <div class="ai-card">
-        <h4>Member Growth (Last 30 days)</h4>
-        <div class="mini-chart">
-          <!-- placeholder for small chart -->
-          <div class="chart-line"></div>
-        </div>
-        <div class="muted">
-          <p class="mute">+6% growth vs last month</p>
-          <p id="view" [routerLink]="['/chart']">View More</p>
-        </div>
-      </div>
-
-      <div class="ai-card moderation">
-        <h4>AI Moderation Alerts</h4>
-        <p>1 image pending review</p>
-        <button class="btn-secondary">Review Images</button>
-      </div>
-    </div>
-  </section>
   <app-footer></app-footer>
 </div>

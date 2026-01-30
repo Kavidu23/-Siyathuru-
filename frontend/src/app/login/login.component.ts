@@ -8,7 +8,9 @@ import {
 import { ModalService } from '../modal.service';
 import { UserService } from '../services/user.service';
 import { Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +29,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private modalService: ModalService,
     private userService: UserService,
+    private router: Router,
     private fb: FormBuilder,
   ) {
     this.initLoginForm();
@@ -87,26 +90,33 @@ export class LoginComponent implements OnInit, OnDestroy {
       password: this.loginForm.value.password,
     };
 
-    // Call backend login endpoint
-    this.userService.loginUser(payload).subscribe(
-      (res) => {
-        this.isLoading = false;
-        if (res.success && res.token) {
-          // Store token in localStorage
-          localStorage.setItem('authToken', res.token);
-          localStorage.setItem('user', JSON.stringify(res.data));
-          alert(res.message || 'Login successful!');
-          this.resetForm();
-          this.closeLogin();
-        } else {
-          alert(res?.message || 'Login failed.');
-        }
-      },
-      (err) => {
-        this.isLoading = false;
-        console.error('Login error:', err);
-        alert(err?.error?.error || 'Login failed. Please try again.');
-      },
-    );
+    // ensure modal closes when a token is received.
+    this.userService
+      .loginUser(payload)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe(
+        (res: any) => {
+          if (res && res.success) {
+            // Token is in HttpOnly cookie; user data is in response
+            if (res.user) {
+              localStorage.setItem('user', JSON.stringify(res.user));
+            }
+            alert(res.message || 'Login successful!');
+            this.resetForm();
+            // Close modal first, then navigate
+            this.closeLogin();
+            // Navigate to user dashboard after a short delay to ensure modal closes
+            setTimeout(() => {
+              this.router.navigate(['/user-dashboard']);
+            }, 300);
+          } else {
+            alert(res?.message || 'Login failed.');
+          }
+        },
+        (err: any) => {
+          console.error('Login error:', err);
+          alert(err?.error?.error || 'Login failed. Please try again.');
+        },
+      );
   }
 }

@@ -103,37 +103,55 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Check user
     const user = await User.findOne({ email });
-    if (!user)
+    if (!user) {
       return res.status(400).json({
         success: false,
         error: "Invalid credentials",
       });
+    }
 
-    if (!user.isVerified)
-      return res.status(400).json({
+    // Check verification
+    if (!user.isVerified) {
+      return res.status(403).json({
         success: false,
         error: "Account not verified",
       });
+    }
 
+    // Check password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
+    if (!isMatch) {
       return res.status(400).json({
         success: false,
         error: "Invalid credentials",
       });
+    }
 
+    // Generate JWT
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
+      {
+        id: user._id,
+        role: user.role,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
+    // Store JWT in HttpOnly cookie (SECURE)
+    res.cookie("authToken", token, {
+      httpOnly: true,                 // JS cannot read
+      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+      sameSite: "Strict",             // CSRF protection
+      maxAge: 60 * 60 * 1000,          // 1 hour
+    });
+
+    // Send SAFE response (NO TOKEN)
     res.status(200).json({
       success: true,
       message: "Login successful",
-      token,
-      data: {
+      user: {
         _id: user._id,
         name: user.name,
         email: user.email,
@@ -143,10 +161,11 @@ const loginUser = async (req, res) => {
         location: user.location,
       },
     });
+
   } catch (err) {
     res.status(500).json({
       success: false,
-      error: err.message,
+      error: "Server error",
     });
   }
 };

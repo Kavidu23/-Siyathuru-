@@ -1,14 +1,3 @@
-<!-- Loading overlay -->
-<div *ngIf="isLoading" class="loading-overlay">
-  <div class="spinner"></div>
-  <div class="loading-dots">
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
-  <span>Logging in...</span>
-</div>
-<!-- Login Modal -->
 <div class="login-modal" [class.visible]="isVisible" *ngIf="isVisible">
   <div class="login-overlay" (click)="closeLogin()"></div>
 
@@ -17,7 +6,7 @@
 
     <div class="login-header">
       <h2>Login to Siyathuru</h2>
-      <p>Access your community</p>
+      <p>Access your account or continue with Google</p>
     </div>
 
     <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -28,11 +17,13 @@
         required
       />
       <div class="error" *ngIf="submitted && f['email'].errors">
-        <small>{{
-          f["email"].errors["required"]
-            ? "Email is required."
-            : "Please enter a valid email."
-        }}</small>
+        <small>
+          {{
+            f["email"].errors["required"]
+              ? "Email is required."
+              : "Please enter a valid email."
+          }}
+        </small>
       </div>
 
       <input
@@ -42,11 +33,13 @@
         required
       />
       <div class="error" *ngIf="submitted && f['password'].errors">
-        <small>{{
-          f["password"].errors["required"]
-            ? "Password is required."
-            : "Password must be at least 6 characters."
-        }}</small>
+        <small>
+          {{
+            f["password"].errors["required"]
+              ? "Password is required."
+              : "Password must be at least 6 characters."
+          }}
+        </small>
       </div>
 
       <button type="submit" class="login-btn" [disabled]="isLoading">
