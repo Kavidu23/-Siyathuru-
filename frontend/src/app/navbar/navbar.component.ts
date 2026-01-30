@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
-import { ModalService } from '../modal.service';
+import { ModalService } from '../services/modal.service';
 import { CommonModule } from '@angular/common';
 
 @Component({

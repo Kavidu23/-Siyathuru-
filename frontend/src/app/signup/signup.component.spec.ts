@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SignupComponent } from './signup.component';
-import { ModalService } from '../modal.service';
+import { ModalService } from '../services/modal.service';
 import { BehaviorSubject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 

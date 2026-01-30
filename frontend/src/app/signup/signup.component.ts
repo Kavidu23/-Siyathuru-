@@ -15,7 +15,7 @@ import {
 
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../services/user.service';
-import { ModalService } from '../modal.service';
+import { ModalService } from '../services/modal.service';
 import { Subscription } from 'rxjs';
 import imageCompression from 'browser-image-compression';
 

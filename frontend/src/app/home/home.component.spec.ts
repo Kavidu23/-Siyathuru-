@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeComponent } from './home.component';
-import { ModalService } from '../modal.service';
+import { ModalService } from '../services/modal.service';
 import { FeedbackService } from '../services/feedback.service';
 import { of, throwError } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -25,15 +25,17 @@ describe('HomeComponent', () => {
       imports: [HomeComponent],
       providers: [
         { provide: ModalService, useClass: MockModalService },
-        { provide: FeedbackService, useClass: MockFeedbackService }
+        { provide: FeedbackService, useClass: MockFeedbackService },
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     modalService = TestBed.inject(ModalService) as unknown as MockModalService;
-    feedbackService = TestBed.inject(FeedbackService) as unknown as MockFeedbackService;
+    feedbackService = TestBed.inject(
+      FeedbackService,
+    ) as unknown as MockFeedbackService;
   });
 
   it('should create', () => {
@@ -53,9 +55,11 @@ describe('HomeComponent', () => {
   it('should load feedbacks successfully', () => {
     const fakeFeedbacks = [
       { name: 'Amal', message: 'Great!' },
-      { name: 'Nethmi', message: 'Awesome!' }
+      { name: 'Nethmi', message: 'Awesome!' },
     ];
-    feedbackService.getFeedbacks.and.returnValue(of({ success: true, data: fakeFeedbacks }));
+    feedbackService.getFeedbacks.and.returnValue(
+      of({ success: true, data: fakeFeedbacks }),
+    );
 
     component.loadFeedbacks();
 
@@ -66,7 +70,9 @@ describe('HomeComponent', () => {
   });
 
   it('should handle error when loading feedbacks', () => {
-    feedbackService.getFeedbacks.and.returnValue(throwError(() => new Error('Network error')));
+    feedbackService.getFeedbacks.and.returnValue(
+      throwError(() => new Error('Network error')),
+    );
 
     component.loadFeedbacks();
 

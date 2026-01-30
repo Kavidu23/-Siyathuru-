@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
-import { ModalService } from '../modal.service';
+import { ModalService } from '../services/modal.service';
 import { BehaviorSubject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
@@ -26,7 +26,7 @@ describe('LoginComponent', () => {
     await TestBed.configureTestingModule({
       // Since LoginComponent is standalone, import it instead of declaring
       imports: [LoginComponent, CommonModule],
-      providers: [{ provide: ModalService, useClass: MockModalService }]
+      providers: [{ provide: ModalService, useClass: MockModalService }],
     }).compileComponents();
   });
 

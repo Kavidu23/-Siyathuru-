@@ -5,7 +5,7 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { ModalService } from '../modal.service';
+import { ModalService } from '../services/modal.service';
 import { UserService } from '../services/user.service';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -103,12 +103,8 @@ export class LoginComponent implements OnInit, OnDestroy {
             }
             alert(res.message || 'Login successful!');
             this.resetForm();
-            // Close modal first, then navigate
             this.closeLogin();
-            // Navigate to user dashboard after a short delay to ensure modal closes
-            setTimeout(() => {
-              this.router.navigate(['/']);
-            }, 300);
+            window.location.reload();
           } else {
             alert(res?.message || 'Login failed.');
           }
