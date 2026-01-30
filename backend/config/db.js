@@ -12,8 +12,12 @@ const getMongoURI = () => {
 const connectDB = async () => {
   try {
     const uri = getMongoURI();
-    await mongoose.connect(uri);  // options are default in MongoDB driver v4+
-    console.log('✅ MongoDB connected:', uri);
+    // If the URI doesn't include a database name (ends with '/'), append one.
+    const dbName = process.env.MONGO_DB_NAME || 'Siyathuru';
+    const finalUri = uri.endsWith('/') ? `${uri}${dbName}` : uri;
+
+    await mongoose.connect(finalUri);  // options are default in MongoDB driver v4+
+    console.log('✅ MongoDB connected:', finalUri);
   } catch (err) {
     console.error('❌ MongoDB connection error:', err.message);
     process.exit(1);
