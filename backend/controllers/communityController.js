@@ -189,6 +189,41 @@ const deleteCommunity = async (req, res) => {
     }
 };
 
+// JOIN a community (add user to members)
+const joinCommunity = async (req, res) => {
+    try {
+        const communityId = req.params.id;
+        const { userId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ success: false, error: 'userId is required' });
+        }
+
+        const community = await Community.findById(communityId);
+        if (!community) {
+            return res.status(404).json({ success: false, error: 'Community not found' });
+        }
+
+        // If community is private, indicate request sent (no pendingRequests model yet)
+        if (community.isPrivate) {
+            return res.status(200).json({ success: true, message: 'Join request sent. Awaiting approval.' });
+        }
+
+        // Check if user is already a member
+        const already = community.members.some(m => m.toString() === userId.toString());
+        if (already) {
+            return res.status(400).json({ success: false, error: 'User already a member' });
+        }
+
+        community.members.push(userId);
+        await community.save();
+
+        res.status(200).json({ success: true, message: 'Joined community', data: community });
+    } catch (err) {
+        res.status(500).json({ success: false, error: 'Server error', details: err.message });
+    }
+};
+
 module.exports = {
     createCommunity,
     getCommunities,
