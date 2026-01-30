@@ -69,9 +69,17 @@ export class CommunityProfileComponent implements AfterViewInit, OnInit {
         this.isMember = false;
         return;
       }
-      this.isMember = (this.community?.members || []).some(
-        (m: any) => m?._id === user._id || m === user._id,
+      const communityIdStr = this.community?._id
+        ? String(this.community._id)
+        : null;
+      const memberMatch = (this.community?.members || []).some(
+        (m: any) =>
+          m?._id === user._id || m === user._id || String(m) === user._id,
       );
+      const userJoined = (user.joinedCommunities || [])
+        .map((c: any) => String(c))
+        .includes(communityIdStr);
+      this.isMember = !!(memberMatch || userJoined);
     } catch (err) {
       this.isMember = false;
     }
@@ -102,6 +110,25 @@ export class CommunityProfileComponent implements AfterViewInit, OnInit {
               this.community.members = this.community.members || [];
               this.community.members.push(user._id);
             }
+            // update localStorage user joinedCommunities
+            try {
+              const storedUser = localStorage.getItem('user');
+              if (storedUser) {
+                const u = JSON.parse(storedUser);
+                u.joinedCommunities = u.joinedCommunities || [];
+                if (
+                  !u.joinedCommunities
+                    .map((c: any) => String(c))
+                    .includes(String(this.community._id))
+                ) {
+                  u.joinedCommunities.push(String(this.community._id));
+                  localStorage.setItem('user', JSON.stringify(u));
+                }
+              }
+            } catch (e) {
+              console.warn('Failed to update local user storage after join', e);
+            }
+
             this.checkMembership();
           } else {
             alert(res?.message || res?.error || 'Could not join community');
@@ -143,6 +170,25 @@ export class CommunityProfileComponent implements AfterViewInit, OnInit {
                 (m: any) => m?._id !== user._id && m !== user._id,
               );
             }
+            // update localStorage user joinedCommunities on leave
+            try {
+              const storedUser = localStorage.getItem('user');
+              if (storedUser) {
+                const u = JSON.parse(storedUser);
+                u.joinedCommunities = u.joinedCommunities || [];
+                const cidStr = String(this.community._id);
+                u.joinedCommunities = u.joinedCommunities.filter(
+                  (cid: any) => String(cid) !== cidStr,
+                );
+                localStorage.setItem('user', JSON.stringify(u));
+              }
+            } catch (e) {
+              console.warn(
+                'Failed to update local user storage after leave',
+                e,
+              );
+            }
+
             this.checkMembership();
           } else {
             alert(res?.message || res?.error || 'Could not leave community');

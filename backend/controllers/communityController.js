@@ -1,4 +1,5 @@
 const Community = require("../models/communities");
+const User = require("../models/user.js");
 const sendEmail = require('../utils/sendEmail');
 
 // CREATE a new community
@@ -218,6 +219,13 @@ const joinCommunity = async (req, res) => {
         community.members.push(userId);
         await community.save();
 
+        // also add the community reference to the user's joinedCommunities using $addToSet
+        try {
+            await User.findByIdAndUpdate(userId, { $addToSet: { joinedCommunities: community._id } });
+        } catch (uErr) {
+            console.error('Failed to update user joinedCommunities:', uErr.message);
+        }
+
         res.status(200).json({ success: true, message: 'Joined community', data: community });
     } catch (err) {
         res.status(500).json({ success: false, error: 'Server error', details: err.message });
@@ -246,6 +254,13 @@ const leaveCommunity = async (req, res) => {
 
         community.members.splice(memberIndex, 1);
         await community.save();
+
+        // also remove the community reference from the user's joinedCommunities
+        try {
+            await User.findByIdAndUpdate(userId, { $pull: { joinedCommunities: community._id } });
+        } catch (uErr) {
+            console.error('Failed to remove community from user joinedCommunities:', uErr.message);
+        }
 
         res.status(200).json({ success: true, message: 'Left community', data: community });
     } catch (err) {
