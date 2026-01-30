@@ -158,6 +158,7 @@ const loginUser = async (req, res) => {
         pnumber: user.pnumber,
         role: user.role,
         age: user.age,
+        profileImage: user.profileImage || null,
         location: user.location,
       },
     });

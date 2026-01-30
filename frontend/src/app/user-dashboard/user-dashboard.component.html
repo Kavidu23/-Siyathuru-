@@ -1,9 +1,16 @@
 <div class="dashboard">
   <div class="profile-info">
-    <img src="profile.jpg" alt="Profile" class="profile-pic" />
+    <img
+      [src]="userData?.profileImage || 'default-logo.jpg'"
+      alt="Profile"
+      class="profile-pic"
+    />
     <div class="text">
-      <h2>Hi 👋, Chamika!</h2>
+      <h2>Hi 👋, {{ userData?.name || "User" }}!</h2>
       <p>Community User Dashboard</p>
+    </div>
+    <div class="settings">
+      <i class="bx bxs-cog"></i>
     </div>
   </div>
 
@@ -11,15 +18,15 @@
   <section class="profile-banner">
     <div class="stats">
       <div class="stat" id="cardtwo">
-        <h3>5</h3>
+        <h3>{{ getCommunitiesCount() }}</h3>
         <p>Communities Joined</p>
       </div>
       <div class="stat" id="cardtwo">
-        <h3>1</h3>
+        <h3>{{ upcomingEvents.length }}</h3>
         <p>Upcoming Events</p>
       </div>
       <div class="stat alerts">
-        <h3>3</h3>
+        <h3>{{ alertsCount }}</h3>
         <p>Alerts</p>
       </div>
     </div>
@@ -29,13 +36,13 @@
   <section class="card events">
     <h2>My Upcoming Events</h2>
     <div class="event-list">
-      <div class="event-card">
-        <h4>Tree Planting</h4>
-        <p>Oct 5th · Colombo / 5.00 PM onward</p>
+      <div class="event-card" *ngFor="let ev of upcomingEvents">
+        <h4>{{ ev.title || "Event" }}</h4>
+        <p>{{ ev.date | date: "mediumDate" }} · {{ ev.communityName || "" }}</p>
+        <a class="view-btn" (click)="viewEvent(ev)">View</a>
       </div>
-      <div class="event-card">
-        <h4>Blood Donation</h4>
-        <p>Oct 12th · Kandy / 5.00 PM onward</p>
+      <div *ngIf="upcomingEvents.length === 0" style="padding: 1rem">
+        No upcoming events
       </div>
     </div>
   </section>
@@ -70,40 +77,16 @@
   <section class="member-joined-section">
     <h2>Joined Communities</h2>
     <div class="member-communities-list">
-      <div class="member-community-card">
+      <div class="member-community-card" *ngFor="let c of joinedCommunities">
         <div class="member-community-icon">🤝</div>
         <div class="member-community-info">
-          <strong>Death Aid</strong>
-          <p>End-of-life care & dignity support</p>
+          <strong>{{ c.name }}</strong>
+          <p>{{ c.description || c.about || "No description" }}</p>
         </div>
-        <a href="#" class="member-view-btn">View</a>
+        <a class="member-view-btn" (click)="viewCommunity(c._id)">View</a>
       </div>
-
-      <div class="member-community-card">
-        <div class="member-community-icon">🌱</div>
-        <div class="member-community-info">
-          <strong>Green Life</strong>
-          <p>Sustainability and eco-friendly projects</p>
-        </div>
-        <a href="#" class="member-view-btn">View</a>
-      </div>
-
-      <div class="member-community-card">
-        <div class="member-community-icon">📢</div>
-        <div class="member-community-info">
-          <strong>City Volunteers</strong>
-          <p>Civic engagement and events</p>
-        </div>
-        <a href="#" class="member-view-btn">View</a>
-      </div>
-
-      <div class="member-community-card">
-        <div class="member-community-icon">🩺</div>
-        <div class="member-community-info">
-          <strong>Health First</strong>
-          <p>Wellness and free clinics</p>
-        </div>
-        <a href="#" class="member-view-btn">View</a>
+      <div *ngIf="joinedCommunities.length === 0" style="padding: 1rem">
+        You haven't joined any communities yet.
       </div>
     </div>
   </section>
