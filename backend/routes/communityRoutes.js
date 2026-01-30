@@ -6,6 +6,7 @@ const {
     updateCommunity,
     deleteCommunity,
     joinCommunity,
+    leaveCommunity,
 } = require("../controllers/communityController");
 
 const upload = require("../middleware/upload"); // multer + Cloudinary
@@ -40,5 +41,8 @@ router.delete("/:id", deleteCommunity);     // Delete community by ID
 
 // Join community
 router.post("/:id/join", joinCommunity);
+
+// Leave community
+router.post("/:id/leave", leaveCommunity);
 
 module.exports = router;

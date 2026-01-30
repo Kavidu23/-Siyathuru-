@@ -224,6 +224,35 @@ const joinCommunity = async (req, res) => {
     }
 };
 
+// LEAVE a community (remove user from members)
+const leaveCommunity = async (req, res) => {
+    try {
+        const communityId = req.params.id;
+        const { userId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ success: false, error: 'userId is required' });
+        }
+
+        const community = await Community.findById(communityId);
+        if (!community) {
+            return res.status(404).json({ success: false, error: 'Community not found' });
+        }
+
+        const memberIndex = community.members.findIndex(m => m.toString() === userId.toString());
+        if (memberIndex === -1) {
+            return res.status(400).json({ success: false, error: 'User is not a member' });
+        }
+
+        community.members.splice(memberIndex, 1);
+        await community.save();
+
+        res.status(200).json({ success: true, message: 'Left community', data: community });
+    } catch (err) {
+        res.status(500).json({ success: false, error: 'Server error', details: err.message });
+    }
+};
+
 module.exports = {
     createCommunity,
     getCommunities,

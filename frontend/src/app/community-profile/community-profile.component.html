@@ -51,6 +51,9 @@
         <button class="btn-primary" *ngIf="isMember">
           <i class="bx bx-check"></i> Joined
         </button>
+        <button class="btn-danger" *ngIf="isMember" (click)="leaveCommunity()">
+          <i class="bx bx-log-out"></i> Leave Community
+        </button>
 
         <button
           class="btn-primary"

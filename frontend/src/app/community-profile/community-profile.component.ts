@@ -117,6 +117,47 @@ export class CommunityProfileComponent implements AfterViewInit, OnInit {
     }
   }
 
+  leaveCommunity() {
+    try {
+      const stored = localStorage.getItem('user');
+      const user = stored ? JSON.parse(stored) : null;
+      if (!user) {
+        this.modalService.openLogin();
+        return;
+      }
+
+      const communityId = this.community?._id;
+      if (!communityId) return;
+
+      if (!confirm('Are you sure you want to leave this community?')) return;
+
+      this.communityService.leaveCommunity(communityId, user._id).subscribe({
+        next: (res: any) => {
+          if (res?.success) {
+            alert(res.message || 'Left community');
+            if (res.data) {
+              this.community = res.data;
+            } else {
+              // remove locally
+              this.community.members = (this.community.members || []).filter(
+                (m: any) => m?._id !== user._id && m !== user._id,
+              );
+            }
+            this.checkMembership();
+          } else {
+            alert(res?.message || res?.error || 'Could not leave community');
+          }
+        },
+        error: (err: any) => {
+          console.error('Leave error', err);
+          alert(err?.error?.error || 'Failed to leave community');
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   ngAfterViewInit(): void {}
 
   initMap() {
