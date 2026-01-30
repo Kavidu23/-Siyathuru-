@@ -3,20 +3,36 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CommunityService {
-
   // Base URL automatically switches for local or Docker
   private baseUrl = window.location.hostname.includes('localhost')
     ? 'http://localhost:3000/api/communities'
     : 'http://backend:3000/api/communities'; // backend service name in Docker
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
+
+  // POST: upload community image to Cloudinary and return URL
+  uploadCommunityImage(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const uploadUrl = window.location.hostname.includes('localhost')
+      ? 'http://localhost:3000/api/upload'
+      : 'http://backend:3000/api/upload';
+    return this.http.post<any>(uploadUrl, formData);
+  }
 
   // POST: create a new community
   createCommunity(community: any): Observable<any> {
     return this.http.post<any>(this.baseUrl, community);
+  }
+
+  // POST: create a new community with JSON payload (images already uploaded to Cloudinary)
+  createCommunityWithPayload(payload: any): Observable<any> {
+    return this.http.post<any>(this.baseUrl, payload, {
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   // GET: fetch all communities

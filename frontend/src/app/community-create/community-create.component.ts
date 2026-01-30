@@ -45,7 +45,7 @@ export class CommunityCreateComponent {
   constructor(
     private fb: FormBuilder,
     private communityService: CommunityService,
-    private router: Router
+    private router: Router,
   ) {
     this.communityForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -66,7 +66,7 @@ export class CommunityCreateComponent {
         [
           Validators.required,
           Validators.pattern(
-            /^[-+]?((1[0-7]\d)|([1-9]?\d))(\.\d+)?|180(\.0+)?$/
+            /^[-+]?((1[0-7]\d)|([1-9]?\d))(\.\d+)?|180(\.0+)?$/,
           ),
         ],
       ],
@@ -172,66 +172,123 @@ export class CommunityCreateComponent {
       return;
     }
 
-    // 4️⃣ Show loading
+    // 3️⃣ Show loading
     this.isLoading = true;
 
-    // 4️⃣ Create FormData
-    const formData = new FormData();
-    formData.append('bannerImage', this.bannerFile);
-    formData.append('profileImage', this.profileFile);
+    // 4️⃣ Upload images to Cloudinary, then create community
+    this.uploadCommunityCoverImages();
+  }
 
-    // 5️⃣ Append basic fields
-    formData.append('name', this.f['name'].value);
-    formData.append('type', this.f['type'].value);
+  // Upload both banner and profile images to Cloudinary
+  uploadCommunityCoverImages() {
+    let bannerUrl: string | null = null;
+    let profileUrl: string | null = null;
+    let uploadCount = 0;
+
+    // Upload banner
+    this.communityService.uploadCommunityImage(this.bannerFile!).subscribe(
+      (res) => {
+        bannerUrl = res.data?.url || res.url;
+        uploadCount++;
+        if (uploadCount === 2) {
+          this.submitCommunityWithImages(bannerUrl, profileUrl);
+        }
+      },
+      (err) => {
+        console.warn(
+          'Banner upload failed, creating community without banner:',
+          err,
+        );
+        uploadCount++;
+        if (uploadCount === 2) {
+          this.submitCommunityWithImages(bannerUrl, profileUrl);
+        }
+      },
+    );
+
+    // Upload profile
+    this.communityService.uploadCommunityImage(this.profileFile!).subscribe(
+      (res) => {
+        profileUrl = res.data?.url || res.url;
+        uploadCount++;
+        if (uploadCount === 2) {
+          this.submitCommunityWithImages(bannerUrl, profileUrl);
+        }
+      },
+      (err) => {
+        console.warn(
+          'Profile upload failed, creating community without profile:',
+          err,
+        );
+        uploadCount++;
+        if (uploadCount === 2) {
+          this.submitCommunityWithImages(bannerUrl, profileUrl);
+        }
+      },
+    );
+  }
+
+  // Submit community with uploaded image URLs
+  submitCommunityWithImages(
+    bannerUrl: string | null,
+    profileUrl: string | null,
+  ) {
+    // Create payload with image URLs
+    const payload: any = {
+      name: this.f['name'].value,
+      type: this.f['type'].value,
+      mission: this.f['mission'].value || '',
+      description: this.f['description'].value || '',
+      contact: {
+        name: this.f['contactName'].value,
+        phone: this.f['phone'].value,
+        email: this.f['email'].value,
+      },
+      media: {
+        facebook: this.f['facebook'].value || '',
+        instagram: this.f['instagram'].value || '',
+        whatsapp: this.f['whatsapp'].value || '',
+        reddit: this.f['reddit'].value || '',
+      },
+      location: {
+        address: this.f['address'].value,
+        coordinates: {
+          latitude: Number(this.f['latitude'].value),
+          longitude: Number(this.f['longitude'].value),
+        },
+      },
+      isPrivate: this.f['isPrivate'].value,
+    };
+
+    // Add type if 'Others'
     if (this.f['type'].value === 'Others') {
-      formData.append('otherType', this.f['otherType'].value);
+      payload.otherType = this.f['otherType'].value;
     }
 
-    if (this.f['mission'].value)
-      formData.append('mission', this.f['mission'].value);
-    if (this.f['description'].value)
-      formData.append('description', this.f['description'].value);
+    // Add image URLs if available
+    if (bannerUrl) {
+      payload.bannerImage = bannerUrl;
+    }
+    if (profileUrl) {
+      payload.profileImage = profileUrl;
+    }
 
-    // CONTACT
-    formData.append('contact[name]', this.f['contactName'].value);
-    formData.append('contact[phone]', this.f['phone'].value);
-    formData.append('contact[email]', this.f['email'].value);
-
-    // MEDIA
-    formData.append('media[facebook]', this.f['facebook'].value || '');
-    formData.append('media[instagram]', this.f['instagram'].value || '');
-    formData.append('media[whatsapp]', this.f['whatsapp'].value || '');
-    formData.append('media[reddit]', this.f['reddit'].value || '');
-
-    // LOCATION
-    formData.append('location[address]', this.f['address'].value);
-    formData.append(
-      'location[coordinates][latitude]',
-      this.f['latitude'].value
-    );
-    formData.append(
-      'location[coordinates][longitude]',
-      this.f['longitude'].value
-    );
-
-    formData.append('isPrivate', this.f['isPrivate'].value);
-
-    // 7️⃣ Submit form
-    this.communityService.createCommunity(formData).subscribe({
+    // Submit community with image URLs
+    this.communityService.createCommunityWithPayload(payload).subscribe({
       next: (res) => {
         alert('Community created successfully!');
         this.onReset();
-        this.isLoading = false; // hide loading
+        this.isLoading = false;
         const communityId = res.data._id;
         this.router.navigate(['/community', communityId]);
       },
       error: (err) => {
-        this.isLoading = false; // hide loading first
+        this.isLoading = false;
 
         if (err.error?.message === 'Duplicate field value') {
           alert('These details have been registered before');
           console.error(err);
-          return; // stop further alerts
+          return;
         }
 
         console.error(err);
