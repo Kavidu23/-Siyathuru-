@@ -120,14 +120,18 @@
 }
 
 /* Form Inputs */
-.signup-form input {
+.signup-form input,
+option,
+select {
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 10px;
   font-size: 14px;
 }
 
-.signup-form input:focus {
+.signup-form input,
+option,
+select:focus {
   border-color: #00616e;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
   outline: none;

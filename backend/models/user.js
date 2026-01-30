@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema(
         age: { type: Number },
         joinedCommunities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Community" }],
         verificationCode: { type: Number },
+        isVerified: { type: Boolean, default: false }
     },
     { timestamps: true }
 );

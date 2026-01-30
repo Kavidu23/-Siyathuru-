@@ -3,16 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
   // Base URL automatically switches for local or Docker
   private baseUrl = window.location.hostname.includes('localhost')
     ? 'http://localhost:3000/api/users'
     : 'http://backend:3000/api/users'; // backend service name in Docker
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   // POST new user
   createUser(user: any): Observable<any> {
@@ -38,5 +37,4 @@ export class UserService {
   deleteUser(id: string): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/${id}`);
   }
-
 }

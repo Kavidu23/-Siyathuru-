@@ -1,28 +1,61 @@
 const nodemailer = require('nodemailer');
 
+/**
+ * Send email using SMTP. Defaults are set for Mailtrap if env vars are missing.
+ * Expected env vars:
+ *  - SMTP_HOST (default: smtp.mailtrap.io)
+ *  - SMTP_PORT (default: 2525)
+ *  - SMTP_USER
+ *  - SMTP_PASS
+ *  - SMTP_SECURE (optional, 'true'|'false')
+ *  - MAIL_FROM (optional)
+ */
 const sendEmail = async (to, subject, text, html = null) => {
     try {
+        const host = process.env.SMTP_HOST || 'smtp.mailtrap.io';
+        const port = Number(process.env.SMTP_PORT) || 2525;
+        const secure = (process.env.SMTP_SECURE === 'true') || false;
+
+        if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+            console.warn('SMTP_USER or SMTP_PASS not set. Mail may fail to send.');
+        }
+
         const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT || 587,
-            secure: false,
+            host,
+            port,
+            secure,
             auth: {
                 user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS
-            }
+                pass: process.env.SMTP_PASS,
+            },
+            tls: {
+                // Allow self-signed certificates if explicitly configured
+                rejectUnauthorized:
+                    process.env.SMTP_REJECT_UNAUTHORIZED === 'true' ? true : false,
+            },
         });
 
+        // Verify connection configuration (useful during development)
+        try {
+            await transporter.verify();
+            console.log(`✅ SMTP transporter is ready (host=${host} port=${port})`);
+        } catch (verifyErr) {
+            console.warn('⚠️ SMTP transporter verification failed:', verifyErr.message);
+        }
+
         const mailOptions = {
-            from: `"Siyathuru" <${process.env.SMTP_USER}>`,
+            from: process.env.MAIL_FROM || `"Siyathuru" <no-reply@${host}>`,
             to,
             subject,
             text,
-            html
+            html,
         };
 
         const info = await transporter.sendMail(mailOptions);
+        console.log(`📧 Email sent: ${info.messageId}`);
+        return info;
     } catch (error) {
-        console.error('❌ Error sending email:', error.message);
+        console.error('❌ Error sending email:', error && error.message ? error.message : error);
         throw error; // rethrow so controller can catch it
     }
 };

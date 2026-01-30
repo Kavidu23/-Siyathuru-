@@ -24,7 +24,6 @@
     <!-- Profile Photo Upload -->
     <div class="photo-upload">
       <label for="profilePic" class="photo-preview">
-        <!-- Show image if uploaded -->
         <img
           *ngIf="!profilePreview"
           src="default-logo.jpg"
@@ -58,6 +57,7 @@
         <div class="error" *ngIf="submitted && f['username'].errors">
           <small>Username is required.</small>
         </div>
+
         <input
           formControlName="email"
           type="email"
@@ -66,14 +66,17 @@
         <div class="error" *ngIf="submitted && f['email'].errors">
           <small>Email is required.</small>
         </div>
+
         <input formControlName="phone" type="text" placeholder="Phone Number" />
         <div class="error" *ngIf="submitted && f['phone'].errors">
           <small>Phone number is required.</small>
         </div>
+
         <input formControlName="age" type="number" placeholder="Age" />
         <div class="error" *ngIf="submitted && f['age'].errors">
           <small>Age is required.</small>
         </div>
+
         <!-- Role -->
         <div class="radio-group">
           <label>
@@ -100,6 +103,7 @@
         <div class="error" *ngIf="submitted && f['password'].errors">
           <small>Password is required.</small>
         </div>
+
         <input
           formControlName="confirmPassword"
           type="password"
@@ -108,24 +112,30 @@
         <div class="error" *ngIf="submitted && f['confirmPassword'].errors">
           <small>Confirm password is required.</small>
         </div>
+
+        <!-- Hidden City Selection -->
+        <select formControlName="city" (change)="onCitySelected($event)">
+          <option value="">Select City</option>
+          <option *ngFor="let city of cities" [value]="city.id">
+            {{ city.name_en }}
+          </option>
+        </select>
+
+        <!-- Latitude & Longitude (auto-filled) -->
         <input
           formControlName="latitude"
           type="number"
           placeholder="Latitude"
-          step="any"
+          readonly
+          style="display: none"
         />
-        <div class="error" *ngIf="submitted && f['latitude'].errors">
-          <small>Latitude is required.</small>
-        </div>
         <input
           formControlName="longitude"
           type="number"
           placeholder="Longitude"
-          step="any"
+          readonly
+          style="display: none"
         />
-        <div class="error" *ngIf="submitted && f['longitude'].errors">
-          <small>Longitude is required.</small>
-        </div>
       </div>
 
       <!-- Submit -->
@@ -133,6 +143,7 @@
         Sign Up
       </button>
     </form>
+
     <br />
     <div class="links">
       <p>

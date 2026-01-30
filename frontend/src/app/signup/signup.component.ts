@@ -13,6 +13,7 @@ import {
   AbstractControl,
 } from '@angular/forms';
 
+import { HttpClient } from '@angular/common/http';
 import { ModalService } from '../modal.service';
 import { Subscription } from 'rxjs';
 import imageCompression from 'browser-image-compression';
@@ -35,13 +36,18 @@ export class SignupComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   isProfileUploading = false;
   submitted = false;
+  cities: any[] = [];
 
   profileFile: File | null = null;
   profilePreview: string | ArrayBuffer | null = null;
 
   subscription!: Subscription;
 
-  constructor(private fb: FormBuilder, private modalService: ModalService) {
+  constructor(
+    private fb: FormBuilder,
+    private modalService: ModalService,
+    private http: HttpClient,
+  ) {
     this.initForm();
   }
 
@@ -49,7 +55,24 @@ export class SignupComponent implements OnInit, OnDestroy {
     this.subscription = this.modalService.signupVisible$.subscribe(
       (visible) => {
         this.isVisible = visible;
-      }
+      },
+    );
+
+    this.http.get<any[]>('districts.json').subscribe(
+      (data: any[]) => {
+        // Map district objects to the shape expected by the template
+        this.cities = data.map((d: any, i: number) => ({
+          id: i,
+          name_en: d.district,
+          latitude: d.lat,
+          longitude: d.lng,
+        }));
+        // optional: sort alphabetically
+        this.cities.sort((a: any, b: any) =>
+          a.name_en.localeCompare(b.name_en),
+        );
+      },
+      (error: any) => console.error('Could not load districts.json', error),
     );
   }
 
@@ -65,6 +88,7 @@ export class SignupComponent implements OnInit, OnDestroy {
         phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', Validators.required],
+        city: ['', Validators.required],
         latitude: [
           '',
           [Validators.required, Validators.min(-90), Validators.max(90)],
@@ -79,7 +103,7 @@ export class SignupComponent implements OnInit, OnDestroy {
         ],
         memberType: ['', Validators.required],
       },
-      { validators: this.passwordMatchValidator }
+      { validators: this.passwordMatchValidator },
     );
   }
 
@@ -146,24 +170,47 @@ export class SignupComponent implements OnInit, OnDestroy {
 
     this.isLoading = true;
 
-    const formData = new FormData();
-    formData.append('username', this.userForm.value.username);
-    formData.append('email', this.userForm.value.email);
-    formData.append('phone', this.userForm.value.phone);
-    formData.append('password', this.userForm.value.password);
-    formData.append('latitude', this.userForm.value.latitude);
-    formData.append('longitude', this.userForm.value.longitude);
-    formData.append('age', this.userForm.value.age);
-    formData.append('memberType', this.userForm.value.memberType);
+    // Map frontend form to backend expected payload
+    const payload: any = {
+      name: this.userForm.value.username,
+      email: this.userForm.value.email,
+      pnumber: this.userForm.value.phone,
+      password: this.userForm.value.password,
+      role: this.userForm.value.memberType,
+      age: Number(this.userForm.value.age),
+      location: {
+        coordinates: {
+          latitude: Number(this.userForm.value.latitude) || 0,
+          longitude: Number(this.userForm.value.longitude) || 0,
+        },
+      },
+      // profileImage: (you may upload to cloudinary first and set URL here)
+    };
 
-    if (this.profileFile) {
-      formData.append('profilePic', this.profileFile);
+    // POST to backend API
+    this.http.post<any>('http://localhost:3000/api/users', payload).subscribe(
+      (res) => {
+        this.isLoading = false;
+        alert(res?.message || 'Account Created Successfully!');
+        this.closeSignup();
+      },
+      (err) => {
+        this.isLoading = false;
+        console.error('Signup error:', err);
+        alert(err?.error?.error || 'Failed to create account.');
+      },
+    );
+  }
+
+  //city select handler
+  onCitySelected(event: any) {
+    const cityId = event.target.value;
+    const city = this.cities.find((c) => c.id == cityId);
+    if (city) {
+      this.userForm.patchValue({
+        latitude: city.latitude,
+        longitude: city.longitude,
+      });
     }
-
-    setTimeout(() => {
-      this.isLoading = false;
-      alert('Account Created Successfully!');
-      this.closeSignup();
-    }, 2000);
   }
 }
