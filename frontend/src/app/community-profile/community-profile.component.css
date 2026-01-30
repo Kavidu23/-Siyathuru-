@@ -51,14 +51,13 @@
 }
 
 .community-name {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 30px;
   font-weight: 600;
 }
 
-
 /*Acctivation Badge*/
-.activity-section{
+.activity-section {
   margin-top: 60px;
   text-align: left;
   background-color: white;
@@ -88,13 +87,11 @@
 .stats strong {
   display: block;
   font-size: 20px;
-
 }
 .stats span {
   font-size: 14px;
   color: var(--secondary-text-color);
 }
-
 
 /* Action Buttons */
 /* ==== ACTION BUTTONS SECTION ==== */
@@ -129,6 +126,17 @@
   transition: all 0.3s ease;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
+.btn-danger {
+  background: #d7372c;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(215, 55, 44, 0.18);
+  transition: transform 0.15s ease;
+}
 
 .btn-primary {
   background: var(--primary-color);
@@ -136,7 +144,7 @@
 }
 
 .btn-primary:hover {
- background-color: var(--primary-color-hover);
+  background-color: var(--primary-color-hover);
 }
 
 .btn-secondary {
@@ -155,7 +163,6 @@
   gap: var(--spacing-sm);
 }
 
-
 .social-icons a {
   font-size: 1.8rem;
   color: var(--secondary-text-color);
@@ -169,11 +176,18 @@
 }
 
 /* Brand colors on hover */
-.social-icons a[aria-label="Facebook"] { color: #1877F2; }
-.social-icons a[aria-label="Instagram"] { color: #E1306C; }
-.social-icons a[aria-label="WhatsApp"] { color: #25D366; }
-.social-icons a[aria-label="Reddit"] { color: #FF4500; }
-
+.social-icons a[aria-label="Facebook"] {
+  color: #1877f2;
+}
+.social-icons a[aria-label="Instagram"] {
+  color: #e1306c;
+}
+.social-icons a[aria-label="WhatsApp"] {
+  color: #25d366;
+}
+.social-icons a[aria-label="Reddit"] {
+  color: #ff4500;
+}
 
 /* About Section */
 .about-section {
@@ -185,7 +199,7 @@
 }
 
 .about-section h2 {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 20px;
   margin-bottom: var(--spacing-md);
 }
@@ -200,7 +214,6 @@
   border-radius: var(--border-radius-button);
   color: white;
 }
-
 
 .map-container iframe {
   width: 100%;
@@ -219,8 +232,8 @@
   background: var(--background-color);
 }
 
-.activity-section h2{
-  font-family: 'Oswald', sans-serif;
+.activity-section h2 {
+  font-family: "Oswald", sans-serif;
   font-size: 20px;
   margin-bottom: var(--spacing-md);
 }
@@ -229,7 +242,7 @@
   padding: 5px;
   display: flex;
   gap: 15px;
-  overflow-x: auto;  /*magin happen*/
+  overflow-x: auto; /*magin happen*/
   padding-bottom: 5px;
   cursor: pointer;
 }
@@ -258,7 +271,7 @@
 }
 
 .gallery-section h2 {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 20px;
   margin-bottom: var(--spacing-md);
 }
@@ -291,7 +304,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
