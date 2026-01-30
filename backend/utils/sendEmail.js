@@ -1,15 +1,5 @@
 const nodemailer = require('nodemailer');
 
-/**
- * Send email using SMTP. Defaults are set for Mailtrap if env vars are missing.
- * Expected env vars:
- *  - SMTP_HOST (default: smtp.mailtrap.io)
- *  - SMTP_PORT (default: 2525)
- *  - SMTP_USER
- *  - SMTP_PASS
- *  - SMTP_SECURE (optional, 'true'|'false')
- *  - MAIL_FROM (optional)
- */
 const sendEmail = async (to, subject, text, html = null) => {
     try {
         const host = process.env.SMTP_HOST || 'smtp.mailtrap.io';
