@@ -23,6 +23,11 @@ export class UserService {
     return this.http.post<any>(`${this.baseUrl}/verify`, payload);
   }
 
+  // Login user with email and password
+  loginUser(payload: { email: string; password: string }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/login`, payload);
+  }
+
   // Upload profile image and return URL
   uploadProfileImage(file: File): Observable<any> {
     const formData = new FormData();

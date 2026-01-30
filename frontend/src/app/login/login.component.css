@@ -106,36 +106,6 @@
   background: #004d52;
 }
 
-/* Google Login */
-.google-login {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
-.google-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: white;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  font-size: 14px;
-}
-
-.google-btn img {
-  width: 20px;
-  height: 20px;
-}
-
-.google-btn:hover {
-  background: #f7f7f7;
-}
-
-/* Links */
 /* Links */
 .links {
   text-align: center;

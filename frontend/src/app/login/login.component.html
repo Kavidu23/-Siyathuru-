@@ -1,3 +1,14 @@
+<!-- Loading overlay -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-dots">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <span>Logging in...</span>
+</div>
+<!-- Login Modal -->
 <div class="login-modal" [class.visible]="isVisible" *ngIf="isVisible">
   <div class="login-overlay" (click)="closeLogin()"></div>
 
@@ -6,32 +17,48 @@
 
     <div class="login-header">
       <h2>Login to Siyathuru</h2>
-      <p>Access your account or continue with Google</p>
+      <p>Access your community</p>
     </div>
 
-    <form class="login-form">
-      <input type="email" placeholder="Email" required />
-      <input type="password" placeholder="Password" required />
-      <button type="submit" class="login-btn">Login</button>
-    </form>
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <input
+        formControlName="email"
+        type="email"
+        placeholder="Email"
+        required
+      />
+      <div class="error" *ngIf="submitted && f['email'].errors">
+        <small>{{
+          f["email"].errors["required"]
+            ? "Email is required."
+            : "Please enter a valid email."
+        }}</small>
+      </div>
 
-    <div class="google-login">
-      <button class="google-btn">
-        <img
-          src="https://www.google.com/images/branding/product/2x/gsa_24dp.png"
-          alt="Google logo"
-          width="20"
-          height="20"
-        />
-        Continue with Google
+      <input
+        formControlName="password"
+        type="password"
+        placeholder="Password"
+        required
+      />
+      <div class="error" *ngIf="submitted && f['password'].errors">
+        <small>{{
+          f["password"].errors["required"]
+            ? "Password is required."
+            : "Password must be at least 6 characters."
+        }}</small>
+      </div>
+
+      <button type="submit" class="login-btn" [disabled]="isLoading">
+        {{ isLoading ? "Logging in..." : "Login" }}
       </button>
-    </div>
+    </form>
 
     <div class="links">
       <a href="#" class="forgot-link">Forgot password?</a>
       <p>
         Don’t have an account?
-        <a href="javascript:voide(0)" (click)="OpenSignup()">Sign up</a>
+        <a href="javascript:void(0)" (click)="openSignup()">Sign up</a>
       </p>
     </div>
   </div>
