@@ -107,7 +107,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.closeLogin();
             // Navigate to user dashboard after a short delay to ensure modal closes
             setTimeout(() => {
-              this.router.navigate(['/user-dashboard']);
+              this.router.navigate(['/']);
             }, 300);
           } else {
             alert(res?.message || 'Login failed.');

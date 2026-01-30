@@ -2,7 +2,6 @@
 .nav {
   width: 100%;
   padding: 20px;
-  
 }
 
 /* Flex for nav items */
@@ -17,11 +16,11 @@ ol {
   gap: 17px;
 }
 
-#log:hover{
+#log:hover {
   color: #d7372c;
 }
 
-#discover:hover{
+#discover:hover {
   color: #d7372c;
 }
 
@@ -29,8 +28,8 @@ ol {
   font: 1em sans-serif;
   font-weight: 600;
   padding: 8px 16px;
-  border: 2px solid #00616e;   /* ✅ visible border */
-  border-radius: 8px;          /* rounded corners */
+  border: 2px solid #00616e; /* ✅ visible border */
+  border-radius: 8px; /* rounded corners */
   color: #00616e;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -42,7 +41,6 @@ ol {
   color: #fff;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
-
 
 ol li {
   font-size: 15px;
@@ -62,11 +60,9 @@ ol li {
   display: flex;
   justify-content: center;
   height: 50px;
-
-
 }
 
-.color:hover{
+.color:hover {
   color: #d7372c;
 }
 
@@ -79,9 +75,7 @@ ol li {
   max-width: 700px;
   width: 100%;
   background: #fff;
-    
 }
-
 
 .search-input {
   display: flex;
@@ -122,7 +116,7 @@ ol li {
   background: #f44336;
   border: none;
   outline: none;
-  padding: 20px ;
+  padding: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -152,14 +146,54 @@ ol li {
   background-color: #004c56;
 }
 
+/* User Profile Section */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 15px;
+  border-radius: 25px;
+  background: #f0f0f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
+.user-profile:hover {
+  background: #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 
+.profile-img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
 
+/* Logout button */
+#logout {
+  padding: 8px 20px;
+  color: #d7372c;
+  border: 1px solid #d7372c;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
 
+#logout:hover {
+  background: #d7372c;
+  color: white;
+}
 
 @media (max-width: 943px) {
-  .search-wrapper{
+  .search-wrapper {
     display: none;
   }
 
@@ -185,7 +219,7 @@ ol li {
   }
 }
 
-@media(max-width: 711px) {
+@media (max-width: 711px) {
   ol {
     display: flex;
     align-items: center;
@@ -195,10 +229,9 @@ ol li {
     padding: 0;
     padding-bottom: 5px;
   }
-
 }
 
-@media(max-width: 613px) {
+@media (max-width: 613px) {
   ol {
     display: flex;
     flex-direction: column;
@@ -209,5 +242,4 @@ ol li {
     padding: 0;
     padding-bottom: 5px;
   }
-
 }

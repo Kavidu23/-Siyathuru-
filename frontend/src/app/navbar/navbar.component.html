@@ -26,11 +26,37 @@
     <!-- Menu -->
     <a routerLink="/discover" id="discover">Discover</a>
     <li class="ask-ai"><a routerLink="/ask-ai">Ask AI</a></li>
-    <a href="javascript:void(0)" (click)="openLoginModal()" id="log">Login</a>
-    <li>
+    <!-- Show Login/Signup when NOT logged in -->
+    <a
+      *ngIf="!isLoggedIn"
+      href="javascript:void(0)"
+      (click)="openLoginModal()"
+      id="log"
+      >Login</a
+    >
+    <li *ngIf="!isLoggedIn">
       <a href="javascript:void(0)" id="sign" (click)="openSignupModal()"
         >Sign Up</a
       >
     </li>
+    <!-- Show User Profile when logged in -->
+    <li *ngIf="isLoggedIn" class="user-profile" (click)="goToUserDashboard()">
+      <img
+        [src]="
+          userData?.profileImage || 'https://via.placeholder.com/40?text=User'
+        "
+        alt="Profile"
+        class="profile-img"
+      />
+      <span class="user-name">{{ userData?.name || "User" }}</span>
+    </li>
+    <!-- Logout button -->
+    <a
+      *ngIf="isLoggedIn"
+      href="javascript:void(0)"
+      (click)="logout()"
+      id="logout"
+      >Logout</a
+    >
   </ol>
 </div>
