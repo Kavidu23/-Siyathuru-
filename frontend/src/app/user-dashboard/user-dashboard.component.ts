@@ -54,13 +54,23 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
     const sub = this.communityService.getAllCommunities().subscribe({
       next: (res: any) => {
         const all: any[] = res?.data || res || [];
-        // communities the user has joined or where the user is admin
+        const userId = this.userData?._id;
+        const userJoinedIds = (this.userData?.joinedCommunities || []).map(
+          (c: any) => String(c),
+        );
+
+        // communities the user has joined or where the user is leader
         this.joinedCommunities = all.filter((c) => {
-          const adminMatch = c?.admin?._id === this.userData?._id;
-          const memberMatch = c?.members?.some(
-            (m: any) => m?._id === this.userData?._id,
+          // Check if user is leader
+          const isLeader = c?.leader?._id === userId || c?.leader === userId;
+          // Check if user is in members array
+          const isMember = c?.members?.some(
+            (m: any) =>
+              m?._id === userId || m === userId || String(m) === userId,
           );
-          return adminMatch || memberMatch;
+          // Check if community is in user's joinedCommunities array
+          const inUserJoined = userJoinedIds.includes(String(c._id));
+          return isLeader || isMember || inUserJoined;
         });
 
         // collect upcoming events for joined communities
