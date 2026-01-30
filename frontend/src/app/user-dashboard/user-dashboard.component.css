@@ -221,6 +221,7 @@
 }
 
 .member-view-btn:hover {
+  cursor: pointer;
   background: #004c56;
 }
 
