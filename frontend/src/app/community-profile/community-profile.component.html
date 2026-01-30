@@ -41,10 +41,22 @@
     <!-- Action Buttons -->
     <div class="action-buttons">
       <div class="buttonin">
-        <button class="btn-primary" *ngIf="!community.isPrivate">
+        <button
+          class="btn-primary"
+          *ngIf="!isMember && !community?.isPrivate"
+          (click)="joinCommunity()"
+        >
           <i class="bx bx-group"></i> Join Community
         </button>
-        <button class="btn-primary" *ngIf="community.isPrivate">
+        <button class="btn-primary" *ngIf="isMember">
+          <i class="bx bx-check"></i> Joined
+        </button>
+
+        <button
+          class="btn-primary"
+          *ngIf="!isMember && community?.isPrivate"
+          (click)="joinCommunity()"
+        >
           <i class="bx bx-group"></i> Request to Join Community
         </button>
       </div>

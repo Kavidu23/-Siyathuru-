@@ -44,4 +44,9 @@ export class CommunityService {
   getCommunityById(id: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/${id}`);
   }
+
+  // POST: join a community (body contains { userId })
+  joinCommunity(id: string, userId: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/${id}/join`, { userId });
+  }
 }
