@@ -1,73 +1,90 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  // Base URL automatically switches for local or Docker
+  // ================= AUTH STATE =================
+  private authState = new BehaviorSubject<any>(
+    JSON.parse(localStorage.getItem('user') || 'null'),
+  );
+
+  authState$ = this.authState.asObservable();
+
+  // =============== BASE URL =====================
   private baseUrl = window.location.hostname.includes('localhost')
     ? 'http://localhost:3000/api/users'
-    : 'http://backend:3000/api/users'; // backend service name in Docker
+    : 'http://backend:3000/api/users';
 
   constructor(private http: HttpClient) {}
 
-  // POST new user
+  // =============== AUTH METHODS =================
+
+  loginUser(payload: { email: string; password: string }): Observable<any> {
+    return this.http
+      .post<any>(`${this.baseUrl}/login`, payload, {
+        withCredentials: true,
+      })
+      .pipe(
+        tap((res) => {
+          // Save user & notify app
+          localStorage.setItem('user', JSON.stringify(res.user));
+          this.authState.next(res.user);
+        }),
+      );
+  }
+
+  logoutUser(): Observable<any> {
+    return this.http
+      .post(`${this.baseUrl}/logout`, {}, { withCredentials: true })
+      .pipe(
+        tap(() => {
+          localStorage.removeItem('user');
+          this.authState.next(null);
+        }),
+      );
+  }
+
+  getCurrentUser() {
+    return this.authState.value;
+  }
+
+  // ============= OTHER EXISTING METHODS =============
+
   createUser(user: any): Observable<any> {
     return this.http.post<any>(this.baseUrl, user);
   }
 
-  // Verify user account with code
   verifyUser(payload: { email: string; code: number }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/verify`, payload);
   }
-  // Login user with email and password
-  loginUser(payload: { email: string; password: string }): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/login`, payload, {
-      withCredentials: true, // <--- This allows the browser to store the HttpOnly cookie
-    });
-  }
 
-  // Upload profile image and return URL
   uploadProfileImage(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
+
     const uploadUrl = window.location.hostname.includes('localhost')
       ? 'http://localhost:3000/api/upload'
       : 'http://backend:3000/api/upload';
+
     return this.http.post<any>(uploadUrl, formData);
   }
 
-  // Get all users
   getUsers(): Observable<any[]> {
     return this.http.get<any[]>(this.baseUrl);
   }
 
-  //Get user by id
   getUserById(id: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/${id}`);
   }
 
-  // Update user by id
   updateUser(id: string, user: any): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}/${id}`, user);
   }
 
-  // Delete user by id
   deleteUser(id: string): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/${id}`);
-  }
-
-  // Logout user
-  // userService.ts
-  logoutUser(): Observable<any> {
-    return this.http.post(
-      `${this.baseUrl}/logout`,
-      {},
-      {
-        withCredentials: true, // Mandatory for cookie handling
-      },
-    );
   }
 }

@@ -93,23 +93,25 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.userService
       .loginUser(payload)
       .pipe(finalize(() => (this.isLoading = false)))
-      .subscribe(
-        (res: any) => {
+      .subscribe({
+        next: (res: any) => {
           if (res && res.success) {
-            // Store user data
-            if (res.user) {
-              localStorage.setItem('user', JSON.stringify(res.user));
-            }
+            // ❌ REMOVE THIS – service already stores user
+            // localStorage.setItem('user', JSON.stringify(res.user));
+
             alert('Login successful!');
+
             this.closeLogin();
-            // Navigate instead of reload
-            window.location.reload();
+
+            // ✅ JUST NAVIGATE – navbar updates automatically
+            this.router.navigate(['/home']);
           }
         },
-        (err: any) => {
+
+        error: (err: any) => {
           console.error('Login error:', err);
           alert(err?.error?.error || 'Login failed. Please try again.');
         },
-      );
+      });
   }
 }
