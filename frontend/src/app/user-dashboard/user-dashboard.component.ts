@@ -73,6 +73,9 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
           return isLeader || isMember || inUserJoined;
         });
 
+        // Mark joined communities as joined
+        this.joinedCommunities.forEach((c) => (c.isJoined = true));
+
         // collect upcoming events for joined communities
         const now = new Date();
         const in30Days = new Date();

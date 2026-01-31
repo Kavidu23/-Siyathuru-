@@ -84,6 +84,10 @@
           <p>{{ c.description || c.about || "No description" }}</p>
         </div>
         <a class="member-view-btn" (click)="viewCommunity(c._id)">View</a>
+        <!-- Add this: Check if private and show request button instead -->
+        <a *ngIf="c.isPrivate && !c.isJoined" class="member-request-btn">
+          Request
+        </a>
       </div>
       <div *ngIf="joinedCommunities.length === 0" style="padding: 1rem">
         You haven't joined any communities yet.

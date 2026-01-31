@@ -144,6 +144,39 @@ export class CommunityProfileComponent implements AfterViewInit, OnInit {
     }
   }
 
+  requestJoinCommunity() {
+    try {
+      const stored = localStorage.getItem('user');
+      const user = stored ? JSON.parse(stored) : null;
+      if (!user) {
+        // open login modal
+        this.modalService.openLogin();
+        return;
+      }
+      const communityId = this.community?._id;
+      if (!communityId) return;
+      this.communityService
+        .requestJoinCommunity(user._id, communityId)
+        .subscribe({
+          next: (res: any) => {
+            if (res?.success) {
+              alert(res.message || 'Join request sent');
+            } else {
+              alert(
+                res?.message || res?.error || 'Could not send join request',
+              );
+            }
+          },
+          error: (err: any) => {
+            console.error('Request join error', err);
+            alert(err?.error?.error || 'Failed to send join request');
+          },
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   leaveCommunity() {
     try {
       const stored = localStorage.getItem('user');

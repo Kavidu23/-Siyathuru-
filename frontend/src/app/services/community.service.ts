@@ -54,4 +54,16 @@ export class CommunityService {
   leaveCommunity(id: string, userId: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/${id}/leave`, { userId });
   }
+
+  // POST: request to join a private community
+  requestJoinCommunity(userId: string, communityId: string): Observable<any> {
+    const requestUrl = window.location.hostname.includes('localhost')
+      ? 'http://localhost:3000/api/requests'
+      : 'http://backend:3000/api/requests';
+    return this.http.post<any>(requestUrl, {
+      userId,
+      communityId,
+      status: 'pending',
+    });
+  }
 }
