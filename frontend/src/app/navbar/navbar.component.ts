@@ -69,6 +69,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         // 3. Redirect
         this.router.navigate(['/home']);
         alert('Logged out successfully');
+        window.location.reload();
       },
       error: (err) => {
         console.error('Logout failed', err);

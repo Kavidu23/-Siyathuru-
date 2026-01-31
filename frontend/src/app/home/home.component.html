@@ -11,8 +11,9 @@
       and life-saving alerts.
     </p>
     <div class="button-align">
-      <button (click)="openSignupModal()" id="joinbtn">Join Now</button
-      >&nbsp;&nbsp;
+      <button *ngIf="!isLoggedIn" (click)="openSignupModal()" id="joinbtn">
+        Join Now
+      </button>
       <button (click)="openvid()" id="joinbtn">Need Help?</button>
     </div>
   </div>
@@ -69,7 +70,9 @@
         Join thousands of Sri Lankans building stronger communities together.
         Connect, support, and grow with people who care.
       </p>
-      <a class="signup-button" (click)="openSignupModal()">Get Started</a>
+      <a *ngIf="!isLoggedIn" class="signup-button" (click)="openSignupModal()"
+        >Get Started</a
+      >
     </div>
 
     <!-- Right Illustration -->

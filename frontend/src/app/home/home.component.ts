@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   feedbacks: any[] = [];
   loading = true;
   errorMessage = '';
+  isLoggedIn = false;
 
   constructor(
     private modalService: ModalService,
@@ -24,6 +25,16 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadFeedbacks();
+    this.checkLoginStatus();
+  }
+
+  checkLoginStatus(): void {
+    try {
+      const stored = localStorage.getItem('user');
+      this.isLoggedIn = !!stored;
+    } catch (err) {
+      this.isLoggedIn = false;
+    }
   }
 
   loadFeedbacks() {
