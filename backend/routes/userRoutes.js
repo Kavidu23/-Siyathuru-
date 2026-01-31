@@ -1,4 +1,5 @@
 const express = require("express");
+const router = express.Router();
 const {
     createUser,
     getUsers,
@@ -9,7 +10,6 @@ const {
     loginUser,
 } = require("../controllers/userController");
 
-const router = express.Router();
 
 // CRUD routes
 router.get("/", getUsers);              // Get all users

@@ -1,4 +1,5 @@
 const express = require("express");
+const router = express.Router();
 const {
     createCommunity,
     getCommunities,
@@ -10,8 +11,6 @@ const {
 } = require("../controllers/communityController");
 
 const upload = require("../middleware/upload"); // multer + Cloudinary
-
-const router = express.Router();
 
 // CRUD routes
 router.get("/", getCommunities);            // Get all communities

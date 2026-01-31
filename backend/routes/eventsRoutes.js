@@ -1,5 +1,5 @@
 const express = require('express');
-
+const router = express.Router();
 
 const {
     createEvent,
@@ -9,7 +9,6 @@ const {
     deleteEvent,
 } = require('../controllers/eventsController');
 
-const router = express.Router();
 
 // CRUD routes
 router.get('/', getEvents);           // Get all events

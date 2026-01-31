@@ -1,4 +1,6 @@
 const express = require('express');
+const router = express.Router();
+
 const {
     createAlert,
     getAlerts,
@@ -6,8 +8,6 @@ const {
     updateAlert,
     deleteAlert,
 } = require('../controllers/alertController');
-
-const router = express.Router();
 
 // Route to get all alerts
 router.get('/', getAlerts); // Get all alerts

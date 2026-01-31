@@ -1,11 +1,11 @@
 const express = require('express');
+const router = express.Router();
 
 const {
     createFeedback,
     getFeedbacks
 } = require("../controllers/feedbackController");
 
-const router = express.Router();
 
 router.post('/', createFeedback);
 router.get('/', getFeedbacks);
