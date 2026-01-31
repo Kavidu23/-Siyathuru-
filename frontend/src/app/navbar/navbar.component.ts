@@ -45,9 +45,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   goToUserDashboard(): void {
-    if (this.isLoggedIn) {
-      this.router.navigate(['/user-dashboard']);
+    // 1. Must be logged in
+    if (!this.isLoggedIn || !this.userData) {
+      return;
     }
+
+    // 2. Role based navigation
+    if (this.userData.role === 'leader') {
+      this.router.navigate(['/community-dashboard']);
+      return;
+    }
+
+    // 3. Normal user
+    this.router.navigate(['/user-dashboard']);
   }
 
   logout(): void {
