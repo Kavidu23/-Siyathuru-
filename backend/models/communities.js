@@ -36,6 +36,13 @@ const communitySchema = new mongoose.Schema(
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Members list
     leader: { type: mongoose.Schema.Types.ObjectId, ref: "User" },   // Community creator
 
+    joinRequests: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        requestedAt: { type: Date, default: Date.now }
+      }
+    ],
+
     established: { type: Date },                           // Optional: historical date
   },
   { timestamps: true } // Adds createdAt & updatedAt automatically

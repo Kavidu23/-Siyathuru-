@@ -6,7 +6,7 @@ const {
     getRequestById,
     updateRequest,
     deleteRequest,
-} = require('../controllers/requestsController');
+} = require('../controllers/privateCommunityController');
 
 const router = express.Router();
 

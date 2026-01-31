@@ -11,6 +11,7 @@ const requestsRoutes = require("./routes/requestsRoutes");
 const alertRoutes = require("./routes/alertRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const privateCommunityRoutes = require("./routes/privateCommunityRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,6 +38,7 @@ app.use("/api/events", eventsRoutes);
 app.use("/api/requests", requestsRoutes);
 app.use("/api/alerts", alertRoutes);
 app.use("/api/feedbacks", feedbackRoutes);
+app.use("/api/private-communities", privateCommunityRoutes);
 
 // Start server
 app.listen(PORT, () =>
