@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { ModalService } from '../services/modal.service';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,6 +17,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   constructor(
     private modalService: ModalService,
+    private userService: UserService,
     private router: Router,
   ) {}
 
@@ -54,10 +56,24 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  /* LOGOUT - Angular */
   logout(): void {
-    localStorage.removeItem('user');
-    this.isLoggedIn = false;
-    this.userData = null;
-    this.router.navigate(['/home']);
+    // 1. Tell the server to clear the cookie
+    this.userService.logoutUser().subscribe({
+      next: () => {
+        // 2. Clean up local state after server confirms
+        localStorage.removeItem('user');
+        this.isLoggedIn = false;
+        this.userData = null;
+
+        // 3. Redirect
+        this.router.navigate(['/home']);
+        alert('Logged out successfully');
+      },
+      error: (err) => {
+        console.error('Logout failed', err);
+        // Optional: Clear local data anyway even if server call fails
+      },
+    });
   }
 }

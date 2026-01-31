@@ -60,7 +60,14 @@ export class UserService {
   }
 
   // Logout user
+  // userService.ts
   logoutUser(): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/logout`, {});
+    return this.http.post(
+      `${this.baseUrl}/logout`,
+      {},
+      {
+        withCredentials: true, // Mandatory for cookie handling
+      },
+    );
   }
 }

@@ -41,62 +41,42 @@
     <!-- Action Buttons -->
     <div class="action-buttons">
       <div class="buttonin">
-        <button
-          class="btn-primary"
-          *ngIf="!isMember && !community?.isPrivate"
-          (click)="joinCommunity()"
-        >
-          <i class="bx bx-group"></i> Join Community
-        </button>
-        <button class="btn-primary" *ngIf="isMember">
-          <i class="bx bx-check"></i> Joined
-        </button>
-        <button class="btn-danger" *ngIf="isMember" (click)="leaveCommunity()">
-          <i class="bx bx-log-out"></i> Leave Community
-        </button>
+        <ng-container *ngIf="isMember">
+          <button class="btn-primary" disabled>
+            <i class="bx bx-check"></i> Joined
+          </button>
+          <button class="btn-danger" (click)="leaveCommunity()">
+            <i class="bx bx-log-out"></i> Leave
+          </button>
+        </ng-container>
 
-        <button
-          class="btn-primary"
-          *ngIf="!isMember && community?.isPrivate"
-          (click)="requestJoinCommunity()"
-        >
-          <i class="bx bx-group"></i> Request to Join
-        </button>
-      </div>
+        <ng-container *ngIf="!isMember">
+          <button
+            class="btn-primary"
+            *ngIf="!community?.isPrivate"
+            (click)="joinCommunity()"
+          >
+            <i class="bx bx-group"></i> Join Community
+          </button>
 
-      <div class="social-icons">
-        <a
-          [href]="community?.media?.facebook"
-          *ngIf="community?.media?.facebook"
-          target="_blank"
-          aria-label="Facebook"
-        >
-          <i class="fab fa-facebook"></i>
-        </a>
-        <a
-          [href]="community?.media?.instagram"
-          *ngIf="community?.media?.instagram"
-          target="_blank"
-          aria-label="Instagram"
-        >
-          <i class="fab fa-instagram"></i>
-        </a>
-        <a
-          [href]="community?.media?.whatsapp"
-          *ngIf="community?.media?.whatsapp"
-          target="_blank"
-          aria-label="WhatsApp"
-        >
-          <i class="fab fa-whatsapp"></i>
-        </a>
-        <a
-          [href]="community?.media?.reddit"
-          *ngIf="community?.media?.reddit"
-          target="_blank"
-          aria-label="Reddit"
-        >
-          <i class="fab fa-reddit"></i>
-        </a>
+          <ng-container *ngIf="community?.isPrivate">
+            <button
+              class="btn-danger"
+              *ngIf="isRequestPending"
+              (click)="cancelJoinRequest()"
+            >
+              <i class="bx bx-time"></i> Request Pending (Cancel?)
+            </button>
+
+            <button
+              class="btn-primary"
+              *ngIf="!isRequestPending"
+              (click)="requestJoinCommunity()"
+            >
+              <i class="bx bx-paper-plane"></i> Request to Join
+            </button>
+          </ng-container>
+        </ng-container>
       </div>
     </div>
   </div>

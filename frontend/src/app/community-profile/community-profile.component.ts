@@ -199,20 +199,41 @@ export class CommunityProfileComponent implements OnInit, AfterViewInit {
     this.privateCommunityService.sendJoinRequest(this.community._id).subscribe({
       next: (res: any) => {
         alert(res.message || 'Join request sent');
+
+        // FIX: Update local state immediately
         this.isRequestPending = true;
+
+        // Optional: Push the user ID to the local list so checkMembershipState works if called
+        const user = JSON.parse(stored);
+        if (!this.community.joinRequests) this.community.joinRequests = [];
+        this.community.joinRequests.push({ user: user._id });
       },
-      error: () => alert('Failed to send join request'),
+      error: (err) => {
+        console.error(err);
+        alert(err?.error?.error || 'Failed to send join request');
+      },
     });
   }
 
   // PRIVATE COMMUNITY – CANCEL REQUEST
   cancelJoinRequest() {
+    const stored = localStorage.getItem('user');
+    if (!stored) return;
+
+    const user = JSON.parse(stored);
+
     this.privateCommunityService
       .cancelJoinRequest(this.community._id)
       .subscribe({
         next: (res: any) => {
           alert(res.message || 'Join request cancelled');
-          this.isRequestPending = false;
+          // Update community joinRequests locally
+          this.community.joinRequests = (
+            this.community.joinRequests || []
+          ).filter(
+            (r: any) => String(r.user?._id || r.user) !== String(user._id),
+          );
+          this.checkMembershipState();
         },
         error: () => alert('Failed to cancel join request'),
       });
