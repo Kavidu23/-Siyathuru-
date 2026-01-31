@@ -25,7 +25,7 @@ const joinCommunity = async (req, res) => {
     }
 
     // Already a member
-    if (community.members.includes(userId)) {
+    if (community.members.some(m => m.toString() === userId)) {
       return res.status(400).json({
         success: false,
         error: "You are already a member"

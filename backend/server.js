@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
@@ -16,16 +17,20 @@ const privateCommunityRoutes = require("./routes/privateCommunityRoutes");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Enable CORS for Angular frontend
-app.use(
-  cors({
-    origin: "http://localhost:4200",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);
+// CORS Configuration
+const corsOptions = {
+  origin: "http://localhost:4200", // Your Angular frontend URL
+  credentials: true, // Allow credentials
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 
 // Middleware
+app.use(cookieParser());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Connect to MongoDB (ONLY ONCE, via db.js)
 connectDB();

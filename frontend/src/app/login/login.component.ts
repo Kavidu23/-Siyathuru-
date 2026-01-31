@@ -90,23 +90,20 @@ export class LoginComponent implements OnInit, OnDestroy {
       password: this.loginForm.value.password,
     };
 
-    // ensure modal closes when a token is received.
     this.userService
       .loginUser(payload)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe(
         (res: any) => {
           if (res && res.success) {
-            // Token is in HttpOnly cookie; user data is in response
+            // Store user data
             if (res.user) {
               localStorage.setItem('user', JSON.stringify(res.user));
             }
-            alert(res.message || 'Login successful!');
-            this.resetForm();
+            alert('Login successful!');
             this.closeLogin();
+            // Navigate instead of reload
             window.location.reload();
-          } else {
-            alert(res?.message || 'Login failed.');
           }
         },
         (err: any) => {

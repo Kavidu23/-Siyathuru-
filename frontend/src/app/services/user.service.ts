@@ -22,10 +22,11 @@ export class UserService {
   verifyUser(payload: { email: string; code: number }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/verify`, payload);
   }
-
   // Login user with email and password
   loginUser(payload: { email: string; password: string }): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/login`, payload);
+    return this.http.post<any>(`${this.baseUrl}/login`, payload, {
+      withCredentials: true, // <--- This allows the browser to store the HttpOnly cookie
+    });
   }
 
   // Upload profile image and return URL
@@ -56,5 +57,10 @@ export class UserService {
   // Delete user by id
   deleteUser(id: string): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/${id}`);
+  }
+
+  // Logout user
+  logoutUser(): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/logout`, {});
   }
 }

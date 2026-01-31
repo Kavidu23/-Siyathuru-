@@ -139,15 +139,15 @@ const loginUser = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    // Store JWT in HttpOnly cookie (SECURE)
+    // Set HttpOnly cookie
     res.cookie("authToken", token, {
-      httpOnly: true,                 // JS cannot read
-      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
-      sameSite: "Strict",             // CSRF protection
-      maxAge: 60 * 60 * 1000,          // 1 hour
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 60 * 60 * 1000, // 1 hour
     });
 
-    // Send SAFE response (NO TOKEN)
+    // Send response with user data (no token)
     res.status(200).json({
       success: true,
       message: "Login successful",
@@ -160,6 +160,7 @@ const loginUser = async (req, res) => {
         age: user.age,
         profileImage: user.profileImage || null,
         location: user.location,
+        joinedCommunities: user.joinedCommunities || [],
       },
     });
 
@@ -257,11 +258,28 @@ const deleteUser = async (req, res) => {
   }
 };
 
+/* LOGOUT USER */
+const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("authToken");
+    res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: "Server error",
+    });
+  }
+};
+
 /* EXPORTS */
 module.exports = {
   createUser,
   verifyUser,
   loginUser,
+  logoutUser,
   getUsers,
   getUserById,
   updateUser,

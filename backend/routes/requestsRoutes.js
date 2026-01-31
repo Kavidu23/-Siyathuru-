@@ -7,7 +7,7 @@ const {
     getRequestById,
     updateRequest,
     deleteRequest,
-} = require('../controllers/privateCommunityController');
+} = require('../controllers/requestsController');
 
 
 // CRUD routes

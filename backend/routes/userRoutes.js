@@ -8,6 +8,7 @@ const {
     deleteUser,
     verifyUser,
     loginUser,
+    logoutUser,
 } = require("../controllers/userController");
 
 
@@ -16,6 +17,7 @@ router.get("/", getUsers);              // Get all users
 router.get("/:id", getUserById);       // Get single user by ID
 router.post("/", createUser);          // Create new user
 router.post("/login", loginUser);      // Login user with email and password
+router.post("/logout", logoutUser);    // Logout user
 router.post("/verify", verifyUser);   // Verify user account with code
 router.put("/:id", updateUser);        // Update user by ID
 router.delete("/:id", deleteUser);     // Delete user by ID
