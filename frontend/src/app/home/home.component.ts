@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
 import { ModalService } from '../services/modal.service';
 import { FeedbackService } from '../services/feedback.service';
 import { CommonModule, NgForOf, NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgForOf, NgIf, NavbarComponent, FooterComponent],
+  imports: [CommonModule, NgForOf, NgIf, FooterComponent, RouterLink],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
