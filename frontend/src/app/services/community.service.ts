@@ -66,4 +66,9 @@ export class CommunityService {
       status: 'pending',
     });
   }
+
+  // GET: fetch communities by leader ID
+  getCommunitiesByLeader(leaderId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/leader/${leaderId}`);
+  }
 }

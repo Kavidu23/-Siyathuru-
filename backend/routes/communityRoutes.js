@@ -4,6 +4,7 @@ const {
     createCommunity,
     getCommunities,
     getCommunityById,
+    getCommunitiesByLeader,
     updateCommunity,
     deleteCommunity,
     joinCommunity,
@@ -15,6 +16,7 @@ const upload = require("../middleware/upload"); // multer + Cloudinary
 // CRUD routes
 router.get("/", getCommunities);            // Get all communities
 router.get("/:id", getCommunityById);       // Get a single community by ID
+router.get("/leader/:leaderId", getCommunitiesByLeader); // Get communities by leader ID
 
 // CREATE new community with image upload
 router.post(

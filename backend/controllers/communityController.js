@@ -117,6 +117,25 @@ const getCommunityById = async (req, res) => {
     }
 };
 
+// GET communities by leader ID
+const getCommunitiesByLeader = async (req, res) => {
+    try {
+        const leaderId = req.params.leaderId;
+        const communities = await Community.find({ leader: leaderId });
+        res.status(200).json({
+            success: true,
+            message: "Communities fetched successfully",
+            data: communities
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: "Failed to fetch communities",
+            details: err.message
+        });
+    }
+};
+
 // UPDATE a community
 const updateCommunity = async (req, res) => {
     try {
@@ -272,6 +291,7 @@ module.exports = {
     createCommunity,
     getCommunities,
     getCommunityById,
+    getCommunitiesByLeader,
     updateCommunity,
     deleteCommunity,
     joinCommunity,

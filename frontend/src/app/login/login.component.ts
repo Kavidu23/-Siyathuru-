@@ -96,9 +96,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res: any) => {
           if (res && res.success) {
-            // ❌ REMOVE THIS – service already stores user
-            // localStorage.setItem('user', JSON.stringify(res.user));
-
             alert('Login successful!');
 
             this.closeLogin();

@@ -3,8 +3,50 @@
   padding: 10px;
 }
 
+/* Loading & Error States */
+.loading-state,
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  margin: 20px 0;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.loading-state {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+}
+
+/* No Events Message */
+.no-events {
+  padding: 20px;
+  text-align: center;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.create-link {
+  color: var(--primary-color);
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.create-link:hover {
+  color: var(--primary-color-hover);
+}
+
 /* common setup resueable card style */
-.card{
+.card {
   background: white;
   padding: 20px;
   border-radius: 20px;
@@ -13,11 +55,10 @@
 }
 
 h2 {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 20px;
   margin-bottom: var(--spacing-md);
 }
-
 
 /* HEADER */
 .profile-info {
@@ -41,10 +82,9 @@ h2 {
   font-size: 20px;
 }
 
-
 /*  IMMEDIATE ACTION CENTER  */
 
-.immediate-actions{
+.immediate-actions {
   margin-top: 15px;
   margin-bottom: 30px;
   padding: 25px;
@@ -81,13 +121,12 @@ h2 {
   color: black;
 }
 
-
 .btn-primary {
   padding: 10px 14px;
 }
 
-.btn-primary:hover{
-    background-color: var(--primary-color-hover);
+.btn-primary:hover {
+  background-color: var(--primary-color-hover);
 }
 
 .btn-alert {
@@ -105,7 +144,6 @@ h2 {
 .btn-alert:hover {
   background-color: var(--rd--ark-mode-bg--hover);
 }
-
 
 /* COMMUNITY HEALTH SNAPSHOT */
 
@@ -131,7 +169,6 @@ h2 {
 .stat-card p {
   margin-top: 6px;
 }
-
 
 /* UPCOMING EVENTS & MANAGEMENT  */
 .upcoming-list {
@@ -168,7 +205,7 @@ h2 {
   transition: background 0.2s;
 }
 
-.upcoming-actions .view-btn:hover{
+.upcoming-actions .view-btn:hover {
   color: var(--rd--ark-mode-bg--hover);
 }
 
@@ -189,7 +226,6 @@ h2 {
   margin-bottom: 8px;
 }
 
-
 /* MEMBER MANAGEMENT & ALERTS */
 .members-grid {
   display: grid;
@@ -206,8 +242,8 @@ h2 {
   margin: 6px 0;
 }
 
-.members-overview p{
-    margin-top: var(--margin--sm);
+.members-overview p {
+  margin-top: var(--margin--sm);
 }
 
 .member-actions {
@@ -237,7 +273,7 @@ h2 {
   color: #8a4b00;
 }
 
-.members-grid .btn-secondary{
+.members-grid .btn-secondary {
   padding: 8px 12px;
   background: #00616e;
   color: white;
@@ -248,7 +284,7 @@ h2 {
   transition: background 0.2s ease;
 }
 
-.members-grid .btn-secondary:hover{
+.members-grid .btn-secondary:hover {
   background: var(--primary-color-hover);
 }
 
@@ -267,7 +303,7 @@ h2 {
   box-shadow: var(--box-shadow);
 }
 
-.ai-card .btn-secondary{
+.ai-card .btn-secondary {
   margin-top: var(--margin-sm);
   padding: 8px 12px;
   background: #00616e;
@@ -279,7 +315,7 @@ h2 {
   transition: background 0.2s ease;
 }
 
-.ai-card .btn-secondary:hover{
+.ai-card .btn-secondary:hover {
   background: var(--primary-color-hover);
 }
 
@@ -329,18 +365,18 @@ h2 {
   cursor: pointer;
 }
 
-.muted{
+.muted {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: var(--margin--sm);
 }
 
-.muted #view{
+.muted #view {
   color: var(--primary-color);
 }
 
-.muted #view:hover{
+.muted #view:hover {
   cursor: pointer;
   color: var(--primary-color-hover);
 }
@@ -371,11 +407,13 @@ h2 {
 }
 
 @media (max-width: 440px) {
-  .btn-primary,.btn-alert,.btn-secondary {
-    font-size: var( --very-small);
+  .btn-primary,
+  .btn-alert,
+  .btn-secondary {
+    font-size: var(--very-small);
     text-align: center;
   }
-  .btn-alert{
+  .btn-alert {
     margin-top: 30px;
   }
 }

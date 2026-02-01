@@ -87,4 +87,29 @@ export class UserService {
   deleteUser(id: string): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/${id}`);
   }
+
+  // ===== CHECK IF COOKIE STILL VALID =====
+  validateSession(): Observable<any> {
+    return this.http
+      .get(`${this.baseUrl}/me`, {
+        withCredentials: true,
+      })
+      .pipe(
+        tap({
+          error: () => {
+            // If backend says 401 → cookie expired
+            this.clearLocalSession();
+          },
+        }),
+      );
+  }
+
+  private clearLocalSession() {
+    localStorage.removeItem('user');
+    this.authState.next(null);
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.authState.value;
+  }
 }

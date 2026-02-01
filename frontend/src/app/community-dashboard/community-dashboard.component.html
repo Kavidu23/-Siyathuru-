@@ -1,170 +1,191 @@
 <div class="dashboard community-dashboard">
-  <!-- Header -->
-  <div class="profile-info">
-    <img src="leader-profile.jpg" alt="Leader" class="profile-pic" />
-    <div class="text">
-      <h3>Hi 👋, Chamika!</h3>
-      <p>Community Leader Dashboard — Manage "TT" village</p>
+  <!-- Main Content -->
+  <div>
+    <!-- Header -->
+    <div class="profile-info">
+      <img
+        [src]="leaderCommunity?.profileImage || 'profile.jpg'"
+        alt="Leader"
+        class="profile-pic"
+      />
+      <div class="text">
+        <h3>Hi 👋, {{ getCommunityLeaderName() }}!</h3>
+        <p>Community Leader Dashboard — Manage "{{ getCommunityName() }}"</p>
+      </div>
     </div>
+
+    <!-- Immediate Action Center -->
+    <section class="cardt immediate-actions">
+      <div class="immediate-grid">
+        <div class="action-card urgent-requests">
+          <div class="metric">
+            <h2>{{ pendingRequests.length }}</h2>
+            <p>Pending Join Requests</p>
+          </div>
+          <div class="action-cta">
+            <button class="btn-primary" (click)="navigateToMemberManagement()">
+              Review Requests
+            </button>
+          </div>
+        </div>
+
+        <div class="action-card post-event">
+          <div class="metric">
+            <h2>Post</h2>
+            <p>New Event</p>
+          </div>
+          <div class="action-cta">
+            <button class="btn-primary" (click)="navigateToCreateEvent()">
+              Post New Event
+            </button>
+          </div>
+        </div>
+
+        <div class="action-card emergency-alert">
+          <div class="metric">
+            <h2>!</h2>
+            <p>Emergency Alert</p>
+          </div>
+          <div class="action-cta">
+            <button class="btn-alert" (click)="sendEmergencyAlert()">
+              Send Emergency Alert
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Community Health Snapshot -->
+    <section class="card health-snapshot">
+      <h2>Community Health Snapshot</h2>
+      <div class="health-grid">
+        <div class="stat-card">
+          <h3>{{ totalMembers }}</h3>
+          <p>Total Members</p>
+        </div>
+        <div class="stat-card">
+          <h3>{{ upcomingEventsCount }}</h3>
+          <p>Upcoming Events (30 days)</p>
+        </div>
+        <div class="stat-card">
+          <h3>{{ engagementRate }}%</h3>
+          <p>Engagement Rate</p>
+        </div>
+        <div class="stat-card">
+          <h3>{{ profileCompleteness }}%</h3>
+          <p>Profile Completeness</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Upcoming Activities & Management -->
+    <section class="card upcoming-management">
+      <h2>Your Upcoming Events</h2>
+      <div class="upcoming-list">
+        <div *ngIf="upcomingEvents.length === 0" class="no-events">
+          <p>
+            No upcoming events scheduled.
+            <a (click)="navigateToCreateEvent()" class="create-link"
+              >Create one now</a
+            >
+          </p>
+        </div>
+        <div *ngFor="let event of upcomingEvents" class="upcoming-item">
+          <div class="upcoming-info">
+            <strong>{{ event.title }}</strong>
+            <span
+              >{{ formatDate(event.eventDate) }} · RSVP:
+              {{ event.attendees.length }}</span
+            >
+          </div>
+          <div class="upcoming-actions">
+            <a [routerLink]="['/event-detail', event._id]" class="view-btn"
+              >View</a
+            >
+            <a (click)="navigateToCreateEvent()" class="edit-link">Edit</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Member Management & Alerts -->
+    <section class="card member-management">
+      <h2>Member Management</h2>
+      <div class="members-grid">
+        <div class="members-overview">
+          <p><strong>Active:</strong> {{ activeMembers }}</p>
+          <p><strong>Pending Requests:</strong> {{ pendingRequests.length }}</p>
+          <p><strong>Banned:</strong> {{ bannedMembers }}</p>
+          <div class="member-actions">
+            <button class="btn-primary" (click)="navigateToMemberManagement()">
+              View Members
+            </button>
+            <button class="btn-secondary">Invite Members</button>
+          </div>
+        </div>
+
+        <div class="alerts-overview">
+          <strong>Community Alerts</strong>
+          <div class="alert-row">
+            <div
+              *ngFor="let alert of communityAlerts.slice(0, 2)"
+              [ngClass]="{
+                'alert-pill': true,
+                warn: alert.severity === 'critical',
+              }"
+            >
+              {{ alert.title }}
+            </div>
+            <div *ngIf="communityAlerts.length === 0" class="alert-pill">
+              No active alerts
+            </div>
+          </div>
+          <div style="margin-top: 10px">
+            <button class="btn-secondary" [routerLink]="['/chatbox']">
+              Open Chat
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI & Insights Corner -->
+    <section class="card ai-insights">
+      <h2>AI & Insights</h2>
+
+      <div class="ai-grid">
+        <div class="ai-card">
+          <h4>AI Collaboration Suggestions</h4>
+          <ul class="ai-list">
+            <li>Green Life — Nearby partner (2 km)</li>
+            <li>City Volunteers — Similar events</li>
+            <li>Health First — Good for joint clinics</li>
+          </ul>
+        </div>
+
+        <div class="ai-card">
+          <h4>Member Growth (Last 30 days)</h4>
+          <div class="mini-chart">
+            <!-- placeholder for small chart -->
+            <div class="chart-line"></div>
+          </div>
+          <div class="muted">
+            <p class="mute">+6% growth vs last month</p>
+            <p id="view" [routerLink]="['/chart']">View More</p>
+          </div>
+        </div>
+
+        <div class="ai-card moderation">
+          <h4>AI Moderation Alerts</h4>
+          <p>
+            {{ criticalAlertsCount }}
+            items pending review
+          </p>
+          <button class="btn-secondary">Review Content</button>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <!-- Immediate Action Center -->
-  <section class="cardt immediate-actions">
-    <div class="immediate-grid">
-      <div class="action-card urgent-requests">
-        <div class="metric">
-          <h2>8</h2>
-          <p>Pending Join Requests</p>
-        </div>
-        <div class="action-cta">
-          <button class="btn-primary">Review Requests</button>
-        </div>
-      </div>
-
-      <div class="action-card post-event">
-        <div class="metric">
-          <h2>Post</h2>
-          <p>New Event</p>
-        </div>
-        <div class="action-cta">
-          <button class="btn-primary">Post New Event</button>
-        </div>
-      </div>
-
-      <div class="action-card emergency-alert">
-        <div class="metric">
-          <h2>!</h2>
-          <p>Emergency Alert</p>
-        </div>
-        <div class="action-cta">
-          <button class="btn-alert">Send Emergency Alert</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Community Health Snapshot -->
-  <section class="card health-snapshot">
-    <h2>Community Health Snapshot</h2>
-    <div class="health-grid">
-      <div class="stat-card">
-        <h3>1,245</h3>
-        <p>Total Members</p>
-      </div>
-      <div class="stat-card">
-        <h3>4</h3>
-        <p>Upcoming Events (30 days)</p>
-      </div>
-      <div class="stat-card">
-        <h3>72%</h3>
-        <p>Engagement Rate</p>
-      </div>
-      <div class="stat-card">
-        <h3>85%</h3>
-        <p>Profile Completeness</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Upcoming Activities & Management -->
-  <section class="card upcoming-management">
-    <h2>Your Upcoming Events</h2>
-    <div class="upcoming-list">
-      <div class="upcoming-item">
-        <div class="upcoming-info">
-          <strong>🏖️ Beach Cleanup</strong>
-          <span>Oct 15, 2025 · RSVP: 48</span>
-        </div>
-        <div class="upcoming-actions">
-          <a href="#" class="view-btn">View</a>
-          <a href="#" class="edit-link">Edit</a>
-        </div>
-      </div>
-      <div class="upcoming-item">
-        <div class="upcoming-info">
-          <strong>🧒 Youth Forum 2025</strong>
-          <span>Nov 05, 2025 · RSVP: 32</span>
-        </div>
-        <div class="upcoming-actions">
-          <a href="#" class="view-btn">View</a>
-          <a href="#" class="edit-link">Edit</a>
-        </div>
-      </div>
-
-      <div class="upcoming-item">
-        <div class="upcoming-info">
-          <strong>🌳 Tree Planting Day</strong>
-          <span>Dec 12, 2025 · RSVP: 15</span>
-        </div>
-        <div class="upcoming-actions">
-          <a href="#" class="view-btn">View</a>
-          <a href="#" class="edit-link">Edit</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Member Management & Alerts -->
-  <section class="card member-management">
-    <h2>Member Management</h2>
-    <div class="members-grid">
-      <div class="members-overview">
-        <p><strong>Active:</strong> 1,120</p>
-        <p><strong>Pending Requests:</strong> 8</p>
-        <p><strong>Banned:</strong> 2</p>
-        <div class="member-actions">
-          <button class="btn-primary">View Members</button>
-          <button class="btn-secondary">Invite Members</button>
-        </div>
-      </div>
-
-      <div class="alerts-overview">
-        <strong>Community Alerts</strong>
-        <div class="alert-row">
-          <div class="alert-pill">Event Reminder</div>
-          <div class="alert-pill warn">Safety Notice</div>
-        </div>
-        <div style="margin-top: 10px">
-          <button class="btn-secondary" [routerLink]="['/chatbox']">
-            Open Chat
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- AI & Insights Corner -->
-  <section class="card ai-insights">
-    <h2>AI & Insights</h2>
-
-    <div class="ai-grid">
-      <div class="ai-card">
-        <h4>AI Collaboration Suggestions</h4>
-        <ul class="ai-list">
-          <li>Green Life — Nearby partner (2 km)</li>
-          <li>City Volunteers — Similar events</li>
-          <li>Health First — Good for joint clinics</li>
-        </ul>
-      </div>
-
-      <div class="ai-card">
-        <h4>Member Growth (Last 30 days)</h4>
-        <div class="mini-chart">
-          <!-- placeholder for small chart -->
-          <div class="chart-line"></div>
-        </div>
-        <div class="muted">
-          <p class="mute">+6% growth vs last month</p>
-          <p id="view" [routerLink]="['/chart']">View More</p>
-        </div>
-      </div>
-
-      <div class="ai-card moderation">
-        <h4>AI Moderation Alerts</h4>
-        <p>1 image pending review</p>
-        <button class="btn-secondary">Review Images</button>
-      </div>
-    </div>
-  </section>
   <app-footer></app-footer>
 </div>
