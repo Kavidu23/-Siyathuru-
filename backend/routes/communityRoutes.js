@@ -12,6 +12,7 @@ const {
 } = require("../controllers/communityController");
 
 const upload = require("../middleware/upload"); // multer + Cloudinary
+const authMiddleware = require("../middleware/authMiddleware");
 
 // CRUD routes
 router.get("/", getCommunities);            // Get all communities
@@ -21,6 +22,7 @@ router.get("/leader/:leaderId", getCommunitiesByLeader); // Get communities by l
 // CREATE new community with image upload
 router.post(
     "/",
+    authMiddleware,
     upload.fields([
         { name: "bannerImage", maxCount: 1 },
         { name: "profileImage", maxCount: 1 },

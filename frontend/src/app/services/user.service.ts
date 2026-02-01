@@ -7,10 +7,7 @@ import { Observable, BehaviorSubject, tap } from 'rxjs';
 })
 export class UserService {
   // ================= AUTH STATE =================
-  private authState = new BehaviorSubject<any>(
-    JSON.parse(localStorage.getItem('user') || 'null'),
-  );
-
+  private authState = new BehaviorSubject<any>(null); // no localStorage
   authState$ = this.authState.asObservable();
 
   // =============== BASE URL =====================
@@ -20,17 +17,14 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  // =============== AUTH METHODS =================
+  // ================= AUTH METHODS =================
 
   loginUser(payload: { email: string; password: string }): Observable<any> {
     return this.http
-      .post<any>(`${this.baseUrl}/login`, payload, {
-        withCredentials: true,
-      })
+      .post<any>(`${this.baseUrl}/login`, payload, { withCredentials: true })
       .pipe(
         tap((res) => {
-          // Save user & notify app
-          localStorage.setItem('user', JSON.stringify(res.user));
+          // ✅ Only update auth state, do NOT store sensitive info in localStorage
           this.authState.next(res.user);
         }),
       );
@@ -41,7 +35,6 @@ export class UserService {
       .post(`${this.baseUrl}/logout`, {}, { withCredentials: true })
       .pipe(
         tap(() => {
-          localStorage.removeItem('user');
           this.authState.next(null);
         }),
       );
@@ -51,8 +44,28 @@ export class UserService {
     return this.authState.value;
   }
 
-  // ============= OTHER EXISTING METHODS =============
+  isLoggedIn(): boolean {
+    return !!this.authState.value;
+  }
 
+  // ============= SESSION VALIDATION =============
+  validateSession(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/me`, { withCredentials: true }).pipe(
+      tap((res: any) => {
+        if (res.success && res.user) {
+          this.authState.next(res.user); // now navbar gets the user
+        } else {
+          this.clearSession();
+        }
+      }),
+    );
+  }
+
+  private clearSession() {
+    this.authState.next(null);
+  }
+
+  // ============= OTHER EXISTING METHODS =============
   createUser(user: any): Observable<any> {
     return this.http.post<any>(this.baseUrl, user);
   }
@@ -86,30 +99,5 @@ export class UserService {
 
   deleteUser(id: string): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/${id}`);
-  }
-
-  // ===== CHECK IF COOKIE STILL VALID =====
-  validateSession(): Observable<any> {
-    return this.http
-      .get(`${this.baseUrl}/me`, {
-        withCredentials: true,
-      })
-      .pipe(
-        tap({
-          error: () => {
-            // If backend says 401 → cookie expired
-            this.clearLocalSession();
-          },
-        }),
-      );
-  }
-
-  private clearLocalSession() {
-    localStorage.removeItem('user');
-    this.authState.next(null);
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.authState.value;
   }
 }

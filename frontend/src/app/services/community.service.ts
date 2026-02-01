@@ -32,6 +32,7 @@ export class CommunityService {
   createCommunityWithPayload(payload: any): Observable<any> {
     return this.http.post<any>(this.baseUrl, payload, {
       headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
     });
   }
 

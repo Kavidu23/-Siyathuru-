@@ -5,27 +5,34 @@ const sendEmail = require('../utils/sendEmail');
 // CREATE a new community
 const createCommunity = async (req, res) => {
     try {
-        const { name, type, mission, description, location, contact, media, isPrivate, members, leader, established } = req.body;
+        const { name, type, mission, description, location, contact, media, isPrivate, members, leader, established, bannerImage, profileImage } = req.body;
 
-        // Get image URLs from Cloudinary upload
-        const bannerImage = req.files?.bannerImage?.[0]?.path || null;
-        const profileImage = req.files?.profileImage?.[0]?.path || null;
+        // Get image URLs from req.body (uploaded separately by frontend) or from files if uploaded directly
+        const finalBannerImage = bannerImage || req.files?.bannerImage?.[0]?.path || null;
+        const finalProfileImage = profileImage || req.files?.profileImage?.[0]?.path || null;
 
         const newCommunity = await Community.create({
             name,
             type,
             mission,
             description,
-            bannerImage,
-            profileImage,
+            bannerImage: finalBannerImage,
+            profileImage: finalProfileImage,
             location,
             contact,
             media,
             isPrivate,
             members,
-            leader,
+            leader: req.user.id, // Set leader to the authenticated user
             established
         });
+
+        // Add the new community to the leader's joinedCommunities
+        try {
+            await User.findByIdAndUpdate(req.user.id, { $addToSet: { joinedCommunities: newCommunity._id } });
+        } catch (uErr) {
+            console.error('Failed to update leader joinedCommunities:', uErr.message);
+        }
 
         // ✅ Send email to contact
         if (contact?.email) {
@@ -141,9 +148,9 @@ const updateCommunity = async (req, res) => {
     try {
         const updateData = { ...req.body };
 
-        // Update images only if new files are uploaded
-        if (req.files?.bannerImage) updateData.bannerImage = req.files.bannerImage[0].path;
-        if (req.files?.profileImage) updateData.profileImage = req.files.profileImage[0].path;
+        // Update images from req.body (URLs) or from files if uploaded directly
+        if (updateData.bannerImage || req.files?.bannerImage) updateData.bannerImage = updateData.bannerImage || req.files.bannerImage[0].path;
+        if (updateData.profileImage || req.files?.profileImage) updateData.profileImage = updateData.profileImage || req.files.profileImage[0].path;
 
         const updatedCommunity = await Community.findByIdAndUpdate(
             req.params.id,

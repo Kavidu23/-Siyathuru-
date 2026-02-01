@@ -143,7 +143,7 @@ const loginUser = async (req, res) => {
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      sameSite: "Lax",
       maxAge: 60 * 60 * 1000, // 1 hour
     });
 
@@ -274,6 +274,34 @@ const logoutUser = async (req, res) => {
   }
 };
 
+const getMe = async (req, res) => {
+  try {
+    const token = req.cookies?.authToken;
+    if (!token) return res.status(401).json({ success: false });
+
+    // Verify JWT
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) return res.status(404).json({ success: false, error: "User not found" });
+
+    // Send only minimal safe info
+    res.status(200).json({
+      success: true,
+      user: {
+        _id: user._id,
+        name: user.name,
+        role: user.role,
+        profileImage: user.profileImage || null,
+        joinedCommunities: user.joinedCommunities || [],
+      },
+    });
+  } catch (err) {
+    res.status(401).json({ success: false, error: "Invalid token" });
+  }
+};
+
+
 /* EXPORTS */
 module.exports = {
   createUser,
@@ -284,4 +312,5 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
+  getMe,
 };

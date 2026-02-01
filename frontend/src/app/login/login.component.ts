@@ -42,6 +42,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.resetForm();
       }
     });
+
+    // ✅ Restore session on app load
+    this.userService.validateSession().subscribe();
   }
 
   ngOnDestroy() {
@@ -59,7 +62,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     return this.loginForm.controls;
   }
 
-  // Switch to signup modal
   openSignup() {
     this.modalService.closeLogin();
     this.modalService.openSignup();
@@ -96,15 +98,25 @@ export class LoginComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res: any) => {
           if (res && res.success) {
-            alert('Login successful!');
-
             this.closeLogin();
 
-            // ✅ JUST NAVIGATE – navbar updates automatically
+            const user = res.user;
+
+            // Leader without joined communities → redirect
+            if (
+              user.role === 'leader' &&
+              (!user.joinedCommunities || user.joinedCommunities.length === 0)
+            ) {
+              alert('Welcome Leader! Please create your first community.');
+              this.router.navigate(['/create-community']);
+              return;
+            }
+
+            // Regular navigation
+            alert('Login successful!');
             this.router.navigate(['/home']);
           }
         },
-
         error: (err: any) => {
           console.error('Login error:', err);
           alert(err?.error?.error || 'Login failed. Please try again.');

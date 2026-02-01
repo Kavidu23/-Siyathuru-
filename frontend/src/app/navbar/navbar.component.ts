@@ -10,11 +10,12 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [RouterLink, CommonModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
+  styleUrls: ['./navbar.component.css'], // ✅ fixed typo
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   userData: any = null;
+  isLoading = true; // optional: for page reload
 
   private authSub!: Subscription;
 
@@ -25,10 +26,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // 🔥 CORE FIX – Reactive listener
+    // 🔥 Listen to auth changes
     this.authSub = this.userService.authState$.subscribe((user) => {
       this.userData = user;
       this.isLoggedIn = !!user;
+      this.isLoading = false; // session validated
+    });
+
+    // ✅ Validate session on page reload
+    this.userService.validateSession().subscribe({
+      next: () => {
+        // authState$ already updated by validateSession()
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      },
     });
   }
 
@@ -45,18 +58,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   goToUserDashboard(): void {
-    // 1. Must be logged in
     if (!this.isLoggedIn || !this.userData) {
       return;
     }
 
-    // 2. Role based navigation
+    // Role-based navigation
     if (this.userData.role === 'leader') {
       this.router.navigate(['/community-dashboard']);
       return;
     }
 
-    // 3. Normal user
     this.router.navigate(['/user-dashboard']);
   }
 
