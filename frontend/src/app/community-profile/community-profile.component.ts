@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
@@ -8,6 +8,8 @@ import { CommunityService } from '../services/community.service';
 import { ActivatedRoute } from '@angular/router';
 import { ModalService } from '../services/modal.service';
 import { PrivateCommunityService } from '../services/privateCommunity.service';
+import { UserService } from '../services/user.service';
+import { Subscription } from 'rxjs';
 
 // Fix Leaflet icon issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -25,26 +27,46 @@ L.Icon.Default.mergeOptions({
   templateUrl: './community-profile.component.html',
   styleUrls: ['./community-profile.component.css'],
 })
-export class CommunityProfileComponent implements OnInit, AfterViewInit {
+export class CommunityProfileComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   map!: L.Map;
   community: any = null;
   selectedImage: string | null = null;
 
+  user: any = null;
+
   isMember = false;
   isRequestPending = false;
+
+  private subs: Subscription[] = [];
 
   constructor(
     private communityService: CommunityService,
     private privateCommunityService: PrivateCommunityService,
     private route: ActivatedRoute,
     private modalService: ModalService,
+    private userService: UserService,
   ) {}
 
-  // INIT
+  // ================= INIT =================
+
   ngOnInit() {
     const communityId = this.route.snapshot.paramMap.get('id');
     if (!communityId) return;
 
+    // 1. Listen to auth state
+    const authSub = this.userService.authState$.subscribe((u) => {
+      this.user = u;
+      this.checkMembershipState();
+    });
+
+    this.subs.push(authSub);
+
+    // 2. Validate session on refresh
+    this.subs.push(this.userService.validateSession().subscribe());
+
+    // 3. Load community
     this.communityService.getCommunityById(communityId).subscribe({
       next: (res) => {
         this.community = res.data;
@@ -57,25 +79,27 @@ export class CommunityProfileComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {}
 
-  // MEMBERSHIP + REQUEST STATE
-  private checkMembershipState() {
-    const stored = localStorage.getItem('user');
-    const user = stored ? JSON.parse(stored) : null;
+  ngOnDestroy(): void {
+    this.subs.forEach((s) => s.unsubscribe());
+  }
 
-    if (!user || !this.community) {
+  // ============ MEMBERSHIP STATE ============
+
+  private checkMembershipState() {
+    if (!this.user || !this.community) {
       this.isMember = false;
       this.isRequestPending = false;
       return;
     }
 
-    const userId = String(user._id);
+    const userId = String(this.user._id);
 
-    // MEMBER
+    // ---- MEMBER CHECK ----
     this.isMember = (this.community.members || []).some(
       (m: any) => String(m?._id || m) === userId,
     );
 
-    // REQUEST PENDING (PRIVATE ONLY)
+    // ---- REQUEST PENDING (PRIVATE) ----
     if (this.community.isPrivate && !this.isMember) {
       this.isRequestPending = (this.community.joinRequests || []).some(
         (r: any) => String(r.user?._id || r.user) === userId,
@@ -85,66 +109,53 @@ export class CommunityProfileComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // PUBLIC COMMUNITY JOIN (ALREADY CORRECT)
+  // ============ PUBLIC JOIN ============
+
   joinCommunity() {
-    try {
-      const stored = localStorage.getItem('user');
-      const user = stored ? JSON.parse(stored) : null;
-
-      if (!user) {
-        this.modalService.openLogin();
-        return;
-      }
-
-      const communityId = this.community?._id;
-      if (!communityId) return;
-
-      this.communityService.joinCommunity(communityId, user._id).subscribe({
-        next: (res: any) => {
-          if (!res?.success) {
-            alert(res?.message || 'Could not join community');
-            return;
-          }
-
-          // 1. Update Component State
-          if (res.data) {
-            this.community = res.data;
-          } else if (!this.community.isPrivate) {
-            this.community.members = [
-              ...(this.community.members || []),
-              user._id,
-            ];
-          }
-
-          // 2. Update LocalStorage (using the 'user' we already parsed)
-          user.joinedCommunities = user.joinedCommunities || [];
-          const isAlreadyMember = user.joinedCommunities.some(
-            (id: string) => String(id) === String(communityId),
-          );
-
-          if (!isAlreadyMember) {
-            user.joinedCommunities.push(String(communityId));
-            localStorage.setItem('user', JSON.stringify(user));
-          }
-
-          this.checkMembershipState();
-          alert(res.message || 'Joined community');
-        },
-        error: (err) => {
-          console.error('Join error', err);
-          alert(err?.error?.error || 'Failed to join community');
-        },
-      });
-    } catch (err) {
-      console.error('Unexpected error in joinCommunity:', err);
+    if (!this.user) {
+      this.modalService.openLogin();
+      return;
     }
+
+    const communityId = this.community?._id;
+    if (!communityId) return;
+
+    this.communityService.joinCommunity(communityId, this.user._id).subscribe({
+      next: (res: any) => {
+        if (!res?.success) {
+          alert(res?.message || 'Could not join community');
+          return;
+        }
+
+        if (res.data) {
+          this.community = res.data;
+        }
+
+        // Update auth state user (not localStorage!)
+        const updatedUser = {
+          ...this.user,
+          joinedCommunities: [
+            ...(this.user.joinedCommunities || []),
+            communityId,
+          ],
+        };
+
+        this.userService['authState'].next(updatedUser);
+
+        this.checkMembershipState();
+        alert(res.message || 'Joined community');
+      },
+
+      error: (err) => {
+        alert(err?.error?.error || 'Failed to join community');
+      },
+    });
   }
 
-  leaveCommunity() {
-    const stored = localStorage.getItem('user');
-    const user = stored ? JSON.parse(stored) : null;
+  // ============ LEAVE ============
 
-    if (!user) {
+  leaveCommunity() {
+    if (!this.user) {
       this.modalService.openLogin();
       return;
     }
@@ -152,46 +163,39 @@ export class CommunityProfileComponent implements OnInit, AfterViewInit {
     const communityId = this.community?._id;
     if (!communityId || !confirm('Are you sure you want to leave?')) return;
 
-    this.communityService.leaveCommunity(communityId, user._id).subscribe({
+    this.communityService.leaveCommunity(communityId, this.user._id).subscribe({
       next: (res: any) => {
         if (!res?.success) {
           alert(res?.message || 'Could not leave community');
           return;
         }
 
-        // 1. Update Component State
         if (res.data) {
           this.community = res.data;
-        } else {
-          const userIdStr = String(user._id);
-          this.community.members = (this.community.members || []).filter(
-            (m: any) => String(m?._id || m) !== userIdStr,
-          );
         }
 
-        // 2. Update LocalStorage (using the 'user' object we already have)
-        if (user.joinedCommunities) {
-          const cidStr = String(communityId);
-          user.joinedCommunities = user.joinedCommunities.filter(
-            (id: any) => String(id) !== cidStr,
-          );
-          localStorage.setItem('user', JSON.stringify(user));
-        }
+        // Update auth state
+        const updatedUser = {
+          ...this.user,
+          joinedCommunities: (this.user.joinedCommunities || []).filter(
+            (id: any) => String(id) !== String(communityId),
+          ),
+        };
+
+        this.userService['authState'].next(updatedUser);
 
         this.checkMembershipState();
         alert(res.message || 'Left community');
       },
-      error: (err) => {
-        console.error('Leave error', err);
-        alert(err?.error?.error || 'Failed to leave community');
-      },
+
+      error: () => alert('Failed to leave community'),
     });
   }
 
-  // PRIVATE COMMUNITY – SEND REQUEST
+  // ============ PRIVATE REQUEST ============
+
   requestJoinCommunity() {
-    const stored = localStorage.getItem('user');
-    if (!stored) {
+    if (!this.user) {
       this.modalService.openLogin();
       return;
     }
@@ -200,46 +204,42 @@ export class CommunityProfileComponent implements OnInit, AfterViewInit {
       next: (res: any) => {
         alert(res.message || 'Join request sent');
 
-        // FIX: Update local state immediately
         this.isRequestPending = true;
 
-        // Optional: Push the user ID to the local list so checkMembershipState works if called
-        const user = JSON.parse(stored);
         if (!this.community.joinRequests) this.community.joinRequests = [];
-        this.community.joinRequests.push({ user: user._id });
+
+        this.community.joinRequests.push({
+          user: this.user._id,
+        });
       },
-      error: (err) => {
-        console.error(err);
-        alert(err?.error?.error || 'Failed to send join request');
-      },
+
+      error: (err) => alert(err?.error?.error || 'Failed to send join request'),
     });
   }
 
-  // PRIVATE COMMUNITY – CANCEL REQUEST
   cancelJoinRequest() {
-    const stored = localStorage.getItem('user');
-    if (!stored) return;
-
-    const user = JSON.parse(stored);
+    if (!this.user) return;
 
     this.privateCommunityService
       .cancelJoinRequest(this.community._id)
       .subscribe({
         next: (res: any) => {
           alert(res.message || 'Join request cancelled');
-          // Update community joinRequests locally
+
           this.community.joinRequests = (
             this.community.joinRequests || []
           ).filter(
-            (r: any) => String(r.user?._id || r.user) !== String(user._id),
+            (r: any) => String(r.user?._id || r.user) !== String(this.user._id),
           );
+
           this.checkMembershipState();
         },
         error: () => alert('Failed to cancel join request'),
       });
   }
 
-  // MAP
+  // ============ MAP ============
+
   initMap() {
     if (this.map) this.map.remove();
 
@@ -247,6 +247,7 @@ export class CommunityProfileComponent implements OnInit, AfterViewInit {
     const lon = this.community?.location?.coordinates?.longitude || 80.7718;
 
     this.map = L.map('map').setView([lat, lon], 13);
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
@@ -258,7 +259,8 @@ export class CommunityProfileComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // IMAGE PREVIEW
+  // ============ IMAGE PREVIEW ============
+
   openImage(img: string) {
     this.selectedImage = img;
   }
