@@ -68,6 +68,20 @@ h2 {
   margin-bottom: 12px;
 }
 
+/* COMMUNITY SELECTOR */
+.community-selector {
+  margin-bottom: 20px;
+}
+
+.community-select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  min-width: 200px;
+}
+
 .profile-info .profile-pic {
   width: 70px;
   height: 70px;

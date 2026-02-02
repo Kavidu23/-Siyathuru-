@@ -9,6 +9,7 @@ import { CommunityDashboardComponent } from './community-dashboard/community-das
 import { ChatboxComponent } from './chatbox/chatbox.component';
 import { ChartDashboardComponent } from './charts/charts.component';
 import { SuperadminComponent } from './superadmin/superadmin.component';
+import { ManagementComponent } from './management/management.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' }, // redirect '/' to '/home'
@@ -22,5 +23,6 @@ export const routes: Routes = [
   { path: 'chatbox', component: ChatboxComponent },
   { path: 'chart', component: ChartDashboardComponent },
   { path: 'superadmin', component: SuperadminComponent },
+  { path: 'management', component: ManagementComponent },
   { path: '**', redirectTo: 'home' },
 ];

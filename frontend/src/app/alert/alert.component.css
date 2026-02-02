@@ -1,0 +1,75 @@
+.alert-create-page {
+  padding: var(--spacing-md);
+}
+
+.form-title {
+  font-family: "Oswald", sans-serif;
+  font-size: var(--header--font--size);
+  margin-bottom: var(--spacing-md);
+}
+
+.alert-form-card {
+  background: var(--background-color);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--box-shadow);
+}
+
+/* FORM GROUP */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+  font-size: var(--main--font--size);
+  margin-bottom: var(--margin--sm);
+  font-weight: var(--font--weight);
+}
+
+/* INPUTS */
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-input);
+  border: 1px solid var(--border-color-light);
+  font-size: var(--main--font--size);
+}
+
+.form-group textarea {
+  height: 120px;
+  resize: none;
+}
+
+/* TOGGLE */
+.toggle {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* ACTION BUTTONS */
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: var(--border-radius-button);
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: var(--primary-color-light);
+  border: none;
+  padding: 10px 16px;
+  border-radius: var(--border-radius-button);
+  cursor: pointer;
+}
