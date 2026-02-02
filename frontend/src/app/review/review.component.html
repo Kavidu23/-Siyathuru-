@@ -1,40 +1,42 @@
 <div class="review-body">
   <h2 class="section-title">Join Requests</h2>
 
-  <!-- REQUEST 1 -->
-  <div class="request-card">
+  <!-- LOADING -->
+  <p *ngIf="isLoading">Loading requests...</p>
+
+  <!-- ERROR -->
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <!-- REQUEST LIST -->
+  <div class="request-card" *ngFor="let req of joinRequests">
     <div class="user-info">
       <div class="user-text">
-        <strong>John Perera</strong>
+        <strong>{{ req.user.name }}</strong>
+
         <p class="request-msg">
-          Hi, I would like to join this community to help with events.
+          {{ req.user.email }}
         </p>
+
+        <small>
+          Requested on:
+          {{ req.createdAt | date: "medium" }}
+        </small>
       </div>
     </div>
 
     <div class="action-area">
-      <button class="btn-primary">Accept</button>
-      <button class="btn-danger">Reject</button>
+      <button class="btn-primary" (click)="acceptRequest(req.user._id)">
+        Accept
+      </button>
+
+      <button class="btn-danger" (click)="rejectRequest(req.user._id)">
+        Reject
+      </button>
     </div>
   </div>
 
-  <!-- REQUEST 2 -->
-  <div class="request-card">
-    <div class="user-info">
-      <div class="user-text">
-        <strong>Sarah Fernando</strong>
-        <p class="request-msg">
-          Interested in volunteering and community projects.
-        </p>
-      </div>
-    </div>
-
-    <div class="action-area">
-      <button class="btn-primary">Accept</button>
-      <button class="btn-danger">Reject</button>
-    </div>
-  </div>
-
-  <!-- EMPTY STATE (show only when no cards) -->
-  <p class="empty">No pending requests</p>
+  <!-- EMPTY STATE -->
+  <p class="empty" *ngIf="!isLoading && joinRequests.length === 0">
+    No pending requests
+  </p>
 </div>
