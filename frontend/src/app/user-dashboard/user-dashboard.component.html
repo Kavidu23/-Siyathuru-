@@ -32,6 +32,46 @@
     </div>
   </section>
 
+  <!--Alerts-->
+  <section class="card events">
+    <h2>Community Alerts</h2>
+    <div class="alert-list">
+      <!-- ALERT CARD -->
+      <div class="alert-card" *ngFor="let al of alerts">
+        <div class="alert-header">
+          <b>Title:</b>
+          {{ al.title || "Community Alert" }}
+        </div>
+
+        <!-- COMMUNITY NAME -->
+        <p class="severity">
+          <b>Severity:</b>
+          {{ al.severity }}
+        </p>
+
+        <!-- COMMUNITY NAME -->
+        <p class="community-name">
+          <b>From:</b>
+          {{ al.communityId?.name || "Your Community" }}
+        </p>
+
+        <!-- MESSAGE -->
+        <p class="alert-message">
+          <b>Message:</b>
+          {{ al.message }}
+        </p>
+
+        <!-- DATE -->
+        <small class="date">
+          <b>Date:</b>
+          {{ al.createdAt | date: "medium" }}
+        </small>
+      </div>
+      <!-- EMPTY STATE -->
+      <div *ngIf="alerts.length === 0" class="empty">No active alerts</div>
+    </div>
+  </section>
+
   <!--Events -->
   <section class="card events">
     <h2>My Upcoming Events</h2>

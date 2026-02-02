@@ -1,4 +1,5 @@
 const Alert = require("../models/alert"); // alert model path
+const User = require("../models/user"); // Ensure User model is imported
 
 // Create a new alert
 const createAlert = async (req, res) => {
@@ -59,6 +60,48 @@ const getAlerts = async (req, res) => {
             success: false,
             error: "Failed to fetch alerts",
             details: err.message
+        });
+    }
+};
+
+const getAlertByUserId = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        // 1. Fetch user with their joined communities
+        const user = await User.findById(userId).populate('joinedCommunities', 'name leader members');
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: "User not found",
+            });
+        }
+
+        // 2. Fetch alerts for communities the user belongs to
+        const alerts = await Alert.find({
+            communityId: { $in: user.joinedCommunities.map(c => c._id) },
+            isActive: true, // optional: only active alerts
+        })
+            .populate({
+                path: 'communityId',
+                select: 'name profileImage leader members', // populate community details
+                populate: { path: 'leader members', select: 'name email' } // nested populate for leader & members
+            })
+            .sort({ createdAt: -1 }); // newest first
+
+        res.status(200).json({
+            success: true,
+            count: alerts.length,
+            message: "User-specific alerts fetched successfully",
+            data: alerts,
+        });
+    } catch (err) {
+        console.error("Error fetching user alerts:", err);
+        res.status(500).json({
+            success: false,
+            error: "Failed to fetch user alerts",
+            details: err.message,
         });
     }
 };
@@ -151,5 +194,6 @@ module.exports = {
     getAlerts,
     getAlertById,
     updateAlert,
-    deleteAlert
+    deleteAlert,
+    getAlertByUserId
 };

@@ -65,4 +65,11 @@ export class AlertService {
       withCredentials: true,
     });
   }
+
+  // Get alerts for communities joined by a specific user
+  getAlertsByUserId(userId: string): Observable<AlertResponse> {
+    return this.http.get<AlertResponse>(`${this.baseUrl}/user/${userId}`, {
+      withCredentials: true,
+    });
+  }
 }
