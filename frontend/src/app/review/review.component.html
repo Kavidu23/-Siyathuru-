@@ -16,10 +16,10 @@
 
     <div class="action-area">
       <button class="btn-primary" (click)="acceptRequest(req.user._id)">
-        Accept
+        {{ isLoading ? "Accepting...;" : "Accept" }}
       </button>
       <button class="btn-danger" (click)="rejectRequest(req.user._id)">
-        Reject
+        {{ isLoading ? "Rejecting...;" : "Reject" }}
       </button>
     </div>
   </div>

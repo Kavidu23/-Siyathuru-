@@ -5,36 +5,48 @@
     <!-- TITLE -->
     <div class="form-group">
       <label>Alert Title</label>
-      <input type="text" placeholder="Enter alert title" />
+      <input
+        type="text"
+        placeholder="Enter alert title"
+        [(ngModel)]="form.title"
+      />
     </div>
 
     <!-- MESSAGE -->
     <div class="form-group">
       <label>Message</label>
-      <textarea placeholder="Enter alert message"></textarea>
+      <textarea
+        placeholder="Enter alert message"
+        [(ngModel)]="form.message"
+      ></textarea>
     </div>
 
     <!-- SEVERITY -->
     <div class="form-group">
       <label>Severity</label>
-
-      <select>
-        <option>info</option>
-        <option>warning</option>
-        <option>critical</option>
+      <select [(ngModel)]="form.severity">
+        <option value="info">info</option>
+        <option value="warning">warning</option>
+        <option value="critical">critical</option>
       </select>
     </div>
 
     <!-- ACTIVE -->
     <div class="form-group toggle">
       <label>Active</label>
-      <input type="checkbox" checked />
+      <input type="checkbox" [(ngModel)]="form.isActive" />
     </div>
 
     <!-- BUTTON -->
     <div class="form-actions">
-      <button class="btn-primary">Create Alert</button>
-      <button class="btn-secondary">Cancel</button>
+      <button
+        class="btn-primary"
+        (click)="createAlert()"
+        [disabled]="isLoading"
+      >
+        {{ isLoading ? "Creating..." : "Create Alert" }}
+      </button>
+      <button class="btn-secondary" (click)="resetForm()">Cancel</button>
     </div>
   </div>
 </div>
