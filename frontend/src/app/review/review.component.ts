@@ -13,7 +13,7 @@ interface JoinRequest {
     name: string;
     email: string;
   };
-  createdAt: string;
+  requestedAt: string;
 }
 
 @Component({
@@ -21,14 +21,13 @@ interface JoinRequest {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './review.component.html',
-  styleUrl: './review.component.css',
+  styleUrls: ['./review.component.css'],
 })
 export class ReviewComponent implements OnInit, OnDestroy {
   joinRequests: JoinRequest[] = [];
   communityId: string = '';
 
   isLoading = false;
-  errorMessage = '';
 
   private routeSub!: Subscription;
 
@@ -39,15 +38,13 @@ export class ReviewComponent implements OnInit, OnDestroy {
   ) {}
 
   // ===================== LIFECYCLE =====================
-
   ngOnInit(): void {
     this.routeSub = this.route.queryParams.subscribe((params) => {
       this.communityId = params['communityId'];
-
       if (this.communityId) {
         this.loadJoinRequests();
       } else {
-        this.errorMessage = 'No community selected';
+        alert('No community selected for review.');
       }
     });
   }
@@ -57,37 +54,29 @@ export class ReviewComponent implements OnInit, OnDestroy {
   }
 
   // ===================== LOAD REQUESTS =====================
-
   loadJoinRequests(): void {
     if (!this.communityId) return;
 
     this.isLoading = true;
-    this.errorMessage = '';
 
     this.privateCommunityService.getJoinRequests(this.communityId).subscribe({
       next: (response) => {
         if (response?.success) {
           this.joinRequests = response.joinRequests || [];
         } else {
-          this.errorMessage = response?.error || 'Failed to load join requests';
+          alert('Failed to load join requests.');
         }
-
         this.isLoading = false;
       },
-
       error: (err) => {
         console.error('Error loading join requests:', err);
-
-        this.errorMessage =
-          err?.error?.message || 'Failed to load join requests';
-
+        alert(err?.error?.message || 'Failed to load join requests.');
         this.isLoading = false;
       },
     });
   }
 
   // ===================== ACCEPT =====================
-
   acceptRequest(userId: string): void {
     if (!this.communityId) return;
 
@@ -99,21 +88,19 @@ export class ReviewComponent implements OnInit, OnDestroy {
             this.joinRequests = this.joinRequests.filter(
               (req) => req.user._id !== userId,
             );
+            alert('Request approved successfully! ');
           } else {
-            this.errorMessage = response?.error || 'Failed to accept request';
+            alert('Failed to accept request ');
           }
         },
-
         error: (err) => {
           console.error('Error accepting request:', err);
-
-          this.errorMessage = err?.error?.message || 'Failed to accept request';
+          alert(err?.error?.message || 'Failed to accept request ');
         },
       });
   }
 
   // ===================== REJECT =====================
-
   rejectRequest(userId: string): void {
     if (!this.communityId) return;
 
@@ -125,15 +112,14 @@ export class ReviewComponent implements OnInit, OnDestroy {
             this.joinRequests = this.joinRequests.filter(
               (req) => req.user._id !== userId,
             );
+            alert('Request rejected successfully! ');
           } else {
-            this.errorMessage = response?.error || 'Failed to reject request';
+            alert('Failed to reject request ');
           }
         },
-
         error: (err) => {
           console.error('Error rejecting request:', err);
-
-          this.errorMessage = err?.error?.message || 'Failed to reject request';
+          alert(err?.error?.message || 'Failed to reject request ');
         },
       });
   }
