@@ -44,7 +44,10 @@ const createAlert = async (req, res) => {
 // Read all alerts
 const getAlerts = async (req, res) => {
     try {
-        const alerts = await Alert.find();
+        const alerts = await Alert.find().populate({
+            path: 'communityId',
+            select: 'name leader members', // only needed fields
+        });
 
         res.status(200).json({
             success: true,
@@ -59,6 +62,7 @@ const getAlerts = async (req, res) => {
         });
     }
 };
+
 
 // Read single alert by ID
 const getAlertById = async (req, res) => {
@@ -140,6 +144,7 @@ const deleteAlert = async (req, res) => {
         });
     }
 };
+
 
 module.exports = {
     createAlert,
