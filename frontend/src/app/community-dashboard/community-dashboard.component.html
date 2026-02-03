@@ -93,14 +93,36 @@
     <h2>Your Upcoming Events</h2>
 
     <div class="upcoming-list">
-      <div class="no-events">
+      <!-- NO EVENTS -->
+      <div class="no-events" *ngIf="upcomingEvents.length === 0">
         <p>
           No upcoming events scheduled.
-
           <a class="create-link" (click)="goToCreateEvent()">
             Create one now
           </a>
         </p>
+      </div>
+
+      <!-- EVENTS LIST -->
+      <div class="event-card" *ngFor="let ev of upcomingEvents">
+        <b>Title:</b>
+        {{ ev.title }}
+        <br />
+
+        <b>Description:</b>
+        {{ ev.description }}
+        <br />
+
+        <b>Location:</b>
+        {{ ev.location }}
+        <br />
+
+        <b>Date & Time:</b>
+        {{ ev.eventDate | date: "mediumDate" }} ⏰ {{ ev.eventTime }}
+        <br />
+
+        <b>Attendees:</b>
+        👥 {{ ev.attendees.length || 0 }}
       </div>
     </div>
   </section>

@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FooterComponent } from '../footer/footer.component';
 import { CommunityService } from '../services/community.service';
 import { UserService } from '../services/user.service';
+import { EventService, Event } from '../services/event.service';
 
 interface Community {
   _id: string;
@@ -23,6 +24,7 @@ interface Community {
 export class CommunityDashboardComponent implements OnInit {
   currentUser: any;
   selectedCommunity: Community | null = null;
+  upcomingEvents: Event[] = [];
 
   isLoading = true;
   errorMessage = '';
@@ -32,6 +34,7 @@ export class CommunityDashboardComponent implements OnInit {
   constructor(
     private communityService: CommunityService,
     private userService: UserService,
+    private eventService: EventService,
     private router: Router,
   ) {}
 
@@ -58,6 +61,9 @@ export class CommunityDashboardComponent implements OnInit {
         if (mine) {
           this.selectedCommunity = mine;
           this.totalMembers = mine.members?.length || 0;
+
+          // 👉 NEW
+          this.loadUpcomingEvents(mine._id);
         }
 
         this.isLoading = false;
@@ -71,6 +77,75 @@ export class CommunityDashboardComponent implements OnInit {
   }
 
   // -------- NAVIGATION --------
+  loadUpcomingEvents(communityId: string) {
+    this.eventService.getAllEvents().subscribe({
+      next: (res) => {
+        const allEvents = res.data || [];
+
+        const now = new Date();
+
+        this.upcomingEvents = allEvents.filter((ev) => {
+          // 1️⃣ Match community
+          if (ev.communityId !== communityId) return false;
+
+          // 2️⃣ Build real datetime from eventDate + eventTime
+          // Extract date part from ISO string and combine with time
+          const eventDateStr = ev.eventDate.split('T')[0];
+          const eventDateTime = new Date(eventDateStr + 'T' + ev.eventTime);
+
+          // 3️⃣ Only future
+          return eventDateTime >= now;
+        });
+      },
+
+      error: () => {
+        console.log('Failed to load events');
+      },
+    });
+  }
+
+  private buildEventDateTime(
+    eventDate: string,
+    eventTime?: string,
+  ): Date | null {
+    if (!eventDate) return null;
+
+    const date = new Date(eventDate);
+    if (Number.isNaN(date.getTime())) return null;
+
+    if (!eventTime) return date;
+
+    const timeMatch = String(eventTime)
+      .trim()
+      .match(/^(\d{1,2}):(\d{2})\s*([AaPp][Mm])?$/);
+    if (!timeMatch) return date;
+
+    let hours = Number(timeMatch[1]);
+    const minutes = Number(timeMatch[2]);
+    const meridiem = timeMatch[3]?.toLowerCase();
+
+    if (meridiem) {
+      if (hours === 12) {
+        hours = meridiem === 'am' ? 0 : 12;
+      } else if (meridiem === 'pm') {
+        hours += 12;
+      }
+    }
+
+    if (
+      Number.isNaN(hours) ||
+      Number.isNaN(minutes) ||
+      hours < 0 ||
+      hours > 23 ||
+      minutes < 0 ||
+      minutes > 59
+    ) {
+      return date;
+    }
+
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  }
 
   goToRequests() {
     this.router.navigate(['/management'], {
