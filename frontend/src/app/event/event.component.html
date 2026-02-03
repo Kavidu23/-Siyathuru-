@@ -1,20 +1,18 @@
 <div class="event-create-page">
-  <h2>Create Event</h2>
+  <h2 class="section-title">Create Event</h2>
 
   <div class="event-form-card">
-    <!-- COMMUNITY ID -->
+    <!-- COMMUNITY (READ ONLY) -->
     <div class="form-group">
       <label>Community ID</label>
-      <input
-        type="text"
-        [(ngModel)]="form.communityId"
-        placeholder="Community ID"
-      />
+
+      <input type="text" [(ngModel)]="form.communityId" readonly />
     </div>
 
     <!-- TITLE -->
     <div class="form-group">
       <label>Event Title</label>
+
       <input
         type="text"
         [(ngModel)]="form.title"
@@ -25,6 +23,7 @@
     <!-- DESCRIPTION -->
     <div class="form-group">
       <label>Description</label>
+
       <textarea
         [(ngModel)]="form.description"
         placeholder="Enter event description"
@@ -34,6 +33,7 @@
     <!-- LOCATION -->
     <div class="form-group">
       <label>Location</label>
+
       <input
         type="text"
         [(ngModel)]="form.location"
@@ -44,25 +44,26 @@
     <!-- DATE -->
     <div class="form-group">
       <label>Event Date</label>
+
       <input type="date" [(ngModel)]="form.eventDate" />
     </div>
 
     <!-- TIME -->
     <div class="form-group">
       <label>Event Time</label>
+
       <input type="time" [(ngModel)]="form.eventTime" />
     </div>
 
+    <!-- ACTIONS -->
     <div class="form-actions">
       <button
         class="btn-primary"
         (click)="createEvent()"
         [disabled]="isLoading"
       >
-        Create Event
+        {{ isLoading ? "Creating..." : "Create Event" }}
       </button>
-
-      <button class="btn-secondary" (click)="resetForm()">Cancel</button>
     </div>
   </div>
 </div>

@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+
 import { EventService, EventPayload } from '../services/event.service';
 
 @Component({
@@ -10,12 +12,15 @@ import { EventService, EventPayload } from '../services/event.service';
   templateUrl: './event.component.html',
   styleUrl: './event.component.css',
 })
-export class EventComponent {
-  constructor(private eventService: EventService) {}
+export class EventComponent implements OnInit {
+  constructor(
+    private eventService: EventService,
+    private route: ActivatedRoute,
+  ) {}
 
   // FORM MODEL
   form: EventPayload = {
-    communityId: '', // YOU MUST SET THIS
+    communityId: '',
     title: '',
     description: '',
     location: '',
@@ -24,12 +29,29 @@ export class EventComponent {
     attendees: [],
   };
 
-  message = '';
   isLoading = false;
 
+  // =============================
+
+  ngOnInit(): void {
+    // GET COMMUNITY ID FROM URL
+    this.route.queryParams.subscribe((params) => {
+      if (params['communityId']) {
+        this.form.communityId = params['communityId'];
+      }
+    });
+  }
+
+  // =============================
+
   createEvent() {
-    if (!this.form.title || !this.form.communityId) {
-      alert('Title and Community are required');
+    if (!this.form.communityId) {
+      alert('Community ID missing! Open from community page.');
+      return;
+    }
+
+    if (!this.form.title) {
+      alert('Title is required');
       return;
     }
 
@@ -41,17 +63,20 @@ export class EventComponent {
         this.resetForm();
         this.isLoading = false;
       },
+
       error: (err) => {
         console.log(err);
-        alert(this.message || 'Error creating event');
+        alert(err?.error?.message || 'Error creating event');
         this.isLoading = false;
       },
     });
   }
 
+  // =============================
+
   resetForm() {
     this.form = {
-      communityId: '',
+      communityId: this.form.communityId, // KEEP COMMUNITY ID
       title: '',
       description: '',
       location: '',
@@ -59,13 +84,5 @@ export class EventComponent {
       eventTime: '',
       attendees: [],
     };
-  }
-
-  // Convert comma IDs → array
-  setAttendees(value: string) {
-    this.form.attendees = value
-      .split(',')
-      .map((v) => v.trim())
-      .filter((v) => v);
   }
 }

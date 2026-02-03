@@ -37,51 +37,92 @@ export class EventService {
 
   constructor(private http: HttpClient) {}
 
+  // ===================== CREATE =====================
+
   createEvent(data: EventPayload): Observable<any> {
     return this.http.post(this.baseUrl, data, { withCredentials: true });
   }
+
+  // ===================== READ =====================
 
   getEvents(): Observable<{
     success: boolean;
     message: string;
     data: Event[];
   }> {
-    return this.http.get<{ success: boolean; message: string; data: Event[] }>(
-      this.baseUrl,
-      { withCredentials: true },
-    );
+    return this.http.get<{
+      success: boolean;
+      message: string;
+      data: Event[];
+    }>(this.baseUrl, { withCredentials: true });
   }
 
-  getAllEvents(): Observable<{
-    success: boolean;
-    message: string;
-    data: Event[];
-  }> {
+  // Alias
+  getAllEvents() {
     return this.getEvents();
   }
 
-  getEventById(id: string): Observable<{ success: boolean; data: Event }> {
-    return this.http.get<{ success: boolean; data: Event }>(
-      `${this.baseUrl}/${id}`,
-      { withCredentials: true },
-    );
+  getEventById(id: string): Observable<{
+    success: boolean;
+    data: Event;
+  }> {
+    return this.http.get<{
+      success: boolean;
+      data: Event;
+    }>(`${this.baseUrl}/${id}`, { withCredentials: true });
   }
+
+  // ===================== UPDATE =====================
 
   updateEvent(
     id: string,
     data: Partial<Event>,
-  ): Observable<{ success: boolean; message: string; data: Event }> {
-    return this.http.put<{ success: boolean; message: string; data: Event }>(
-      `${this.baseUrl}/${id}`,
-      data,
+  ): Observable<{
+    success: boolean;
+    message: string;
+    data: Event;
+  }> {
+    return this.http.put<{
+      success: boolean;
+      message: string;
+      data: Event;
+    }>(`${this.baseUrl}/${id}`, data, { withCredentials: true });
+  }
+
+  // ===================== DELETE =====================
+
+  deleteEvent(id: string): Observable<{
+    success: boolean;
+    message: string;
+  }> {
+    return this.http.delete<{
+      success: boolean;
+      message: string;
+    }>(`${this.baseUrl}/${id}`, { withCredentials: true });
+  }
+
+  joinEvent(eventId: string, userId: string) {
+    return this.http.post(
+      `${this.baseUrl}/join`,
+      {
+        eventId,
+        userId,
+      },
       { withCredentials: true },
     );
   }
 
-  deleteEvent(id: string): Observable<{ success: boolean; message: string }> {
-    return this.http.delete<{ success: boolean; message: string }>(
-      `${this.baseUrl}/${id}`,
-      { withCredentials: true },
-    );
+  getEventsByUserId(userId: string): Observable<{
+    success: boolean;
+    count: number;
+    data: Event[];
+  }> {
+    return this.http.get<{
+      success: boolean;
+      count: number;
+      data: Event[];
+    }>(`${this.baseUrl}/user/${userId}`, {
+      withCredentials: true,
+    });
   }
 }

@@ -75,15 +75,48 @@
   <!--Events -->
   <section class="card events">
     <h2>My Upcoming Events</h2>
+
     <div class="event-list">
       <div class="event-card" *ngFor="let ev of upcomingEvents">
-        <h4>{{ ev.title || "Event" }}</h4>
-        <p>{{ ev.date | date: "mediumDate" }} · {{ ev.communityName || "" }}</p>
-        <a class="view-btn" (click)="viewEvent(ev)">View</a>
+        <b>Title:</b>
+        {{ ev.title }}
+
+        <p>
+          <b>Community:</b>
+          {{ ev.communityId?.name || "My Community" }}
+        </p>
+
+        <p>
+          <b>Date:</b>
+          {{ ev.eventDate | date: "mediumDate" }}
+        </p>
+
+        <p>
+          <b>Time:</b>
+          {{ ev.eventTime }}
+        </p>
+
+        <p>
+          <b>Location:</b>
+          {{ ev.location }}
+        </p>
+
+        <p>
+          <b>Description:</b>
+          {{ ev.description }}
+        </p>
+
+        <!-- JOIN BUTTON -->
+        <button
+          class="member-view-btn"
+          (click)="joinEvent(ev)"
+          [disabled]="isUserJoinedEvent(ev)"
+        >
+          {{ isUserJoinedEvent(ev) ? "Already Joined" : "Join Event" }}
+        </button>
       </div>
-      <div *ngIf="upcomingEvents.length === 0" style="padding: 1rem">
-        No upcoming events
-      </div>
+
+      <div *ngIf="upcomingEvents.length === 0">No upcoming events</div>
     </div>
   </section>
 

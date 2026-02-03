@@ -133,8 +133,6 @@
 
 .event-card {
   min-width: 180px;
-  background: #00616e;
-  color: white;
   padding: 15px;
   border-radius: 10px;
   box-shadow: var(--box-shadow);
@@ -218,6 +216,7 @@
   text-decoration: none;
   transition: background 0.2s ease;
   margin-top: var(--margin-sm);
+  border: none;
 }
 
 .member-view-btn:hover {

@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { CommunityService } from '../services/community.service';
 import { UserService } from '../services/user.service';
 import { AlertService } from '../services/alert.service';
+import { EventService } from '../services/event.service';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -21,6 +22,7 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
   // ===== DATA =====
   joinedCommunities: any[] = [];
   alerts: any[] = [];
+  events: any[] = [];
   upcomingEvents: any[] = [];
   recommendedCommunities: any[] = [];
 
@@ -37,11 +39,11 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
     private communityService: CommunityService,
     private alertService: AlertService,
     private userService: UserService,
+    private eventService: EventService,
     private router: Router,
   ) {}
 
   ngOnInit(): void {
-    // Listen to auth state
     const authSub = this.userService.authState$.subscribe((user) => {
       this.userData = user;
 
@@ -50,16 +52,19 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
         return;
       }
 
-      // Load communities and alerts
+      // YOU MISSED THIS CALL
+      this.loadUserEvents();
+
       this.loadCommunities();
       this.loadAlerts();
     });
+
     this.subs.push(authSub);
 
-    // Validate session on refresh
     const validateSub = this.userService.validateSession().subscribe({
       error: () => this.router.navigate(['/home']),
     });
+
     this.subs.push(validateSub);
   }
 
@@ -171,5 +176,72 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
 
   navigateToCreateCommunity(): void {
     this.router.navigate(['/create-community']);
+  }
+
+  loadUserEvents(): void {
+    if (!this.userData) return;
+
+    const sub = this.eventService
+      .getEventsByUserId(this.userData._id)
+      .subscribe({
+        next: (res: any) => {
+          // Ensure each attendee is an object with _id
+          this.upcomingEvents = (res?.data || []).map((ev: any) => {
+            ev.attendees =
+              ev.attendees?.map((a: any) =>
+                typeof a === 'string' ? { _id: a } : a,
+              ) || [];
+            return ev;
+          });
+        },
+        error: (err) => console.error('Failed to load events', err),
+      });
+
+    this.subs.push(sub);
+  }
+
+  isUserJoinedEvent(ev: any): boolean {
+    return ev.attendees?.some((a: any) => a._id === this.userData?._id);
+  }
+
+  joinEvent(ev: any): void {
+    const userId = this.userData._id;
+
+    // Already joined check
+    const already = ev.attendees?.some((a: any) => a._id === userId);
+    if (already) {
+      alert('You have already joined this event');
+      return;
+    }
+
+    const ok = confirm(
+      'Once you join this event, you cannot change your RSVP. Continue?',
+    );
+    if (!ok) return;
+
+    this.eventService.joinEvent(ev._id, userId).subscribe({
+      next: (res: any) => {
+        alert('Successfully joined event');
+
+        // Update the event in-place immutably
+        this.upcomingEvents = this.upcomingEvents.map((e) => {
+          if (e._id === ev._id) {
+            return {
+              ...e,
+              attendees: [
+                ...(e.attendees || []),
+                {
+                  _id: userId,
+                  name: this.userData.name,
+                  email: this.userData.email,
+                },
+              ],
+            };
+          }
+          return e;
+        });
+      },
+      error: () => alert('Failed to join event'),
+    });
   }
 }

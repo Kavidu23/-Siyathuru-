@@ -164,10 +164,101 @@ const deleteEvent = async (req, res) => {
     }
 };
 
+// ================= USER JOIN EVENT =================
+
+const joinEvent = async (req, res) => {
+    try {
+        const { eventId, userId } = req.body;
+
+        if (!eventId || !userId) {
+            return res.status(400).json({
+                success: false,
+                error: "eventId and userId required",
+            });
+        }
+
+        const event = await events.findById(eventId);
+
+        if (!event) {
+            return res.status(404).json({
+                success: false,
+                error: "Event not found",
+            });
+        }
+
+        // CHECK ALREADY JOINED
+        if (event.attendees.includes(userId)) {
+            return res.status(400).json({
+                success: false,
+                error: "User already joined this event",
+            });
+        }
+
+        event.attendees.push(userId);
+        await event.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Joined event successfully",
+            data: event,
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: "Server error",
+            details: err.message,
+        });
+    }
+};
+
+// ============ GET EVENTS BY USER COMMUNITIES ============
+
+const getEventsByUserId = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        // 1. FIND USER
+        const user = await require('../models/user').findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: "User not found",
+            });
+        }
+
+        // 2. FIND EVENTS FROM USER COMMUNITIES
+        const userEvents = await events
+            .find({
+                communityId: { $in: user.joinedCommunities },
+            })
+            .populate("communityId", "name profileImage")
+            .populate("attendees", "name email")
+            .sort({ eventDate: 1 });
+
+        res.status(200).json({
+            success: true,
+            count: userEvents.length,
+            data: userEvents,
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: "Failed to fetch user events",
+            details: err.message,
+        });
+    }
+};
+
+
 module.exports = {
     createEvent,
     getEvents,
     getEventById,
     updateEvent,
-    deleteEvent
+    deleteEvent,
+    joinEvent,
+    getEventsByUserId
 };
