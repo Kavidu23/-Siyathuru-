@@ -108,17 +108,9 @@
     <!-- Events -->
     <h2>Upcoming Events</h2>
     <div class="events-carousel">
-      <div class="event-card">
-        <h4>Beach Cleanup</h4>
-        <p>Oct 15, 2025</p>
-      </div>
-      <div class="event-card">
-        <h4>Youth Forum 2025</h4>
-        <p>Nov 5, 2025</p>
-      </div>
-      <div class="event-card">
-        <h4>Tree Planting Day</h4>
-        <p>Dec 12, 2025</p>
+      <div class="event-card" *ngFor="let up of upcomingEvents">
+        <h4>{{ up.title }}</h4>
+        <p>{{ up.eventDate | date: "yyyy-MM-dd" }}</p>
       </div>
     </div>
   </div>

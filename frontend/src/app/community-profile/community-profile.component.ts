@@ -10,6 +10,7 @@ import { ModalService } from '../services/modal.service';
 import { PrivateCommunityService } from '../services/privateCommunity.service';
 import { UserService } from '../services/user.service';
 import { Subscription } from 'rxjs';
+import { EventService } from '../services/event.service';
 
 // Fix Leaflet icon issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -32,6 +33,7 @@ export class CommunityProfileComponent
 {
   map!: L.Map;
   community: any = null;
+  upcomingEvents: any[] = [];
   selectedImage: string | null = null;
 
   user: any = null;
@@ -46,6 +48,7 @@ export class CommunityProfileComponent
     private privateCommunityService: PrivateCommunityService,
     private route: ActivatedRoute,
     private modalService: ModalService,
+    private eventService: EventService,
     private userService: UserService,
   ) {}
 
@@ -75,9 +78,61 @@ export class CommunityProfileComponent
       },
       error: (err) => console.error(err),
     });
+
+    // 4. Load upcoming events
+    this.loadUpcomingEvents(communityId);
   }
 
   ngAfterViewInit(): void {}
+
+  // -------- EVENTS --------
+  loadUpcomingEvents(communityId: string) {
+    this.eventService.getAllEvents().subscribe({
+      next: (res) => {
+        const allEvents = res.data || [];
+        const now = new Date();
+
+        this.upcomingEvents = allEvents
+          .filter((ev) => ev.communityId === communityId)
+          .filter((ev) => {
+            const dt = this.buildEventDateTime(ev.eventDate, ev.eventTime);
+            return dt ? dt > now : false;
+          });
+      },
+      error: () => console.log('Failed to load events'),
+    });
+  }
+
+  private buildEventDateTime(
+    eventDate: string,
+    eventTime?: string,
+  ): Date | null {
+    if (!eventDate) return null;
+    const date = new Date(eventDate);
+    if (Number.isNaN(date.getTime())) return null;
+
+    if (!eventTime) return date;
+
+    const timeMatch = String(eventTime)
+      .trim()
+      .match(/^(\d{1,2}):(\d{2})\s*([AaPp][Mm])?$/);
+    if (!timeMatch) return date;
+
+    let hours = Number(timeMatch[1]);
+    const minutes = Number(timeMatch[2]);
+    const meridiem = timeMatch[3]?.toLowerCase();
+
+    if (meridiem) {
+      if (hours === 12) {
+        hours = meridiem === 'am' ? 0 : 12;
+      } else if (meridiem === 'pm') {
+        hours += 12;
+      }
+    }
+
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  }
 
   ngOnDestroy(): void {
     this.subs.forEach((s) => s.unsubscribe());
