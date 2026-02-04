@@ -4,6 +4,7 @@ import { EventComponent } from '../event/event.component';
 import { AlertComponent } from '../alert/alert.component';
 import { FooterComponent } from '../footer/footer.component';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { AddImageComponent } from '../add-image/add-image.component';
 
 @Component({
   selector: 'app-management',
@@ -14,6 +15,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
     AlertComponent,
     FooterComponent,
     NavbarComponent,
+    AddImageComponent,
   ],
   templateUrl: './management.component.html',
   styleUrl: './management.component.css',

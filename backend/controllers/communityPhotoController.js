@@ -26,7 +26,7 @@ const uploadPhoto = async (req, res) => {
     // Save to DB
     const newPhoto = await CommunityPhoto.create({
       communityId,
-      url: result.secure_url,
+      imageUrl: result.secure_url,
       publicId: result.public_id,
       caption: caption || '',
     });

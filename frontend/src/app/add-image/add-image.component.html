@@ -1,0 +1,36 @@
+<section class="card gallery-management">
+  <h2 class="section-title">Community Photo Gallery</h2>
+  <div class="event-form-card">
+    <!-- UPLOAD SECTION -->
+    <div class="upload-section">
+      <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+      <input type="text" placeholder="Optional caption" [(ngModel)]="caption" />
+      <button
+        class="btn-primary"
+        [disabled]="!selectedFile || isUploading"
+        (click)="uploadPhoto()"
+      >
+        {{ isUploading ? "Uploading..." : "Upload Photo" }}
+      </button>
+    </div>
+
+    <!-- NO PHOTOS MESSAGE -->
+    <p *ngIf="!photos.length && !isLoading" class="no-photos">
+      No photos uploaded yet.
+    </p>
+
+    <!-- PHOTOS GRID -->
+    <div class="photos-grid" *ngIf="photos.length">
+      <div class="photo-card" *ngFor="let photo of photos">
+        <img
+          [src]="photo.imageUrl"
+          [alt]="photo.caption || 'Community Photo'"
+        />
+        <p class="caption" *ngIf="photo.caption">{{ photo.caption }}</p>
+        <button class="delete-btn" (click)="deletePhoto(photo._id)">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

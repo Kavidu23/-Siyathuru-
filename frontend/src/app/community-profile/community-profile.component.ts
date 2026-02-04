@@ -11,6 +11,7 @@ import { PrivateCommunityService } from '../services/privateCommunity.service';
 import { UserService } from '../services/user.service';
 import { Subscription } from 'rxjs';
 import { EventService } from '../services/event.service';
+import { CommunityPhotoService } from '../services/community-photo.service';
 
 // Fix Leaflet icon issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -33,6 +34,7 @@ export class CommunityProfileComponent
 {
   map!: L.Map;
   community: any = null;
+  communityPhotos: any[] = [];
   upcomingEvents: any[] = [];
   selectedImage: string | null = null;
 
@@ -49,6 +51,7 @@ export class CommunityProfileComponent
     private route: ActivatedRoute,
     private modalService: ModalService,
     private eventService: EventService,
+    private communityPhotoService: CommunityPhotoService,
     private userService: UserService,
   ) {}
 
@@ -75,6 +78,8 @@ export class CommunityProfileComponent
         this.community = res.data;
         this.initMap();
         this.checkMembershipState();
+        // Load photos after community is loaded
+        this.loadCommunityPhotos(communityId);
       },
       error: (err) => console.error(err),
     });
@@ -312,6 +317,15 @@ export class CommunityProfileComponent
         .addTo(this.map)
         .bindPopup(`<b>${this.community.name} 🚩</b>`);
     }
+  }
+
+  loadCommunityPhotos(communityId: string) {
+    if (!communityId) return;
+    this.communityPhotoService.getPhotosByCommunity(communityId).subscribe({
+      next: (res: any) => {
+        this.communityPhotos = res.data || res || [];
+      },
+    });
   }
 
   // ============ IMAGE PREVIEW ============

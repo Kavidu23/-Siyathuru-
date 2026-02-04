@@ -13,6 +13,7 @@ const alertRoutes = require("./routes/alertRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const privateCommunityRoutes = require("./routes/privateCommunityRoutes");
+const communityPhotoRouter = require("./routes/communityPhotoRouter");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -44,6 +45,7 @@ app.use("/api/requests", requestsRoutes);
 app.use("/api/alerts", alertRoutes);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/private-communities", privateCommunityRoutes);
+app.use("/api/community-photos", communityPhotoRouter);
 
 // Start server
 app.listen(PORT, () =>

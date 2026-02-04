@@ -118,26 +118,16 @@
   <!-- Gallery -->
   <div class="gallery-section">
     <h2>Photo Gallery</h2>
-    <div class="gallery">
+
+    <!-- Show "No photos" if the array is empty -->
+    <p *ngIf="!communityPhotos || communityPhotos.length === 0">No photos</p>
+
+    <!-- Show gallery photos -->
+    <div class="gallery" *ngFor="let ph of communityPhotos">
       <img
-        src="photo1.png"
+        [src]="ph.imageUrl"
         alt="Community Event"
-        (click)="openImage('photo1.png')"
-      />
-      <img
-        src="photo2.png"
-        alt="Community Event"
-        (click)="openImage('photo2.png')"
-      />
-      <img
-        src="photo3.png"
-        alt="Community Event"
-        (click)="openImage('photo3.png')"
-      />
-      <img
-        src="photo4.png"
-        alt="Community Event"
-        (click)="openImage('photo4.png')"
+        (click)="openImage(ph.imageUrl)"
       />
     </div>
   </div>
