@@ -306,6 +306,26 @@ h2 {
   cursor: pointer;
 }
 
+.add-gallery-btn {
+  margin: 10px;
+  min-width: none;
+}
+
+.add-gallery-btn button {
+  width: 100%;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-gallery-btn button:hover {
+  background: var(--primary-color-hover);
+}
+
 /* AI & INSIGHTS */
 .ai-grid {
   display: grid;

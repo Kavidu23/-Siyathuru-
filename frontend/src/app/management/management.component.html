@@ -1,5 +1,5 @@
-<app-alert></app-alert>
-<app-review></app-review>
-<app-event></app-event>
-<app-add-image></app-add-image>
+<app-alert *ngIf="activeView === 'alert'"></app-alert>
+<app-review *ngIf="activeView === 'requests'"></app-review>
+<app-event *ngIf="activeView === 'events'"></app-event>
+<app-add-image *ngIf="activeView === 'gallery'"></app-add-image>
 <app-footer></app-footer>

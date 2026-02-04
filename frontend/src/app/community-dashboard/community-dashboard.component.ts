@@ -189,19 +189,31 @@ export class CommunityDashboardComponent implements OnInit {
   // -------- NAVIGATION --------
   goToRequests() {
     this.router.navigate(['/management'], {
-      queryParams: { communityId: this.selectedCommunity?._id },
+      queryParams: {
+        communityId: this.selectedCommunity?._id,
+        view: 'requests',
+      },
     });
   }
 
   goToCreateEvent() {
-    this.router.navigate(['/event-create'], {
-      queryParams: { communityId: this.selectedCommunity?._id },
+    this.router.navigate(['/management'], {
+      queryParams: { communityId: this.selectedCommunity?._id, view: 'events' },
     });
   }
 
   goToAlert() {
     this.router.navigate(['/management'], {
-      queryParams: { communityId: this.selectedCommunity?._id },
+      queryParams: { communityId: this.selectedCommunity?._id, view: 'alert' },
+    });
+  }
+
+  goToGallery() {
+    this.router.navigate(['/management'], {
+      queryParams: {
+        communityId: this.selectedCommunity?._id,
+        view: 'gallery',
+      },
     });
   }
 
