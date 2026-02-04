@@ -302,6 +302,10 @@ h2 {
   background: var(--primary-color-hover);
 }
 
+.view-btn {
+  cursor: pointer;
+}
+
 /* AI & INSIGHTS */
 .ai-grid {
   display: grid;

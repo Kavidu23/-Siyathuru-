@@ -1,43 +1,74 @@
 const Alert = require("../models/alert"); // alert model path
 const User = require("../models/user"); // Ensure User model is imported
+const sendEmail = require("../utils/sendEmail"); // email service
 
 // Create a new alert
 const createAlert = async (req, res) => {
     try {
         const { communityId, title, message, severity, isActive } = req.body;
 
+        // 1️⃣ Create alert
         const newAlert = await Alert.create({
             communityId,
             title,
             message,
             severity,
-            isActive
+            isActive,
         });
+
+        // 2️⃣ Send email to all members if alert is active
+        if (isActive) {
+            // Get community members
+            const community = await Community.findById(communityId).populate(
+                'members',
+                'name email'
+            );
+
+            if (community && community.members && community.members.length > 0) {
+                const emails = community.members.map((m) => m.email).filter(Boolean);
+
+                if (emails.length > 0) {
+                    const subject = `New Alert: ${title}`;
+                    const html = `
+            <h3>${title}</h3>
+            <p>${message}</p>
+            <p>Severity: ${severity}</p>
+          `;
+
+                    try {
+                        await sendEmail(emails.join(','), subject, message, html);
+                        console.log(`Emails sent to ${emails.length} members`);
+                    } catch (emailErr) {
+                        console.error('Failed to send alert emails:', emailErr.message);
+                    }
+                }
+            }
+        }
 
         res.status(201).json({
             success: true,
             message: "Alert created successfully",
-            data: newAlert
+            data: newAlert,
         });
     } catch (err) {
         if (err.name === "ValidationError") {
             return res.status(400).json({
                 success: false,
                 error: "Validation failed",
-                details: err.message
+                details: err.message,
             });
         }
         if (err.code === 11000) {
             return res.status(400).json({
                 success: false,
                 error: "Duplicate field value",
-                details: err.message
+                details: err.message,
             });
         }
         res.status(500).json({
             success: false,
             error: "Server error",
-            details: err.message
+            details: err.message,
         });
     }
 };

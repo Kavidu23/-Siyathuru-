@@ -5,6 +5,8 @@ import { FooterComponent } from '../footer/footer.component';
 import { CommunityService } from '../services/community.service';
 import { UserService } from '../services/user.service';
 import { EventService, Event } from '../services/event.service';
+import { finalize } from 'rxjs/operators';
+import { AlertService } from '../services/alert.service';
 
 interface Community {
   _id: string;
@@ -19,14 +21,17 @@ interface Community {
   standalone: true,
   imports: [CommonModule, RouterLink, FooterComponent],
   templateUrl: './community-dashboard.component.html',
-  styleUrl: './community-dashboard.component.css',
+  styleUrls: ['./community-dashboard.component.css'],
 })
 export class CommunityDashboardComponent implements OnInit {
   currentUser: any;
   selectedCommunity: Community | null = null;
   upcomingEvents: Event[] = [];
+  alerts: any[] = [];
 
   isLoading = true;
+  isDeleting = false;
+  isUpdatingAlert = false;
   errorMessage = '';
 
   totalMembers = 0;
@@ -35,11 +40,13 @@ export class CommunityDashboardComponent implements OnInit {
     private communityService: CommunityService,
     private userService: UserService,
     private eventService: EventService,
+    private alertService: AlertService,
     private router: Router,
   ) {}
 
   ngOnInit() {
     this.loadDashboard();
+    this.loadAlerts(this.selectedCommunity?._id || '');
   }
 
   loadDashboard() {
@@ -52,7 +59,6 @@ export class CommunityDashboardComponent implements OnInit {
 
     this.communityService.getAllCommunities().subscribe({
       next: (response: any) => {
-        // 👉 Get community where logged user is leader
         const communities = response.data || response;
         const mine = communities.find(
           (c: Community) => c.leader === this.currentUser._id,
@@ -62,8 +68,8 @@ export class CommunityDashboardComponent implements OnInit {
           this.selectedCommunity = mine;
           this.totalMembers = mine.members?.length || 0;
 
-          // 👉 NEW
           this.loadUpcomingEvents(mine._id);
+          this.loadAlerts(mine._id);
         }
 
         this.isLoading = false;
@@ -76,31 +82,21 @@ export class CommunityDashboardComponent implements OnInit {
     });
   }
 
-  // -------- NAVIGATION --------
+  // -------- EVENTS --------
   loadUpcomingEvents(communityId: string) {
     this.eventService.getAllEvents().subscribe({
       next: (res) => {
         const allEvents = res.data || [];
-
         const now = new Date();
 
-        this.upcomingEvents = allEvents.filter((ev) => {
-          // 1️⃣ Match community
-          if (ev.communityId !== communityId) return false;
-
-          // 2️⃣ Build real datetime from eventDate + eventTime
-          // Extract date part from ISO string and combine with time
-          const eventDateStr = ev.eventDate.split('T')[0];
-          const eventDateTime = new Date(eventDateStr + 'T' + ev.eventTime);
-
-          // 3️⃣ Only future
-          return eventDateTime >= now;
-        });
+        this.upcomingEvents = allEvents
+          .filter((ev) => ev.communityId === communityId)
+          .filter((ev) => {
+            const dt = this.buildEventDateTime(ev.eventDate, ev.eventTime);
+            return dt ? dt > now : false;
+          });
       },
-
-      error: () => {
-        console.log('Failed to load events');
-      },
+      error: () => console.log('Failed to load events'),
     });
   }
 
@@ -109,7 +105,6 @@ export class CommunityDashboardComponent implements OnInit {
     eventTime?: string,
   ): Date | null {
     if (!eventDate) return null;
-
     const date = new Date(eventDate);
     if (Number.isNaN(date.getTime())) return null;
 
@@ -132,21 +127,65 @@ export class CommunityDashboardComponent implements OnInit {
       }
     }
 
-    if (
-      Number.isNaN(hours) ||
-      Number.isNaN(minutes) ||
-      hours < 0 ||
-      hours > 23 ||
-      minutes < 0 ||
-      minutes > 59
-    ) {
-      return date;
-    }
-
     date.setHours(hours, minutes, 0, 0);
     return date;
   }
 
+  deleteEvent(id: string) {
+    if (!confirm('Are you sure you want to remove this event?')) return;
+    this.isDeleting = true;
+
+    this.eventService
+      .deleteEvent(id)
+      .pipe(finalize(() => (this.isDeleting = false)))
+      .subscribe({
+        next: (res) => {
+          this.upcomingEvents = this.upcomingEvents.filter(
+            (ev) => ev._id !== id,
+          );
+          alert(res.message || 'Event removed successfully');
+        },
+        error: (err) => alert(err?.error?.message || 'Failed to delete event'),
+      });
+  }
+
+  // -------- ALERTS --------
+  loadAlerts(communityId: string) {
+    this.alertService.getAlertById(communityId).subscribe({
+      next: (res) => {
+        this.alerts = res.data || [];
+      },
+      error: () => console.log('Failed to load alerts'),
+    });
+  }
+
+  toggleAlertStatus(alert: any) {
+    if (!alert) return;
+
+    const action = alert.isActive ? 'deactivate' : 'activate';
+    const confirmMsg = `Are you sure you want to ${action} this alert?`;
+
+    if (!confirm(confirmMsg)) return; // ✅ Show confirmation popup
+
+    this.isUpdatingAlert = true;
+
+    const payload = { isActive: !alert.isActive };
+
+    this.alertService
+      .updateAlert(alert._id, payload)
+      .pipe(finalize(() => (this.isUpdatingAlert = false)))
+      .subscribe({
+        next: (res) => {
+          // ✅ Update UI immediately
+          alert.isActive = !alert.isActive;
+          const status = alert.isActive ? 'activated' : 'deactivated';
+          window.alert(`Alert ${status} successfully`);
+        },
+        error: () => window.alert('Failed to update alert'),
+      });
+  }
+
+  // -------- NAVIGATION --------
   goToRequests() {
     this.router.navigate(['/management'], {
       queryParams: { communityId: this.selectedCommunity?._id },
@@ -177,5 +216,9 @@ export class CommunityDashboardComponent implements OnInit {
 
   getCommunityName() {
     return this.selectedCommunity?.name || '';
+  }
+
+  alertButtonLabel(alert: any) {
+    return alert.isActive ? 'Deactivate' : 'Activate';
   }
 }

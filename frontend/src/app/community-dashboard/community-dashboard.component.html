@@ -88,41 +88,62 @@
     </div>
   </section>
 
+  <!--Delete Alert-->
+  <!--Alert Management Styled Like Upcoming Events-->
+  <section class="card upcoming-management">
+    <h2>Alert Management</h2>
+
+    <div class="upcoming-item" *ngFor="let al of alerts">
+      <div class="upcoming-info">
+        <strong>{{ al.title }}</strong>
+
+        <span> 🚨 {{ al.message }} </span>
+
+        <span> ⚠️ Severity: {{ al.severity }} </span>
+
+        <span>
+          📅 {{ al.alertDate | date: "mediumDate" }}
+          <ng-container *ngIf="al.alertTime"
+            >⏰ {{ al.alertTime }}</ng-container
+          >
+        </span>
+
+        <span
+          >Status: <b>{{ al.isActive ? "Active" : "Inactive" }}</b></span
+        >
+      </div>
+
+      <div class="upcoming-actions">
+        <a class="view-btn" (click)="toggleAlertStatus(al)">
+          {{ alertButtonLabel(al) }}
+        </a>
+      </div>
+    </div>
+
+    <div *ngIf="alerts.length === 0" class="no-events">
+      No alerts available.
+    </div>
+  </section>
+
   <!-- ========== UPCOMING EVENTS ========== -->
   <section class="card upcoming-management">
     <h2>Your Upcoming Events</h2>
 
-    <div class="upcoming-list">
-      <!-- NO EVENTS -->
-      <div class="no-events" *ngIf="upcomingEvents.length === 0">
-        <p>
-          No upcoming events scheduled.
-          <a class="create-link" (click)="goToCreateEvent()">
-            Create one now
-          </a>
-        </p>
+    <div class="upcoming-item" *ngFor="let ev of upcomingEvents">
+      <div class="upcoming-info">
+        <strong>{{ ev.title }}</strong>
+
+        <span> 📍 {{ ev.location }} </span>
+
+        <span>
+          📅 {{ ev.eventDate | date: "mediumDate" }} ⏰ {{ ev.eventTime }}
+        </span>
+
+        <span> 👥 Attendees: {{ ev.attendees.length || 0 }} </span>
       </div>
 
-      <!-- EVENTS LIST -->
-      <div class="event-card" *ngFor="let ev of upcomingEvents">
-        <b>Title:</b>
-        {{ ev.title }}
-        <br />
-
-        <b>Description:</b>
-        {{ ev.description }}
-        <br />
-
-        <b>Location:</b>
-        {{ ev.location }}
-        <br />
-
-        <b>Date & Time:</b>
-        {{ ev.eventDate | date: "mediumDate" }} ⏰ {{ ev.eventTime }}
-        <br />
-
-        <b>Attendees:</b>
-        👥 {{ ev.attendees.length || 0 }}
+      <div class="upcoming-actions">
+        <a class="view-btn" (click)="deleteEvent(ev._id)">Remove</a>
       </div>
     </div>
   </section>

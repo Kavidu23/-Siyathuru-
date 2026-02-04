@@ -22,7 +22,6 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
   // ===== DATA =====
   joinedCommunities: any[] = [];
   alerts: any[] = [];
-  events: any[] = [];
   upcomingEvents: any[] = [];
   recommendedCommunities: any[] = [];
 
@@ -52,9 +51,8 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
         return;
       }
 
-      // YOU MISSED THIS CALL
+      // LOAD ALL USER RELATED DATA
       this.loadUserEvents();
-
       this.loadCommunities();
       this.loadAlerts();
     });
@@ -72,7 +70,7 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
     this.subs.forEach((s) => s.unsubscribe());
   }
 
-  // ===================== LOAD COMMUNITIES =====================
+  // LOAD COMMUNITIES
   loadCommunities(): void {
     if (!this.userData) return;
 
@@ -90,41 +88,18 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
         // ===== JOINED COMMUNITIES =====
         this.joinedCommunities = all.filter((c) => {
           const isLeader = c?.leader?._id === userId || c?.leader === userId;
+
           const isMember = c?.members?.some(
             (m: any) =>
               m?._id === userId || m === userId || String(m) === userId,
           );
+
           const inUserJoined = userJoinedIds.includes(String(c._id));
+
           return isLeader || isMember || inUserJoined;
         });
 
         this.joinedCommunities.forEach((c) => (c.isJoined = true));
-
-        // ===== UPCOMING EVENTS =====
-        const now = new Date();
-        const in30Days = new Date();
-        in30Days.setDate(now.getDate() + 30);
-
-        this.upcomingEvents = [];
-
-        this.joinedCommunities.forEach((c) => {
-          const events = c?.events || c?.upcomingEvents || c?.eventsList || [];
-          events.forEach((e: any) => {
-            const date = e?.date ? new Date(e.date) : null;
-            if (date && date > now && date <= in30Days) {
-              this.upcomingEvents.push({
-                ...e,
-                communityName: c.name,
-                communityId: c._id,
-              });
-            }
-          });
-        });
-
-        // ===== RECOMMENDED COMMUNITIES =====
-        this.recommendedCommunities = all
-          .filter((c) => !this.joinedCommunities.some((j) => j._id === c._id))
-          .slice(0, 4);
       },
       error: (err) => console.error('Failed to load communities', err),
       complete: () => (this.isLoadingCommunities = false),
@@ -133,71 +108,117 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
     this.subs.push(sub);
   }
 
-  // ===================== LOAD ALERTS =====================
+  // LOAD ALERTS
   loadAlerts(): void {
-    // Ensure we have the user data and the ID exists
     if (!this.userData || !this.userData._id) return;
 
     this.isLoadingAlerts = true;
-    const userId = this.userData._id;
 
-    // Call the new specific backend method
-    const sub = this.alertService.getAlertsByUserId(userId).subscribe({
-      next: (res: any) => {
-        // The backend now handles the filtering logic based on joined communities
-        this.alerts = res?.data || [];
-        this.alertsCount = this.alerts.length;
-      },
-      error: (err) => {
-        console.error('Failed to load user-specific alerts', err);
-        this.isLoadingAlerts = false; // Ensure loading stops on error
-      },
-      complete: () => (this.isLoadingAlerts = false),
-    });
+    const sub = this.alertService
+      .getAlertsByUserId(this.userData._id)
+      .subscribe({
+        next: (res: any) => {
+          this.alerts = res?.data || [];
+          this.alertsCount = this.alerts.length;
+        },
+        error: (err) => {
+          console.error('Failed to load user alerts', err);
+          this.isLoadingAlerts = false;
+        },
+        complete: () => (this.isLoadingAlerts = false),
+      });
 
     this.subs.push(sub);
   }
 
-  // ===================== HELPERS =====================
-  getCommunitiesCount(): number {
-    return this.joinedCommunities.length;
-  }
-
-  viewCommunity(id: string): void {
-    if (!id) return;
-    this.router.navigate(['/community', id]);
-  }
-
-  viewEvent(event: any): void {
-    if (!event) return;
-    const eventId = event._id || event.id;
-    this.router.navigate(['/events', eventId]);
-  }
-
-  navigateToCreateCommunity(): void {
-    this.router.navigate(['/create-community']);
-  }
-
+  // LOAD USER EVENTS (CORRECT UPCOMING EVENTS)
   loadUserEvents(): void {
     if (!this.userData) return;
+
+    const now = new Date();
 
     const sub = this.eventService
       .getEventsByUserId(this.userData._id)
       .subscribe({
         next: (res: any) => {
-          // Ensure each attendee is an object with _id
-          this.upcomingEvents = (res?.data || []).map((ev: any) => {
-            ev.attendees =
-              ev.attendees?.map((a: any) =>
-                typeof a === 'string' ? { _id: a } : a,
-              ) || [];
-            return ev;
-          });
+          const allEvents = res?.data || [];
+
+          this.upcomingEvents = allEvents
+            .map((ev: any) => {
+              // normalize attendees
+              ev.attendees =
+                ev.attendees?.map((a: any) =>
+                  typeof a === 'string' ? { _id: a } : a,
+                ) || [];
+              return ev;
+            })
+
+            // FILTER FUTURE EVENTS
+            .filter((ev: any) => {
+              if (!ev.eventDate) return false;
+
+              let eventDateTime = new Date(ev.eventDate);
+
+              if (ev.eventTime) {
+                let time = ev.eventTime;
+                const isPM = time.includes('PM');
+
+                time = time.replace(' AM', '').replace(' PM', '');
+
+                let [h, m] = time.split(':');
+
+                let hour = parseInt(h, 10);
+                const minute = parseInt(m, 10);
+
+                if (isPM && hour !== 12) hour += 12;
+                if (!isPM && hour === 12) hour = 0;
+
+                eventDateTime.setHours(hour, minute, 0, 0);
+              }
+
+              return eventDateTime > now;
+            })
+
+            // SORT ASCENDING
+            .sort((a: any, b: any) => {
+              let aTime = new Date(a.eventDate).getTime();
+              let bTime = new Date(b.eventDate).getTime();
+
+              // add time if exists
+              if (a.eventTime) {
+                const [ah, am] = this.parseTime(a.eventTime);
+                aTime += ah * 3600 * 1000 + am * 60 * 1000;
+              }
+              if (b.eventTime) {
+                const [bh, bm] = this.parseTime(b.eventTime);
+                bTime += bh * 3600 * 1000 + bm * 60 * 1000;
+              }
+
+              return aTime - bTime;
+            });
         },
+
         error: (err) => console.error('Failed to load events', err),
       });
 
     this.subs.push(sub);
+  }
+
+  // HELPER TO PARSE TIME
+  parseTime(time: string): [number, number] {
+    const isPM = time.includes('PM');
+    time = time.replace(' AM', '').replace(' PM', '');
+    let [h, m] = time.split(':');
+    let hour = parseInt(h, 10);
+    const minute = parseInt(m, 10);
+    if (isPM && hour !== 12) hour += 12;
+    if (!isPM && hour === 12) hour = 0;
+    return [hour, minute];
+  }
+
+  // HELPERS
+  getCommunitiesCount(): number {
+    return this.joinedCommunities.length;
   }
 
   isUserJoinedEvent(ev: any): boolean {
@@ -207,8 +228,8 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
   joinEvent(ev: any): void {
     const userId = this.userData._id;
 
-    // Already joined check
     const already = ev.attendees?.some((a: any) => a._id === userId);
+
     if (already) {
       alert('You have already joined this event');
       return;
@@ -217,13 +238,13 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
     const ok = confirm(
       'Once you join this event, you cannot change your RSVP. Continue?',
     );
+
     if (!ok) return;
 
     this.eventService.joinEvent(ev._id, userId).subscribe({
-      next: (res: any) => {
+      next: () => {
         alert('Successfully joined event');
 
-        // Update the event in-place immutably
         this.upcomingEvents = this.upcomingEvents.map((e) => {
           if (e._id === ev._id) {
             return {
@@ -241,7 +262,13 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
           return e;
         });
       },
+
       error: () => alert('Failed to join event'),
     });
+  }
+
+  viewCommunity(id: string): void {
+    if (!id) return;
+    this.router.navigate(['/community', id]);
   }
 }

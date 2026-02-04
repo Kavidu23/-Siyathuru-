@@ -62,7 +62,7 @@ export class EventComponent implements OnInit {
 
     this.isLoading = true;
 
-    // 🔥 CONVERT 24H → AM/PM BEFORE SENDING
+    //CONVERT 24H → AM/PM BEFORE SENDING
     const payload: EventPayload = {
       ...this.form,
       eventTime: this.convertToAmPm(this.form.eventTime),
@@ -83,7 +83,7 @@ export class EventComponent implements OnInit {
     });
   }
 
-  // =============================
+  // Convert 24-hour time to AM/PM format
 
   convertToAmPm(time24: string): string {
     // Example input: "18:04" or "06:04"
@@ -98,7 +98,7 @@ export class EventComponent implements OnInit {
     return `${h.toString().padStart(2, '0')}:${minute} ${ampm}`;
   }
 
-  // =============================
+  // reset form
 
   resetForm() {
     this.form = {

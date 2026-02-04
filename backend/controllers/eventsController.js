@@ -1,4 +1,5 @@
 const events = require('../models/events');
+const sendEmail = require('../utils/sendEmail');
 
 // Create a new event
 const createEvent = async (req, res) => {
@@ -142,24 +143,74 @@ const updateEvent = async (req, res) => {
 };
 
 // Delete an event
+// Delete an event + notify attendees
 const deleteEvent = async (req, res) => {
     try {
-        const deletedEvent = await events.findByIdAndDelete(req.params.id);
-        if (!deletedEvent) {
+        const eventId = req.params.id;
+
+        // 1️⃣ FIND EVENT WITH ATTENDEES POPULATED
+        const event = await events
+            .findById(eventId)
+            .populate("attendees", "email name")
+            .populate("communityId", "name");
+
+        if (!event) {
             return res.status(404).json({
                 success: false,
-                error: "Event not found"
+                error: "Event not found",
             });
         }
+
+        // 2️⃣ PREPARE EMAIL LIST
+        const attendeeEmails = event.attendees.map((u) => u.email);
+
+        // 3️⃣ SEND EMAIL TO EACH ATTENDEE
+        const emailPromises = attendeeEmails.map((email) => {
+            const html = `
+        <h3>Event Cancelled</h3>
+
+        <p>Hello,</p>
+
+        <p>The event <b>${event.title}</b> from community 
+        <b>${event.communityId?.name || "your community"}</b> 
+        has been cancelled by the organizer.</p>
+
+        <p><b>Event Details:</b></p>
+        <ul>
+          <li>Date: ${new Date(event.eventDate).toDateString()}</li>
+          <li>Time: ${event.eventTime}</li>
+          <li>Location: ${event.location}</li>
+        </ul>
+
+        <p>Sorry for the inconvenience.</p>
+
+        <p>— Siyathuru Team</p>
+      `;
+
+            return sendEmail(
+                email,
+                `Event Cancelled: ${event.title}`,
+                `The event ${event.title} has been cancelled.`,
+                html
+            );
+        });
+
+        // Run emails in background (don’t block delete)
+        Promise.allSettled(emailPromises);
+
+        // 4️⃣ DELETE EVENT
+        await events.findByIdAndDelete(eventId);
+
         res.status(200).json({
             success: true,
-            message: "Event deleted successfully"
+            message: "Event deleted successfully & notifications sent",
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
             error: "Server error",
-            details: err.message
+            details: err.message,
         });
     }
 };
