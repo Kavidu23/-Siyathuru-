@@ -55,9 +55,20 @@ export class EventComponent implements OnInit {
       return;
     }
 
+    if (!this.form.eventTime) {
+      alert('Event time is required');
+      return;
+    }
+
     this.isLoading = true;
 
-    this.eventService.createEvent(this.form).subscribe({
+    // 🔥 CONVERT 24H → AM/PM BEFORE SENDING
+    const payload: EventPayload = {
+      ...this.form,
+      eventTime: this.convertToAmPm(this.form.eventTime),
+    };
+
+    this.eventService.createEvent(payload).subscribe({
       next: (res) => {
         alert('Event created successfully');
         this.resetForm();
@@ -70,6 +81,21 @@ export class EventComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  // =============================
+
+  convertToAmPm(time24: string): string {
+    // Example input: "18:04" or "06:04"
+    const [hour, minute] = time24.split(':');
+
+    let h = parseInt(hour, 10);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+
+    h = h % 12;
+    h = h ? h : 12; // if 0 → 12
+
+    return `${h.toString().padStart(2, '0')}:${minute} ${ampm}`;
   }
 
   // =============================
