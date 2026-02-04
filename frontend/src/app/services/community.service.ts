@@ -56,6 +56,14 @@ export class CommunityService {
     return this.http.post<any>(`${this.baseUrl}/${id}/leave`, { userId });
   }
 
+  // DELETE: remove a member from community (leader only)
+  removeMember(communityId: string, memberId: string): Observable<any> {
+    return this.http.delete<any>(
+      `${this.baseUrl}/${communityId}/members/${memberId}`,
+      { withCredentials: true },
+    );
+  }
+
   // POST: request to join a private community
   requestJoinCommunity(userId: string, communityId: string): Observable<any> {
     const requestUrl = window.location.hostname.includes('localhost')
@@ -71,5 +79,11 @@ export class CommunityService {
   // GET: fetch communities by leader ID
   getCommunitiesByLeader(leaderId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/leader/${leaderId}`);
+  }
+
+  getUsersByCommunity(communityId: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/${communityId}`, {
+      withCredentials: true,
+    });
   }
 }

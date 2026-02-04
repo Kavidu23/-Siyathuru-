@@ -104,7 +104,10 @@ const getCommunities = async (req, res) => {
 // GET a single community by ID
 const getCommunityById = async (req, res) => {
     try {
-        const community = await Community.findById(req.params.id);
+        const community = await Community.findById(req.params.id).populate(
+            "members",
+            "name email profileImage"
+        );
         if (!community) {
             return res.status(404).json({
                 success: false,
@@ -294,6 +297,50 @@ const leaveCommunity = async (req, res) => {
     }
 };
 
+// REMOVE a member (leader only)
+const removeMember = async (req, res) => {
+    try {
+        const communityId = req.params.id;
+        const memberId = req.params.memberId;
+        const leaderId = req.user?.id;
+
+        const community = await Community.findById(communityId);
+        if (!community) {
+            return res.status(404).json({ success: false, error: "Community not found" });
+        }
+
+        if (!leaderId || community.leader.toString() !== leaderId) {
+            return res.status(403).json({ success: false, error: "Not authorized" });
+        }
+
+        if (community.leader.toString() === memberId.toString()) {
+            return res.status(400).json({ success: false, error: "Cannot remove community leader" });
+        }
+
+        const isMember = community.members.some(m => m.toString() === memberId.toString());
+        if (!isMember) {
+            return res.status(400).json({ success: false, error: "User is not a member" });
+        }
+
+        await Community.findByIdAndUpdate(
+            communityId,
+            { $pull: { members: memberId } },
+            { new: true }
+        );
+
+        // also remove the community reference from the user's joinedCommunities
+        try {
+            await User.findByIdAndUpdate(memberId, { $pull: { joinedCommunities: communityId } });
+        } catch (uErr) {
+            console.error("Failed to remove community from user joinedCommunities:", uErr.message);
+        }
+
+        res.status(200).json({ success: true, message: "Member removed" });
+    } catch (err) {
+        res.status(500).json({ success: false, error: "Server error", details: err.message });
+    }
+};
+
 module.exports = {
     createCommunity,
     getCommunities,
@@ -302,5 +349,6 @@ module.exports = {
     updateCommunity,
     deleteCommunity,
     joinCommunity,
-    leaveCommunity
+    leaveCommunity,
+    removeMember
 };

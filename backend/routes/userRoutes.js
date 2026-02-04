@@ -9,6 +9,7 @@ const {
     verifyUser,
     loginUser,
     logoutUser,
+    getUserByCommunity,
     getMe
 } = require("../controllers/userController");
 
@@ -23,6 +24,7 @@ router.get("/me", getMe);               // Must come BEFORE /:id
 // CRUD routes
 router.get("/", getUsers);              // Get all users
 router.get("/:id", getUserById);        // Get single user by ID
+router.get("/:communityId", getUserByCommunity); // Get users by community ID
 router.post("/", createUser);           // Create new user
 router.put("/:id", updateUser);         // Update user by ID
 router.delete("/:id", deleteUser);      // Delete user by ID

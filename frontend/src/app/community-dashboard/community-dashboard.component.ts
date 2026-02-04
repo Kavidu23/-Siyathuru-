@@ -218,7 +218,7 @@ export class CommunityDashboardComponent implements OnInit {
   }
 
   goToMembers() {
-    this.router.navigate(['/member-management'], {
+    this.router.navigate(['/members'], {
       queryParams: { communityId: this.selectedCommunity?._id },
     });
   }

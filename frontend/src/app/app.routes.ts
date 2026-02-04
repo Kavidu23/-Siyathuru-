@@ -13,6 +13,7 @@ import { ManagementComponent } from './management/management.component';
 import { BlogComponent } from './blog/blog.component';
 import { ProComponent } from './pro/pro.component';
 import { AboutComponent } from './about/about.component';
+import { MembersComponent } from './members/members.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' }, // redirect '/' to '/home'
@@ -30,5 +31,6 @@ export const routes: Routes = [
   { path: 'blog', component: BlogComponent },
   { path: 'pro', component: ProComponent },
   { path: 'about', component: AboutComponent },
+  { path: 'members', component: MembersComponent },
   { path: '**', redirectTo: 'home' },
 ];

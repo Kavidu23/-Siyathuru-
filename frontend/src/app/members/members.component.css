@@ -1,0 +1,70 @@
+.event-create-page {
+  padding: var(--spacing-md);
+}
+
+.section-title {
+  font-family: "Oswald", sans-serif;
+  font-size: var(--header--font--size);
+  margin-bottom: var(--spacing-md);
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.member-count {
+  font-size: var(--main--font--size);
+  color: var(--text-light);
+}
+
+/* MEMBER LIST */
+.member-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.member-card {
+  display: flex;
+  align-items: center;
+  background: var(--background-color);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--box-shadow);
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.member-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.member-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.leader-badge {
+  margin-left: 8px;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--primary-color-light);
+}
+
+.btn-secondary {
+  background: var(--primary-color-light);
+  border: none;
+  padding: 8px 12px;
+  border-radius: var(--border-radius-button);
+  cursor: pointer;
+  font-size: var(--main--font--size);
+}

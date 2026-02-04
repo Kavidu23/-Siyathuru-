@@ -301,6 +301,24 @@ const getMe = async (req, res) => {
   }
 };
 
+const getUserByCommunity = async (req, res) => {
+  try {
+    const communityId = req.params.communityId;
+    const users = await User.find({ joinedCommunities: communityId });
+
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
+
+
 
 /* EXPORTS */
 module.exports = {
@@ -312,5 +330,6 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
+  getUserByCommunity,
   getMe,
 };
