@@ -13,13 +13,20 @@
         <small>Requested on: {{ req.requestedAt | date: "medium" }}</small>
       </div>
     </div>
-
     <div class="action-area">
-      <button class="btn-primary" (click)="acceptRequest(req.user._id)">
-        {{ isLoading ? "Accepting...;" : "Accept" }}
+      <button
+        class="btn-primary"
+        [disabled]="req.loading"
+        (click)="acceptRequest(req)"
+      >
+        {{ req.loading && req.accepting ? "Accepting..." : "Accept" }}
       </button>
-      <button class="btn-danger" (click)="rejectRequest(req.user._id)">
-        {{ isLoading ? "Rejecting...;" : "Reject" }}
+      <button
+        class="btn-danger"
+        [disabled]="req.loading"
+        (click)="rejectRequest(req)"
+      >
+        {{ req.loading && !req.accepting ? "Rejecting..." : "Reject" }}
       </button>
     </div>
   </div>

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 import { PrivateCommunityService } from '../services/privateCommunity.service';
 import { UserService } from '../services/user.service';
@@ -13,6 +14,8 @@ interface JoinRequest {
     name: string;
     email: string;
   };
+  loading?: boolean;
+  accepting?: boolean;
   requestedAt: string;
 }
 
@@ -77,16 +80,25 @@ export class ReviewComponent implements OnInit, OnDestroy {
   }
 
   // ===================== ACCEPT =====================
-  acceptRequest(userId: string): void {
+  acceptRequest(req: JoinRequest): void {
     if (!this.communityId) return;
+    if (req.loading) return;
+
+    req.loading = true;
+    req.accepting = true;
 
     this.privateCommunityService
-      .handleJoinRequest(this.communityId, userId, true)
+      .handleJoinRequest(this.communityId, req.user._id, true)
+      .pipe(
+        finalize(() => {
+          req.loading = false;
+        }),
+      )
       .subscribe({
         next: (response) => {
           if (response?.success) {
             this.joinRequests = this.joinRequests.filter(
-              (req) => req.user._id !== userId,
+              (item) => item.user._id !== req.user._id,
             );
             alert('Request approved successfully! ');
           } else {
@@ -101,16 +113,25 @@ export class ReviewComponent implements OnInit, OnDestroy {
   }
 
   // ===================== REJECT =====================
-  rejectRequest(userId: string): void {
+  rejectRequest(req: JoinRequest): void {
     if (!this.communityId) return;
+    if (req.loading) return;
+
+    req.loading = true;
+    req.accepting = false;
 
     this.privateCommunityService
-      .handleJoinRequest(this.communityId, userId, false)
+      .handleJoinRequest(this.communityId, req.user._id, false)
+      .pipe(
+        finalize(() => {
+          req.loading = false;
+        }),
+      )
       .subscribe({
         next: (response) => {
           if (response?.success) {
             this.joinRequests = this.joinRequests.filter(
-              (req) => req.user._id !== userId,
+              (item) => item.user._id !== req.user._id,
             );
             alert('Request rejected successfully! ');
           } else {
