@@ -8,6 +8,7 @@ import { EventService, Event } from '../services/event.service';
 import { finalize } from 'rxjs/operators';
 import { AlertService } from '../services/alert.service';
 import { RecentEventComponent } from '../recent-event/recent-event.component';
+import { ChatService } from '../services/chat.service';
 
 interface Community {
   _id: string;
@@ -36,18 +37,24 @@ export class CommunityDashboardComponent implements OnInit {
   errorMessage = '';
 
   totalMembers = 0;
+  hasUnread = false;
 
   constructor(
     private communityService: CommunityService,
     private userService: UserService,
     private eventService: EventService,
     private alertService: AlertService,
+    private chatService: ChatService,
     private router: Router,
   ) {}
 
   ngOnInit() {
     this.loadDashboard();
     this.loadAlerts(this.selectedCommunity?._id || '');
+
+    this.chatService.hasUnread$.subscribe((hasUnread) => {
+      this.hasUnread = hasUnread;
+    });
   }
 
   loadDashboard() {
@@ -219,6 +226,12 @@ export class CommunityDashboardComponent implements OnInit {
 
   goToMembers() {
     this.router.navigate(['/members'], {
+      queryParams: { communityId: this.selectedCommunity?._id },
+    });
+  }
+
+  goToChat() {
+    this.router.navigate(['/chatbox'], {
       queryParams: { communityId: this.selectedCommunity?._id },
     });
   }

@@ -296,10 +296,18 @@ h2 {
   font-weight: var(--font--weight);
   text-decoration: none;
   transition: background 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .members-grid .btn-secondary:hover {
   background: var(--primary-color-hover);
+}
+
+.chat-indicator {
+  display: inline-flex;
+  align-items: center;
 }
 
 .view-btn {
@@ -309,6 +317,29 @@ h2 {
 .add-gallery-btn {
   margin: 10px;
   min-width: none;
+}
+
+.chat {
+  display: flex;
+  justify-content: flex-end; /* move to right side */
+}
+
+/* Chat Button Style */
+.chat-btn {
+  background: #00616e;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--box-shadow);
+  transition: all 0.2s ease;
+}
+
+.chat-btn:hover {
+  background: #004c56;
+  cursor: pointer;
 }
 
 .add-gallery-btn button {

@@ -177,6 +177,27 @@ ol li {
   white-space: nowrap;
 }
 
+.nav-chat {
+  display: flex;
+  align-items: center;
+}
+
+.chat-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #333;
+  font-weight: 600;
+}
+
+.chat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #ff0000;
+  display: inline-block;
+}
+
 /* Logout button */
 #logout {
   padding: 8px 20px;

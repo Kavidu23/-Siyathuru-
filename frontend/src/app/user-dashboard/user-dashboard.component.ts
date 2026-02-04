@@ -8,6 +8,7 @@ import { CommunityService } from '../services/community.service';
 import { UserService } from '../services/user.service';
 import { AlertService } from '../services/alert.service';
 import { EventService } from '../services/event.service';
+import { ChatService } from '../services/chat.service';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -31,6 +32,7 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
   // ===== LOADING STATES =====
   isLoadingCommunities = false;
   isLoadingAlerts = false;
+  hasUnread = false;
 
   private subs: Subscription[] = [];
 
@@ -39,6 +41,7 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private userService: UserService,
     private eventService: EventService,
+    private chatService: ChatService,
     private router: Router,
   ) {}
 
@@ -64,6 +67,11 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
     });
 
     this.subs.push(validateSub);
+
+    const unreadSub = this.chatService.hasUnread$.subscribe((hasUnread) => {
+      this.hasUnread = hasUnread;
+    });
+    this.subs.push(unreadSub);
   }
 
   ngOnDestroy(): void {

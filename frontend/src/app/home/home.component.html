@@ -14,7 +14,9 @@
       <button *ngIf="!isLoggedIn" (click)="openSignupModal()" id="joinbtn">
         Join Now
       </button>
-      <button (click)="openvid()" id="joinbtn">Need Help?</button>
+      <button *ngIf="!isLoggedIn" (click)="openvid()" id="joinbtn">
+        Need Help?
+      </button>
     </div>
   </div>
   <img src="1.png" alt="Community visual" class="hero-image left" />

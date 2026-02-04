@@ -1,50 +1,113 @@
 <div class="telegram-chat-interface">
   <div class="telegram-sidebar">
-    <div class="telegram-contact active">
-      <img src="chat1.png" alt="Profile" />
+    <div class="sidebar-title">Your Communities</div>
+    <div *ngIf="isLoading" class="sidebar-empty">Loading...</div>
+    <div
+      *ngIf="!isLoading && joinedCommunities.length === 0"
+      class="sidebar-empty"
+    >
+      No communities yet.
+    </div>
+    <div
+      class="telegram-contact"
+      *ngFor="let c of joinedCommunities"
+      [class.active]="selectedCommunity?._id === c._id"
+      (click)="selectCommunity(c)"
+    >
+      <img [src]="c.profileImage || 'assets/default-user.png'" alt="Profile" />
       <div class="contact-info">
-        <strong>Chamika</strong>
-        <p>Hello there!</p>
+        <strong>{{ c.name }}</strong>
       </div>
     </div>
-    <div class="telegram-contact">
-      <img src="chat2.png" alt="Profile" />
-      <div class="contact-info">
-        <strong>Saman</strong>
-        <p>Sent a new file</p>
-      </div>
+
+    <div class="sidebar-title">Contacts</div>
+    <div *ngIf="!selectedCommunity" class="sidebar-empty">
+      Select a community to see contacts.
     </div>
-    <div class="telegram-contact">
-      <img src="chat3.png" alt="Profile" />
+    <div *ngIf="selectedCommunity && isLoadingContacts" class="sidebar-empty">
+      Loading contacts...
+    </div>
+    <div
+      *ngIf="selectedCommunity && !isLoadingContacts && contacts.length === 0"
+      class="sidebar-empty"
+    >
+      No contacts available.
+    </div>
+    <div
+      class="telegram-contact"
+      *ngFor="let u of contacts"
+      [class.active]="selectedContact?._id === u._id"
+      (click)="selectContact(u)"
+    >
+      <img [src]="u.profileImage || 'assets/default-user.png'" alt="Profile" />
       <div class="contact-info">
-        <strong>Nimal</strong>
-        <p>Let's meet today</p>
+        <strong>{{ u.name }}</strong>
+        <p>{{ u.email || "Community member" }}</p>
       </div>
     </div>
   </div>
 
   <div class="telegram-chat-window">
     <div class="chat-header">
-      <img src="chat4.png" alt="Profile" class="chat-header-img" />
-      <span class="chat-header-name">Chamika</span>
+      <img
+        [src]="selectedCommunity?.profileImage || 'assets/default-user.png'"
+        alt="Profile"
+        class="chat-header-img"
+      />
+      <span class="chat-header-name">
+        <ng-container *ngIf="selectedCommunity; else noCommunity">
+          {{ selectedCommunity?.name }}
+          <span class="chat-header-sep">—</span>
+          {{ selectedContact?.name || "Select a contact" }}
+        </ng-container>
+        <ng-template #noCommunity> Select a community </ng-template>
+      </span>
     </div>
 
     <div class="chat-messages">
-      <div class="message received">
-        <p>Hello 👋 Welcome to the community chat!</p>
-        <br />
-        <span class="time">10:00 AM</span>
+      <div *ngIf="!selectedCommunity" class="empty-chat">
+        Select a community to start chatting.
       </div>
-      <div class="message sent">
-        <p>Thanks! Excited to be here 😊</p>
-        <br />
-        <span class="time">10:01 AM</span>
+      <div *ngIf="selectedCommunity && !selectedContact" class="empty-chat">
+        Select a contact to start chatting.
+      </div>
+      <div
+        *ngIf="selectedCommunity && selectedContact && messages.length === 0"
+        class="empty-chat"
+      >
+        No messages yet. Say hello!
+      </div>
+      <div
+        *ngFor="let msg of messages"
+        class="message"
+        [class.sent]="isOwnMessage(msg)"
+        [class.received]="!isOwnMessage(msg)"
+      >
+        <p>
+          <strong *ngIf="!isOwnMessage(msg)">{{ msg.senderName }}:</strong>
+          {{ msg.text }}
+        </p>
+        <span class="time" *ngIf="msg.timestamp?.toDate">
+          {{ msg.timestamp.toDate() | date: "shortTime" }}
+        </span>
       </div>
     </div>
 
     <div class="chat-input">
-      <input type="text" placeholder="Type a message..." />
-      <button class="send-btn">➤</button>
+      <input
+        type="text"
+        placeholder="Type a message..."
+        [(ngModel)]="text"
+        (keyup.enter)="send()"
+        [disabled]="!selectedCommunity || !selectedContact"
+      />
+      <button
+        class="send-btn"
+        (click)="send()"
+        [disabled]="!selectedCommunity || !selectedContact"
+      >
+        Send
+      </button>
     </div>
   </div>
 </div>
