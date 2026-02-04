@@ -7,6 +7,7 @@ import { UserService } from '../services/user.service';
 import { EventService, Event } from '../services/event.service';
 import { finalize } from 'rxjs/operators';
 import { AlertService } from '../services/alert.service';
+import { RecentEventComponent } from '../recent-event/recent-event.component';
 
 interface Community {
   _id: string;
@@ -19,7 +20,7 @@ interface Community {
 @Component({
   selector: 'app-community-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, FooterComponent],
+  imports: [CommonModule, RouterLink, FooterComponent, RecentEventComponent],
   templateUrl: './community-dashboard.component.html',
   styleUrls: ['./community-dashboard.component.css'],
 })
