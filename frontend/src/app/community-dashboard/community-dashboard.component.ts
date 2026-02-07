@@ -193,6 +193,23 @@ export class CommunityDashboardComponent implements OnInit {
       });
   }
 
+  deleteAlert(alert: any) {
+    if (!alert?._id) return;
+
+    if (!confirm('Are you sure you want to remove this alert?')) return;
+
+    this.alertService
+      .deleteAlert(alert._id)
+      .subscribe({
+        next: (res) => {
+          this.alerts = this.alerts.filter((al) => al._id !== alert._id);
+          window.alert(res.message || 'Alert removed successfully');
+        },
+        error: (err) =>
+          window.alert(err?.error?.message || 'Failed to remove alert'),
+      });
+  }
+
   // -------- NAVIGATION --------
   goToRequests() {
     this.router.navigate(['/management'], {

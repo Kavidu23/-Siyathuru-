@@ -57,16 +57,16 @@ export class AlertComponent implements OnInit {
     this.alertService.createAlert(this.form).subscribe({
       next: (res) => {
         if (res?.success) {
-          alert('Alert created successfully! ✅');
+          alert('Alert created successfully!');
           this.resetForm();
         } else {
-          alert(res?.message || 'Failed to create alert ❌');
+          alert(res?.message || 'Failed to create alert ');
         }
         this.isLoading = false;
       },
       error: (err) => {
         console.error(err);
-        alert(err?.error?.message || 'Failed to create alert ❌');
+        alert(err?.error?.message || 'Failed to create alert ');
         this.isLoading = false;
       },
     });

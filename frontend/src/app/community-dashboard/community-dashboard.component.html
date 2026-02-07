@@ -103,8 +103,6 @@
       <div class="upcoming-info">
         <strong>{{ al.title }}</strong>
 
-        <span> 🚨 {{ al.message }} </span>
-
         <span> ⚠️ Severity: {{ al.severity }} </span>
 
         <span>
@@ -123,6 +121,7 @@
         <a class="view-btn" (click)="toggleAlertStatus(al)">
           {{ alertButtonLabel(al) }}
         </a>
+        <a class="remove-btn" (click)="deleteAlert(al)"> Remove </a>
       </div>
     </div>
 
@@ -149,7 +148,7 @@
       </div>
 
       <div class="upcoming-actions">
-        <a class="view-btn" (click)="deleteEvent(ev._id)">Remove</a>
+        <a class="remove-btn" (click)="deleteEvent(ev._id)">Remove</a>
       </div>
     </div>
   </section>

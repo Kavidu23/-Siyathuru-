@@ -1,5 +1,6 @@
 const Alert = require("../models/alert"); // alert model path
 const User = require("../models/user"); // Ensure User model is imported
+const Community = require("../models/communities"); // community model
 const sendEmail = require("../utils/sendEmail"); // email service
 
 // Create a new alert

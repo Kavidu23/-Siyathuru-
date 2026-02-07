@@ -223,6 +223,17 @@ h2 {
   color: var(--rd--ark-mode-bg--hover);
 }
 
+.upcoming-actions .remove-btn {
+  color: #c62828;
+  margin-left: 12px;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+}
+
+.upcoming-actions .remove-btn:hover {
+  color: #b71c1c;
+}
+
 .upcoming-actions .edit-link {
   color: var(--primary-color);
   margin-left: 12px;
