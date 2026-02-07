@@ -9,9 +9,6 @@
       <h2>Hi 👋, {{ userData?.name || "User" }}!</h2>
       <p>Community User Dashboard</p>
     </div>
-    <div class="settings">
-      <i class="bx bxs-cog"></i>
-    </div>
   </div>
 
   <!--Profile Banner -->
@@ -37,35 +34,31 @@
     <h2>Community Alerts</h2>
     <div class="alert-list">
       <!-- ALERT CARD -->
-      <div class="alert-card" *ngFor="let al of alerts">
-        <div class="alert-header">
-          <b>Title:</b>
-          {{ al.title || "Community Alert" }}
+      <div class="alert-card compact-card" *ngFor="let al of alerts">
+        <div class="card-top">
+          <div class="title">
+            {{ al.title || "Community Alert" }}
+          </div>
+          <span class="badge" [class]="al.severity">
+            {{ al.severity || "info" }}
+          </span>
         </div>
 
-        <!-- COMMUNITY NAME -->
-        <p class="severity">
-          <b>Severity:</b>
-          {{ al.severity }}
-        </p>
+        <div class="meta">
+          <span class="from">
+            {{ al.communityId?.name || "Your Community" }}
+          </span>
+          <span class="dot">•</span>
+          <span class="date">
+            {{ al.createdAt | date: "mediumDate" }}
+          </span>
+        </div>
 
-        <!-- COMMUNITY NAME -->
-        <p class="community-name">
-          <b>From:</b>
-          {{ al.communityId?.name || "Your Community" }}
-        </p>
-
-        <!-- MESSAGE -->
-        <p class="alert-message">
-          <b>Message:</b>
-          {{ al.message }}
-        </p>
-
-        <!-- DATE -->
-        <small class="date">
-          <b>Date:</b>
-          {{ al.createdAt | date: "medium" }}
-        </small>
+        <div class="hover-details">
+          <p class="detail">
+            {{ al.message }}
+          </p>
+        </div>
       </div>
       <!-- EMPTY STATE -->
       <div *ngIf="alerts.length === 0" class="empty">No active alerts</div>
@@ -77,34 +70,29 @@
     <h2>My Upcoming Events</h2>
 
     <div class="event-list">
-      <div class="event-card" *ngFor="let ev of upcomingEvents">
-        <b>Title:</b>
-        {{ ev.title }}
+      <div class="event-card compact-card" *ngFor="let ev of upcomingEvents">
+        <div class="card-top">
+          <div class="title">{{ ev.title }}</div>
+          <span class="badge neutral">
+            {{ ev.eventDate | date: "mediumDate" }}
+          </span>
+        </div>
 
-        <p>
-          <b>Community:</b>
-          {{ ev.communityId?.name || "My Community" }}
-        </p>
+        <div class="meta">
+          <span class="from">
+            {{ ev.communityId?.name || "My Community" }}
+          </span>
+          <span class="dot">•</span>
+          <span class="date">{{ ev.eventTime }}</span>
+        </div>
 
-        <p>
-          <b>Date:</b>
-          {{ ev.eventDate | date: "mediumDate" }}
-        </p>
+        <div class="meta">
+          <span class="from">{{ ev.location }}</span>
+        </div>
 
-        <p>
-          <b>Time:</b>
-          {{ ev.eventTime }}
-        </p>
-
-        <p>
-          <b>Location:</b>
-          {{ ev.location }}
-        </p>
-
-        <p>
-          <b>Description:</b>
-          {{ ev.description }}
-        </p>
+        <div class="hover-details">
+          <p class="detail">{{ ev.description }}</p>
+        </div>
 
         <!-- JOIN BUTTON -->
         <button
