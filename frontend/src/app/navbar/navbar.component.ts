@@ -127,6 +127,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.userData.role === 'admin') {
+      this.router.navigate(['/superadmin']);
+      return;
+    }
+
     this.router.navigate(['/user-dashboard']);
   }
 
