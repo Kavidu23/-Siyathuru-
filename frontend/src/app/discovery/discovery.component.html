@@ -24,7 +24,7 @@
             *ngFor="let suggestion of locationSuggestions"
             (click)="selectLocation(suggestion)"
           >
-            {{ suggestion.display_name }}
+            {{ suggestion.district }}
           </li>
         </ul>
       </div>
@@ -33,8 +33,8 @@
         <label for="type">Type</label>
         <select id="type" [(ngModel)]="selectedType">
           <option value="all">All</option>
-          <option *ngFor="let type of communities" value="{{ type.type }}">
-            {{ type.type }}
+          <option *ngFor="let type of uniqueTypes" [value]="type">
+            {{ type }}
           </option>
         </select>
       </div>
@@ -42,6 +42,7 @@
       <div class="filter-group">
         <label for="joinType">Join Type</label>
         <select id="joinType" [(ngModel)]="selectedJoinType">
+          <option value="all">All</option>
           <option value="free">Free</option>
           <option value="request">On Request</option>
         </select>
@@ -87,3 +88,4 @@
     </p>
   </section>
 </section>
+<app-footer></app-footer>
