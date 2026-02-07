@@ -220,7 +220,7 @@ h2 {
 }
 
 .upcoming-actions .view-btn:hover {
-  color: var(--rd--ark-mode-bg--hover);
+  color: var(--secondary-text-color);
 }
 
 .upcoming-actions .remove-btn {

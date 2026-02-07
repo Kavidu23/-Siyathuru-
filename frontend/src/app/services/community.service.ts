@@ -46,6 +46,13 @@ export class CommunityService {
     return this.http.get<any>(`${this.baseUrl}/${id}`);
   }
 
+  // DELETE: remove a community
+  deleteCommunity(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/${id}`, {
+      withCredentials: true,
+    });
+  }
+
   // POST: join a community (body contains { userId })
   joinCommunity(id: string, userId: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/${id}/join`, { userId });

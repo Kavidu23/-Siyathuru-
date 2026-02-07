@@ -4,7 +4,7 @@
 }
 
 /* common setup resueable card style */
-.card{
+.card {
   background: white;
   padding: 20px;
   border-radius: 20px;
@@ -13,11 +13,10 @@
 }
 
 h2 {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 20px;
   margin-bottom: var(--spacing-md);
 }
-
 
 /* HEADER */
 .profile-info {
@@ -41,10 +40,8 @@ h2 {
   font-size: 20px;
 }
 
-
-/*  IMMEDIATE ACTION CENTER  */
-
-.immediate-actions{
+/* Immediate Action Center */
+.immediate-actions {
   margin-top: 15px;
   margin-bottom: 30px;
   padding: 25px;
@@ -53,12 +50,18 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 25px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* Grid wrapper */
 .immediate-actions .immediate-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
   gap: 15px;
+  width: 100%;
+  flex-wrap: wrap;
 }
 
 .action-card {
@@ -69,6 +72,10 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  flex: 1 1 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .action-card .metric h2 {
@@ -81,37 +88,19 @@ h2 {
   color: black;
 }
 
-
 .btn-primary {
   padding: 10px 14px;
 }
 
-.btn-primary:hover{
-    background-color: var(--primary-color-hover);
+.btn-primary:hover {
+  background-color: var(--primary-color-hover);
 }
-
-.btn-alert {
-  background: var(--rd--ark-mode-bg);
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 6px 18px rgba(255, 77, 0, 0.18);
-  transition: transform 0.15s ease;
-}
-
-.btn-alert:hover {
-  background-color: var(--rd--ark-mode-bg--hover);
-}
-
 
 /* COMMUNITY HEALTH SNAPSHOT */
 
 .health-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 15px;
 }
 
@@ -131,7 +120,6 @@ h2 {
 .stat-card p {
   margin-top: 6px;
 }
-
 
 /* UPCOMING EVENTS & MANAGEMENT  */
 .upcoming-list {
@@ -162,23 +150,23 @@ h2 {
   color: var(--secondary-text-color);
 }
 
-.upcoming-actions a {
-  color: black;
-  font-size: var(--font-size-sm);
-  transition: background 0.2s;
+.upcoming-actions .view-btn {
+  cursor: pointer;
 }
 
-.upcoming-actions .view-btn:hover{
-  color: var(--rd--ark-mode-bg--hover);
+.upcoming-actions .view-btn:hover {
+  color: var(--secondary-text-color);
 }
 
 .upcoming-actions .edit-link {
   color: var(--primary-color);
   margin-left: 12px;
+  color: #c62828;
+  cursor: pointer;
 }
 
 .upcoming-actions .edit-link:hover {
-  color: var(--primary-color-hover);
+  color: #b71c1c;
 }
 
 /* COMPACT FEED */
@@ -188,7 +176,6 @@ h2 {
   border-radius: 8px;
   margin-bottom: 8px;
 }
-
 
 /* MEMBER MANAGEMENT & ALERTS */
 .members-grid {
@@ -206,8 +193,8 @@ h2 {
   margin: 6px 0;
 }
 
-.members-overview p{
-    margin-top: var(--margin--sm);
+.members-overview p {
+  margin-top: var(--margin--sm);
 }
 
 .member-actions {
@@ -237,7 +224,7 @@ h2 {
   color: #8a4b00;
 }
 
-.members-grid .btn-secondary{
+.members-grid .btn-secondary {
   padding: 8px 12px;
   background: #00616e;
   color: white;
@@ -248,7 +235,7 @@ h2 {
   transition: background 0.2s ease;
 }
 
-.members-grid .btn-secondary:hover{
+.members-grid .btn-secondary:hover {
   background: var(--primary-color-hover);
 }
 
@@ -267,7 +254,7 @@ h2 {
   box-shadow: var(--box-shadow);
 }
 
-.ai-card .btn-secondary{
+.ai-card .btn-secondary {
   margin-top: var(--margin-sm);
   padding: 8px 12px;
   background: #00616e;
@@ -279,7 +266,7 @@ h2 {
   transition: background 0.2s ease;
 }
 
-.ai-card .btn-secondary:hover{
+.ai-card .btn-secondary:hover {
   background: var(--primary-color-hover);
 }
 
@@ -329,18 +316,18 @@ h2 {
   cursor: pointer;
 }
 
-.muted{
+.muted {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: var(--margin--sm);
 }
 
-.muted #view{
+.muted #view {
   color: var(--primary-color);
 }
 
-.muted #view:hover{
+.muted #view:hover {
   cursor: pointer;
   color: var(--primary-color-hover);
 }
@@ -371,11 +358,13 @@ h2 {
 }
 
 @media (max-width: 440px) {
-  .btn-primary,.btn-alert,.btn-secondary {
-    font-size: var( --very-small);
+  .btn-primary,
+  .btn-alert,
+  .btn-secondary {
+    font-size: var(--very-small);
     text-align: center;
   }
-  .btn-alert{
+  .btn-alert {
     margin-top: 30px;
   }
 }

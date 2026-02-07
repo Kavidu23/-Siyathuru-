@@ -1,43 +1,25 @@
 <div class="dashboard community-dashboard">
   <!-- Header -->
   <div class="profile-info">
-    <img src="super.png" alt="Admin" class="profile-pic" />
+    <img src="{{ currentUser.profileImage }}" alt="Admin" class="profile-pic" />
     <div class="text">
-      <h3>Hi 👋, Super Admin!</h3>
-      <p>Central Administration Dashboard — Manage Entire Platform</p>
+      <h3>Hi 👋, {{ currentUser.name }}!</h3>
+      <p>Central Administration Dashboard</p>
     </div>
   </div>
 
   <!-- Immediate Action Center -->
   <section class="cardt immediate-actions">
     <div class="immediate-grid">
-      <div class="action-card urgent-requests">
-        <div class="metric">
-          <h2>12</h2>
-          <p>Community Reports Pending</p>
-        </div>
-        <div class="action-cta">
-          <button class="btn-primary">Review Reports</button>
-        </div>
-      </div>
-
       <div class="action-card post-event">
         <div class="metric">
           <h2>Ad</h2>
           <p>Post New Advertisement</p>
         </div>
         <div class="action-cta">
-          <button class="btn-primary">Create Advertisement</button>
-        </div>
-      </div>
-
-      <div class="action-card emergency-alert">
-        <div class="metric">
-          <h2>!</h2>
-          <p>Send System Alert</p>
-        </div>
-        <div class="action-cta">
-          <button class="btn-alert">Send Alert</button>
+          <button class="btn-primary" (click)="createAdvertisement()">
+            Create Advertisement
+          </button>
         </div>
       </div>
     </div>
@@ -48,20 +30,16 @@
     <h2>Platform Health Snapshot</h2>
     <div class="health-grid">
       <div class="stat-card">
-        <h3>48</h3>
+        <h3>{{ totalCommunities }}</h3>
         <p>Total Communities</p>
       </div>
       <div class="stat-card">
-        <h3>12,850</h3>
+        <h3>{{ totalUsers }}</h3>
         <p>Total Users</p>
       </div>
       <div class="stat-card">
-        <h3>94%</h3>
+        <h3>{{ activeEngagement }}%</h3>
         <p>Active Engagement</p>
-      </div>
-      <div class="stat-card">
-        <h3>37</h3>
-        <p>Pending Moderation Tasks</p>
       </div>
     </div>
   </section>
@@ -70,72 +48,24 @@
   <section class="card upcoming-management">
     <h2>Communities Overview</h2>
     <div class="upcoming-list">
-      <div class="upcoming-item">
+      <div class="upcoming-item" *ngFor="let c of communities">
         <div class="upcoming-info">
-          <strong>🏡 Green Valley</strong>
-          <span>Members: 850 · Status: Active</span>
+          <strong>🏡 {{ c.name }}</strong>
+          <span>Members: {{ getMemberCount(c) }}</span>
         </div>
         <div class="upcoming-actions">
-          <a href="#" class="view-btn">View</a>
-          <a href="#" class="edit-link">Moderate</a>
+          <a class="view-btn" (click)="viewCommunity(c._id)">View</a>
+          <a
+            class="edit-link"
+            (click)="RemoveCommunity(c)"
+            [class.disabled]="isDeleting"
+          >
+            Remove
+          </a>
         </div>
       </div>
-
-      <div class="upcoming-item">
-        <div class="upcoming-info">
-          <strong>🌊 Coastal Care</strong>
-          <span>Members: 450 · Status: Pending Review</span>
-        </div>
-        <div class="upcoming-actions">
-          <a href="#" class="view-btn">View</a>
-          <a href="#" class="edit-link">Approve</a>
-        </div>
-      </div>
-
-      <div class="upcoming-item">
-        <div class="upcoming-info">
-          <strong>🌾 Farm Life</strong>
-          <span>Members: 1,200 · Status: Active</span>
-        </div>
-        <div class="upcoming-actions">
-          <a href="#" class="view-btn">View</a>
-          <a href="#" class="edit-link">Moderate</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Advertisement & Subscription Management -->
-  <section class="card member-management">
-    <h2>Advertisement & Subscription Management</h2>
-    <div class="members-grid">
-      <div class="members-overview">
-        <p><strong>Active Ads:</strong> 14</p>
-        <p><strong>Pending Approvals:</strong> 3</p>
-        <p><strong>Total Subscribers:</strong> 1,028</p>
-        <div class="member-actions">
-          <button class="btn-primary">Manage Ads</button>
-          <button class="btn-secondary">Manage Subscriptions</button>
-        </div>
-      </div>
-
-      <div class="alerts-overview">
-        <strong>Subscription Revenue Summary</strong>
-
-        <div
-          class="alert-row"
-          style="display: flex; flex-direction: column; gap: 8px"
-        >
-          <div class="alert-pill"><strong>Total Earnings:</strong> $24,580</div>
-          <div class="alert-pill"><strong>This Month:</strong> $3,120</div>
-          <div class="alert-pill warn">
-            <strong>Pending Payments:</strong> $480
-          </div>
-        </div>
-
-        <div style="margin-top: 14px">
-          <button class="btn-secondary">View Transaction History</button>
-        </div>
+      <div *ngIf="!isLoading && communities.length === 0">
+        No communities found.
       </div>
     </div>
   </section>
