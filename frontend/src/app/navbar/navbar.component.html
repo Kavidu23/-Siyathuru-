@@ -42,7 +42,7 @@
     <!-- Show User Profile when logged in -->
     <li *ngIf="isLoggedIn" class="nav-chat">
       <a routerLink="/chatbox" class="chat-link">
-        Chat
+        <div class="div" *ngIf="userData.role != 'admin'">Chat</div>
         <span
           *ngIf="hasUnread"
           class="chat-dot"
