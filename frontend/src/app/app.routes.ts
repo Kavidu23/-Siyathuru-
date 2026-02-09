@@ -14,23 +14,63 @@ import { BlogComponent } from './blog/blog.component';
 import { ProComponent } from './pro/pro.component';
 import { AboutComponent } from './about/about.component';
 import { MembersComponent } from './members/members.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' }, // redirect '/' to '/home'
   { path: 'home', component: HomeComponent },
   { path: 'discover', component: DiscoveryComponent },
   { path: 'ask-ai', component: AskaiComponent },
-  { path: 'user-dashboard', component: UserDashboardComponent },
+  {
+    path: 'user-dashboard',
+    component: UserDashboardComponent,
+    canActivate: [authGuard],
+  },
   { path: 'community/:id', component: CommunityProfileComponent }, //there should be the id pass
-  { path: 'create-community', component: CommunityCreateComponent },
-  { path: 'community-dashboard', component: CommunityDashboardComponent },
-  { path: 'chatbox', component: ChatboxComponent },
-  { path: 'chart', component: ChartDashboardComponent },
-  { path: 'superadmin', component: SuperadminComponent },
-  { path: 'management', component: ManagementComponent },
+  {
+    path: 'create-community',
+    component: CommunityCreateComponent,
+    canActivate: [authGuard],
+    data: { roles: ['leader'] },
+  },
+  {
+    path: 'community-dashboard',
+    component: CommunityDashboardComponent,
+    canActivate: [authGuard],
+    data: { roles: ['leader'] },
+  },
+  {
+    path: 'chatbox',
+    component: ChatboxComponent,
+    canActivate: [authGuard],
+    data: { roles: ['leader', 'member'] },
+  },
+  {
+    path: 'chart',
+    component: ChartDashboardComponent,
+    canActivate: [authGuard],
+    data: { roles: ['leader'] },
+  },
+  {
+    path: 'superadmin',
+    component: SuperadminComponent,
+    canActivate: [authGuard],
+    data: { roles: ['admin'] },
+  },
+  {
+    path: 'management',
+    component: ManagementComponent,
+    canActivate: [authGuard],
+    data: { roles: ['leader'] },
+  },
   { path: 'blog', component: BlogComponent },
   { path: 'pro', component: ProComponent },
   { path: 'about', component: AboutComponent },
-  { path: 'members', component: MembersComponent },
+  {
+    path: 'members',
+    component: MembersComponent,
+    canActivate: [authGuard],
+    data: { roles: ['leader', 'member'] },
+  },
   { path: '**', redirectTo: 'home' },
 ];
