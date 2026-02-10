@@ -10,6 +10,9 @@ export class CommunityService {
   private baseUrl = window.location.hostname.includes('localhost')
     ? 'http://localhost:3000/api/communities'
     : 'http://backend:3000/api/communities'; // backend service name in Docker
+  private verificationBaseUrl = window.location.hostname.includes('localhost')
+    ? 'http://localhost:3000/api/community-verification'
+    : 'http://backend:3000/api/community-verification';
 
   constructor(private http: HttpClient) {}
 
@@ -92,5 +95,14 @@ export class CommunityService {
     return this.http.get<any>(`${this.baseUrl}/${communityId}`, {
       withCredentials: true,
     });
+  }
+
+  // POST: request/verify community (marks code used + sets isVerified)
+  verifyCommunity(communityId: string): Observable<any> {
+    return this.http.post<any>(
+      `${this.verificationBaseUrl}/verify`,
+      { communityId },
+      { withCredentials: true },
+    );
   }
 }

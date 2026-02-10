@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FooterComponent } from '../footer/footer.component';
 import { CommunityService } from '../services/community.service';
 import { UserService } from '../services/user.service';
@@ -16,6 +16,7 @@ interface Community {
   leader: string;
   members: string[];
   profileImage?: string;
+  isVerified?: boolean;
 }
 
 @Component({
@@ -34,6 +35,7 @@ export class CommunityDashboardComponent implements OnInit {
   isLoading = true;
   isDeleting = false;
   isUpdatingAlert = false;
+  isVerifying = false;
   errorMessage = '';
 
   totalMembers = 0;
@@ -46,18 +48,14 @@ export class CommunityDashboardComponent implements OnInit {
     private alertService: AlertService,
     private chatService: ChatService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
-    this.loadDashboard();
-    this.loadAlerts(this.selectedCommunity?._id || '');
+    const communityId =
+      this.route.snapshot.paramMap.get('id') ||
+      this.route.snapshot.queryParamMap.get('communityId');
 
-    this.chatService.hasUnread$.subscribe((hasUnread) => {
-      this.hasUnread = hasUnread;
-    });
-  }
-
-  loadDashboard() {
     this.currentUser = this.userService.getCurrentUser();
 
     if (!this.currentUser) {
@@ -65,6 +63,18 @@ export class CommunityDashboardComponent implements OnInit {
       return;
     }
 
+    if (communityId) {
+      this.loadCommunityById(communityId);
+    } else {
+      this.loadDashboard();
+    }
+
+    this.chatService.hasUnread$.subscribe((hasUnread) => {
+      this.hasUnread = hasUnread;
+    });
+  }
+
+  loadDashboard() {
     this.communityService.getAllCommunities().subscribe({
       next: (response: any) => {
         const communities = response.data || response;
@@ -83,6 +93,26 @@ export class CommunityDashboardComponent implements OnInit {
         this.isLoading = false;
       },
 
+      error: () => {
+        this.errorMessage = 'Failed to load community';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  loadCommunityById(communityId: string) {
+    this.communityService.getCommunityById(communityId).subscribe({
+      next: (res: any) => {
+        this.selectedCommunity = res.data || res;
+        this.totalMembers = this.selectedCommunity?.members?.length || 0;
+
+        if (this.selectedCommunity?._id) {
+          this.loadUpcomingEvents(this.selectedCommunity._id);
+          this.loadAlerts(this.selectedCommunity._id);
+        }
+
+        this.isLoading = false;
+      },
       error: () => {
         this.errorMessage = 'Failed to load community';
         this.isLoading = false;
@@ -263,5 +293,30 @@ export class CommunityDashboardComponent implements OnInit {
 
   alertButtonLabel(alert: any) {
     return alert.isActive ? 'Deactivate' : 'Activate';
+  }
+
+  requestVerification() {
+    const communityId = this.selectedCommunity?._id;
+    if (!communityId) return;
+
+    if (this.selectedCommunity?.isVerified) {
+      alert('Community is already verified');
+      return;
+    }
+
+    this.isVerifying = true;
+    this.communityService.verifyCommunity(communityId).subscribe({
+      next: (res: any) => {
+        this.isVerifying = false;
+        if (this.selectedCommunity) {
+          this.selectedCommunity.isVerified = true;
+        }
+        alert(res?.message || 'Verification requested successfully');
+      },
+      error: (err) => {
+        this.isVerifying = false;
+        alert(err?.error?.error || 'Verification request failed');
+      },
+    });
   }
 }

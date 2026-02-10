@@ -40,6 +40,12 @@ export const routes: Routes = [
     data: { roles: ['leader'] },
   },
   {
+    path: 'community-dashboard/:id',
+    component: CommunityDashboardComponent,
+    canActivate: [authGuard],
+    data: { roles: ['leader'] },
+  },
+  {
     path: 'chatbox',
     component: ChatboxComponent,
     canActivate: [authGuard],

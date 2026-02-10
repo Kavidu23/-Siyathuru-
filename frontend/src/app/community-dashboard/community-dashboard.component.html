@@ -58,6 +58,27 @@
           </button>
         </div>
       </div>
+
+      <!-- ----- VERIFICATION ----- -->
+      <div class="action-card verification-card">
+        <div class="metric">
+          <h2>Verification</h2>
+          <p *ngIf="selectedCommunity?.isVerified">Community Verified</p>
+          <p *ngIf="!selectedCommunity?.isVerified">
+            Request Community Verification
+          </p>
+        </div>
+
+        <div class="action-cta">
+          <button
+            class="btn-primary"
+            (click)="requestVerification()"
+            [disabled]="isVerifying || selectedCommunity?.isVerified"
+          >
+            {{ selectedCommunity?.isVerified ? "Verified" : "Request Now" }}
+          </button>
+        </div>
+      </div>
     </div>
   </section>
 

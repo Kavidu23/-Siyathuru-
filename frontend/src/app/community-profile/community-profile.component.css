@@ -77,6 +77,17 @@
   margin-bottom: var(--spacing-md);
 }
 
+.unverified-badge {
+  margin-top: var(--spacing-lg);
+  background: #9aa1a8;
+  color: white;
+  font-size: 14px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: var(--spacing-md);
+}
+
 .stats {
   display: flex;
   gap: var(--spacing-lg);

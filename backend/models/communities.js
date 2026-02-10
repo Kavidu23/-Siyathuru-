@@ -32,6 +32,7 @@ const communitySchema = new mongoose.Schema(
     },
 
     isPrivate: { type: Boolean, default: false },          // Require join requests or not
+    isVerified: { type: Boolean, default: false },         // Admin verification status
 
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Members list
     leader: { type: mongoose.Schema.Types.ObjectId, ref: "User" },   // Community creator

@@ -24,8 +24,12 @@
       {{ community?.mission || "No mission" }}
     </p>
     <div class="verification">
-      <span class="verified-badge">✔ Verified Community</span>
-      <!--Have not implemet this yet-->
+      <span class="verified-badge" *ngIf="community?.isVerified">
+        ✔ Verified Community
+      </span>
+      <span class="unverified-badge" *ngIf="!community?.isVerified">
+        Not Verified
+      </span>
     </div>
     <div class="stats">
       <div>
