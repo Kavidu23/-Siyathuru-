@@ -14,13 +14,28 @@ const {
 
 const upload = require("../middleware/upload"); // multer + Cloudinary
 const authMiddleware = require("../middleware/authMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
 
-// CRUD routes
+// ===== Role middleware shortcuts =====
+const leaderOnly = roleMiddleware(["leader"]);
+const memberOnly = roleMiddleware(["member"]);
+const adminOnly = roleMiddleware(["admin"]);
+
+// ===== CRUD routes =====
+
+// Public routes
 router.get("/", getCommunities);            // Get all communities
 router.get("/:id", getCommunityById);       // Get a single community by ID
-router.get("/leader/:leaderId", getCommunitiesByLeader); // Get communities by leader ID
 
-// CREATE new community with image upload
+// Leader-only: get communities they lead
+router.get(
+    "/leader/:leaderId",
+    authMiddleware,
+    leaderOnly,
+    getCommunitiesByLeader
+);
+
+// Create new community (authenticated only)
 router.post(
     "/",
     authMiddleware,
@@ -31,9 +46,10 @@ router.post(
     createCommunity
 );
 
-// UPDATE community with optional image upload
+// Update community (authenticated only)
 router.put(
     "/:id",
+    authMiddleware,
     upload.fields([
         { name: "bannerImage", maxCount: 1 },
         { name: "profileImage", maxCount: 1 },
@@ -41,15 +57,26 @@ router.put(
     updateCommunity
 );
 
-router.delete("/:id", deleteCommunity);     // Delete community by ID
+// Delete community (admin only)
+router.delete(
+    "/:id",
+    authMiddleware,
+    adminOnly,
+    deleteCommunity
+);
 
-// Join community
-router.post("/:id/join", joinCommunity);
+// Join community (member only)
+router.post("/:id/join", authMiddleware, memberOnly, joinCommunity);
 
-// Leave community
-router.post("/:id/leave", leaveCommunity);
+// Leave community (member only)
+router.post("/:id/leave", authMiddleware, memberOnly, leaveCommunity);
 
 // Remove member (leader only)
-router.delete("/:id/members/:memberId", authMiddleware, removeMember);
+router.delete(
+    "/:id/members/:memberId",
+    authMiddleware,
+    leaderOnly,
+    removeMember
+);
 
 module.exports = router;

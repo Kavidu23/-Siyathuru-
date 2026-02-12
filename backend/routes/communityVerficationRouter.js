@@ -7,11 +7,17 @@ const {
 } = require("../controllers/communityVerificationController");
 
 const authMiddleware = require("../middleware/authMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
 
-// Validate code (does not mark as used)
-router.post("/request", authMiddleware, requestVerification);
+// Leader-only middleware
+const leaderOnly = roleMiddleware(["leader"]);
 
-// Verify community and mark code as used
-router.post("/verify", authMiddleware, verifyCommunity);
+// ===== Routes =====
+
+// Request verification (leader only)
+router.post("/request", authMiddleware, leaderOnly, requestVerification);
+
+// Verify community (leader only)
+router.post("/verify", authMiddleware, leaderOnly, verifyCommunity);
 
 module.exports = router;

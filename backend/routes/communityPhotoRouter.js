@@ -1,6 +1,9 @@
 // routes/communityPhotoRouter.js
 const express = require('express');
 const multer = require('multer');
+const authMiddleware = require('../middleware/authMiddleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
+
 const { uploadPhoto, getPhotosByCommunity, deletePhoto } = require('../controllers/communityPhotoController');
 
 const router = express.Router();
@@ -9,13 +12,32 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
 
+// Only leader can access these routes
+const leaderOnly = roleMiddleware(['leader']);
+
 // ================= UPLOAD PHOTO =================
-router.post('/', upload.single('file'), uploadPhoto);
+router.post(
+  '/',
+  authMiddleware,
+  leaderOnly,
+  upload.single('file'),
+  uploadPhoto
+);
 
 // ================= GET PHOTOS BY COMMUNITY =================
-router.get('/community/:communityId', getPhotosByCommunity);
+router.get(
+  '/community/:communityId',
+  authMiddleware,
+  leaderOnly,
+  getPhotosByCommunity
+);
 
 // ================= DELETE PHOTO =================
-router.delete('/:id', deletePhoto);
+router.delete(
+  '/:id',
+  authMiddleware,
+  leaderOnly,
+  deletePhoto
+);
 
 module.exports = router;

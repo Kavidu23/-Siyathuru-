@@ -7,27 +7,28 @@ const {
     getEventById,
     updateEvent,
     deleteEvent,
-
     joinEvent,          // NEW
     getEventsByUserId,  // NEW
 } = require('../controllers/eventsController');
 
-// Get events for a user based on their joined communities
-router.get('/user/:userId', getEventsByUserId);
+const authMiddleware = require('../middleware/authMiddleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 
-// User join event (RSVP)
-router.post('/join', joinEvent);
+// Role shortcuts
+const leaderOnly = roleMiddleware(['leader']);
+const memberOnly = roleMiddleware(['member']);
 
-
+// ===== Public routes =====
 router.get('/', getEvents);           // Get all events
-
 router.get('/:id', getEventById);     // Get single event by ID
 
-router.post('/', createEvent);        // Create new event
+// ===== Member-only routes =====
+router.get('/user/:userId', authMiddleware, memberOnly, getEventsByUserId);
+router.post('/join', authMiddleware, memberOnly, joinEvent);
 
-router.put('/:id', updateEvent);      // Update event by ID
-
-router.delete('/:id', deleteEvent);   // Delete event by ID
-
+// ===== Leader-only routes =====
+router.post('/', authMiddleware, leaderOnly, createEvent);
+router.put('/:id', authMiddleware, leaderOnly, updateEvent);
+router.delete('/:id', authMiddleware, leaderOnly, deleteEvent);
 
 module.exports = router;
