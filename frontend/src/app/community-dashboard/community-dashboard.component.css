@@ -370,8 +370,6 @@ h2 {
 
 /* AI & INSIGHTS */
 .ai-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 15px;
   margin-top: var(--margin-sm);
 }
@@ -407,24 +405,6 @@ h2 {
 .ai-list {
   margin: 10px 0 0 16px;
   color: var(--secondary-text-color);
-}
-
-/* MINI CHART */
-.mini-chart {
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(180deg, #fafafa, #fff);
-  border-radius: 8px;
-  border: 1px solid #eee;
-}
-
-.chart-line {
-  width: 80%;
-  height: 6px;
-  background: linear-gradient(90deg, #00616e, #00a6b6);
-  border-radius: 6px;
 }
 
 /* BUTTONS */

@@ -3,6 +3,7 @@ const express = require('express');
 const multer = require('multer');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
+const nsfwCheck = require('../middleware/nsfwCheck');
 
 const { uploadPhoto, getPhotosByCommunity, deletePhoto } = require('../controllers/communityPhotoController');
 
@@ -21,6 +22,7 @@ router.post(
   authMiddleware,
   leaderOnly,
   upload.single('file'),
+  nsfwCheck,
   uploadPhoto
 );
 

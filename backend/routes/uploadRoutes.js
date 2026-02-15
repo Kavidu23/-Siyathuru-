@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const cloudinary = require('../config/cloudinary');
+const nsfwCheck = require('../middleware/nsfwCheck');
 const router = express.Router();
 
 // Configure multer for in-memory storage
@@ -8,7 +9,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
 
 // POST upload endpoint
-router.post('/', upload.single('file'), async (req, res) => {
+router.post('/', upload.single('file'), nsfwCheck, async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'No file provided' });
