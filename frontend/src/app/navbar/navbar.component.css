@@ -4,6 +4,10 @@
   padding: 20px;
 }
 
+.div:hover {
+  color: #00616e;
+}
+
 /* Flex for nav items */
 ol {
   list-style: none;
