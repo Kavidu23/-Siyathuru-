@@ -375,37 +375,6 @@
   background: #004c56;
 }
 
-/* Discovery */
-.recommendations {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.rec-card {
-  flex: 1;
-  min-width: 160px;
-  background: #00616e;
-  padding: 15px;
-  border-radius: 10px;
-  transition: transform 0.2s ease;
-  color: white;
-  cursor: pointer;
-  box-shadow: var(--box-shadow);
-}
-.rec-card:hover {
-  transform: translateY(-3px);
-}
-
-.settings i {
-  font-size: 24px;
-}
-
-.settings:hover {
-  color: var(--rd--ark-mode-bg--hover);
-  cursor: pointer;
-}
-
 @keyframes glowPulse {
   0% {
     box-shadow: 0 0 0 rgba(244, 67, 54, 0.7);
