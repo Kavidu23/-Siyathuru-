@@ -15,6 +15,7 @@ const uploadRoutes = require("./routes/uploadRoutes");
 const privateCommunityRoutes = require("./routes/privateCommunityRoutes");
 const communityPhotoRouter = require("./routes/communityPhotoRouter");
 const communityVerificationRouter = require("./routes/communityVerficationRouter");
+const aiRoutes = require("./routes/aiRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -48,6 +49,7 @@ app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/private-communities", privateCommunityRoutes);
 app.use("/api/community-photos", communityPhotoRouter);
 app.use("/api/community-verification", communityVerificationRouter);
+app.use("/api/ai", aiRoutes);
 
 // Start server
 app.listen(PORT, () =>

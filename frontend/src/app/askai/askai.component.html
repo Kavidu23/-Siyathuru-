@@ -1,51 +1,56 @@
 <section class="ask-ai-page">
-  <!-- Header -->
   <header class="ask-ai-header">
     <h1>Ask AI 🤖</h1>
     <p>Chat with AI and discover communities tailored for you.</p>
   </header>
 
-  <!-- Chat Area -->
-  <div class="chat-container">
-    <!-- User Example -->
-    <div class="chat-message user-message">
-      <p>Show me women empowerment groups in Sri Lanka</p>
+  <div class="chat-container" [class.is-empty]="!hasConversation">
+    <div *ngIf="!hasConversation" class="empty-state">
+      <p>Ask anything about communities and get a clear recommendation.</p>
     </div>
 
-    <!-- AI Example -->
-    <div class="chat-message ai-message">
-      <p>Here are some women empowerment groups near you 👇</p>
-      <div class="ai-suggestions">
-        <div class="suggestion-card">
-          <img src="https://source.unsplash.com/400x200/?women,leadership" />
-          <div class="suggestion-info">
-            <h3>Women Empowerment Hub</h3>
-            <p>Kandy · On Request</p>
-          </div>
-        </div>
+    <!-- User Message -->
+    <div *ngIf="sentUserMessage" class="chat-message user-message">
+      <p>{{ sentUserMessage }}</p>
+    </div>
 
-        <div class="suggestion-card">
-          <img src="https://source.unsplash.com/400x200/?community,women" />
+    <!-- AI Loading -->
+    <div *ngIf="isLoading" class="chat-message ai-message">
+      <p>Thinking...</p>
+    </div>
+
+    <!-- AI Response -->
+    <div *ngIf="aiReply && !isLoading" class="chat-message ai-message">
+      <p class="ai-text">{{ formatAiReply(aiReply) }}</p>
+
+      <div *ngIf="suggestedCommunities.length" class="ai-suggestions">
+        <a
+          *ngFor="let community of suggestedCommunities"
+          class="suggestion-card"
+          [routerLink]="['/community', community._id]"
+        >
+          <img
+            [src]="community.profileImage || 'assets/default-user.png'"
+            [alt]="community.name"
+          />
           <div class="suggestion-info">
-            <h3>Strong Women Network</h3>
-            <p>Colombo · Free</p>
+            <h3>{{ community.name }}</h3>
+            <p>{{ community.type || 'Community' }}</p>
+            <p>{{ community.location?.address || 'View community details' }}</p>
           </div>
-        </div>
+        </a>
       </div>
     </div>
-
-    <!-- AI with Tip -->
-    <div class="chat-message ai-message tip-message">
-      <p>
-        💡 Tip: You can also search by location, e.g.
-        <b>“Youth groups in Galle”</b>
-      </p>
-    </div>
   </div>
 
-  <!-- Input Box -->
   <div class="chat-input">
-    <input type="text" placeholder="Type your question..." />
-    <button class="send-btn">➤</button>
+    <input
+      type="text"
+      placeholder="Type your question..."
+      [(ngModel)]="userMessage"
+      (keyup.enter)="sendMessage()"
+    />
+    <button class="send-btn" (click)="sendMessage()">➤</button>
   </div>
 </section>
+<app-footer></app-footer>
