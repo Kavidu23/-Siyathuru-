@@ -238,10 +238,10 @@
       <div class="ai-card">
         <h4>Collaboration Suggestions</h4>
 
-        <ul class="ai-list">
-          <li>Green Life — Nearby partner</li>
-          <li>City Volunteers — Similar events</li>
-          <li>Health First — Joint clinics</li>
+        <ul class="ai-list" *ngFor="let sg of suggestedCommunities">
+          <a routerLink="{{ '/community/' + sg._id }}">
+            <li id="sname">{{ sg.name }}</li></a
+          >
         </ul>
       </div>
     </div>

@@ -9,6 +9,10 @@ import { finalize } from 'rxjs/operators';
 import { AlertService } from '../services/alert.service';
 import { RecentEventComponent } from '../recent-event/recent-event.component';
 import { ChatService } from '../services/chat.service';
+import {
+  CollaborationService,
+  SuggestionResponse,
+} from '../services/collaboration.service';
 
 interface Community {
   _id: string;
@@ -31,11 +35,13 @@ export class CommunityDashboardComponent implements OnInit {
   selectedCommunity: Community | null = null;
   upcomingEvents: Event[] = [];
   alerts: any[] = [];
+  suggestedCommunities: Community[] = [];
 
   isLoading = true;
   isDeleting = false;
   isUpdatingAlert = false;
   isVerifying = false;
+  isLoadingSuggestions = false;
   errorMessage = '';
 
   totalMembers = 0;
@@ -43,6 +49,7 @@ export class CommunityDashboardComponent implements OnInit {
 
   constructor(
     private communityService: CommunityService,
+    private collaborationService: CollaborationService,
     private userService: UserService,
     private eventService: EventService,
     private alertService: AlertService,
@@ -86,6 +93,7 @@ export class CommunityDashboardComponent implements OnInit {
           this.selectedCommunity = mine;
           this.totalMembers = mine.members?.length || 0;
 
+          this.loadCommunitySuggestions(mine._id);
           this.loadUpcomingEvents(mine._id);
           this.loadAlerts(mine._id);
         }
@@ -228,16 +236,14 @@ export class CommunityDashboardComponent implements OnInit {
 
     if (!confirm('Are you sure you want to remove this alert?')) return;
 
-    this.alertService
-      .deleteAlert(alert._id)
-      .subscribe({
-        next: (res) => {
-          this.alerts = this.alerts.filter((al) => al._id !== alert._id);
-          window.alert(res.message || 'Alert removed successfully');
-        },
-        error: (err) =>
-          window.alert(err?.error?.message || 'Failed to remove alert'),
-      });
+    this.alertService.deleteAlert(alert._id).subscribe({
+      next: (res) => {
+        this.alerts = this.alerts.filter((al) => al._id !== alert._id);
+        window.alert(res.message || 'Alert removed successfully');
+      },
+      error: (err) =>
+        window.alert(err?.error?.message || 'Failed to remove alert'),
+    });
   }
 
   // -------- NAVIGATION --------
@@ -283,6 +289,11 @@ export class CommunityDashboardComponent implements OnInit {
     });
   }
 
+  goToCommunity(communityId: string) {
+    if (!communityId) return;
+    this.router.navigate(['/community', communityId]);
+  }
+
   getLeaderName() {
     return this.currentUser?.name || 'Leader';
   }
@@ -316,6 +327,26 @@ export class CommunityDashboardComponent implements OnInit {
       error: (err) => {
         this.isVerifying = false;
         alert(err?.error?.error || 'Verification request failed');
+      },
+    });
+  }
+
+  //laod suggestions
+  loadCommunitySuggestions(communityId: string) {
+    this.isLoadingSuggestions = true;
+
+    this.collaborationService.getSuggestions(communityId).subscribe({
+      next: (res: SuggestionResponse) => {
+        if (res.success) {
+          this.suggestedCommunities = res.data || [];
+        } else {
+          console.error(res.error || res.message);
+        }
+        this.isLoadingSuggestions = false;
+      },
+      error: (err) => {
+        console.error('Failed to load suggested communities', err);
+        this.isLoadingSuggestions = false;
       },
     });
   }
