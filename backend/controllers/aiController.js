@@ -1,7 +1,37 @@
 const { HfInference } = require("@huggingface/inference");
-const Community = require("../models/communities"); // adjust name if different
+const Community = require("../models/communities");
 
 const hf = new HfInference(process.env.HF_TOKEN);
+const DEFAULT_CHAT_MODEL = "meta-llama/Llama-3.3-70B-Instruct";
+
+async function getChatCompletionWithFallback(prompt) {
+  const modelCandidates = [
+    process.env.HF_CHAT_MODEL,
+    DEFAULT_CHAT_MODEL,
+  ].filter(Boolean);
+
+  let lastError;
+
+  for (const model of modelCandidates) {
+    try {
+      return await hf.chatCompletion({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 300,
+      });
+    } catch (err) {
+      lastError = err;
+      const code = err?.httpResponse?.body?.error?.code;
+
+      // Try the next candidate only when the model is not supported.
+      if (code !== "model_not_supported") {
+        throw err;
+      }
+    }
+  }
+
+  throw lastError || new Error("No supported chat model found");
+}
 
 const askAI = async (req, res) => {
   try {
@@ -10,19 +40,20 @@ const askAI = async (req, res) => {
       return res.status(400).json({ message: "Message is required" });
     }
 
-    // 1️⃣ Get public communities
     const communities = await Community.find();
 
-    // 2️⃣ Convert to readable text
-    const communityText = communities.map(c => `
+    const communityText = communities
+      .map(
+        (c) => `
 Name: ${c.name}
 Type: ${c.type}
 Mission: ${c.mission}
 Description: ${c.description}
 Location: ${c.location?.address || ""}
-`).join("\n");
+`,
+      )
+      .join("\n");
 
-    // 3️⃣ Create prompt
     const prompt = `
 You are an assistant helping users find suitable Sri Lankan communities.
 
@@ -35,21 +66,17 @@ ${userMessage}
 Recommend the best matching communities and explain why.
 `;
 
-    // 4️⃣ Call Hugging Face model
-    const response = await hf.chatCompletion({
-      model: "mistralai/Mistral-7B-Instruct-v0.2",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 300
-    });
-
+    const response = await getChatCompletionWithFallback(prompt);
     const reply = response?.choices?.[0]?.message?.content || "";
-    res.json({ reply });
 
+    return res.json({ reply });
   } catch (error) {
     console.error(error);
-    res.status(500).json({
+    return res.status(500).json({
       message: "AI error",
       details: error?.message || "Unknown error",
+      providerStatus: error?.httpResponse?.status,
+      providerError: error?.httpResponse?.body?.error || null,
     });
   }
 };
