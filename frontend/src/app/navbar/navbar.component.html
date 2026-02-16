@@ -1,72 +1,80 @@
 <div class="nav">
   <ol>
-    <!-- Logo -->
+    <!-- LEFT : LOGO -->
     <li class="logo">
       <a routerLink="/home">
         <img src="logo.png" alt="logo" width="120" height="35" />
       </a>
     </li>
-    <!--Language selector using Google Translate -->
-    <div id="google_translate_element"></div>
-    <!-- Search -->
-    <li class="search-wrapper">
-      <div class="search-bar">
-        <div class="search-input">
-          <i class="bx bx-search"></i>
-          <input type="text" placeholder="Search Communities" />
-        </div>
-        <div class="location-input">
-          <input type="text" value="Colombo, LK" />
-        </div>
-        <button class="search-btn">
-          <i class="bx bx-search"></i>
-        </button>
+
+    <!-- RIGHT SIDE CONTAINER -->
+    <li class="nav-right">
+      <!-- Google Translate -->
+      <div id="google_translate_element"></div>
+
+      <!-- Discover -->
+      <a routerLink="/discover" id="discover">Discover</a>
+
+      <!-- Ask AI -->
+      <div class="ask-ai">
+        <a routerLink="/ask-ai">Ask AI</a>
       </div>
-    </li>
-    <!-- Menu -->
-    <a routerLink="/discover" id="discover">Discover</a>
-    <li class="ask-ai"><a routerLink="/ask-ai">Ask AI</a></li>
-    <!-- Show Login/Signup when NOT logged in -->
-    <a
-      *ngIf="!isLoggedIn"
-      href="javascript:void(0)"
-      (click)="openLoginModal()"
-      id="log"
-      >Login</a
-    >
-    <li *ngIf="!isLoggedIn">
-      <a href="javascript:void(0)" id="sign" (click)="openSignupModal()"
-        >Sign Up</a
+
+      <!-- Login -->
+      <a
+        *ngIf="!isLoggedIn"
+        href="javascript:void(0)"
+        id="log"
+        (click)="openLoginModal()"
       >
-    </li>
-    <!-- Show User Profile when logged in -->
-    <li *ngIf="isLoggedIn" class="nav-chat">
-      <a routerLink="/chatbox" class="chat-link">
-        <div class="div" *ngIf="userData.role != 'admin'">Chat</div>
-        <span
-          *ngIf="hasUnread"
-          class="chat-dot"
-          aria-label="New message"
-        ></span>
+        Login
+      </a>
+
+      <!-- Sign Up -->
+      <a
+        *ngIf="!isLoggedIn"
+        href="javascript:void(0)"
+        id="sign"
+        (click)="openSignupModal()"
+      >
+        Sign Up
+      </a>
+
+      <!-- Chat -->
+      <div *ngIf="isLoggedIn" class="nav-chat">
+        <a routerLink="/chatbox" class="chat-link">
+          <span *ngIf="userData.role != 'admin'">Chat</span>
+          <span *ngIf="hasUnread" class="chat-dot"></span>
+        </a>
+      </div>
+
+      <!-- User Profile -->
+      <div
+        *ngIf="isLoggedIn"
+        class="user-profile"
+        (click)="goToUserDashboard()"
+      >
+        <img
+          [src]="
+            userData?.profileImage || 'https://via.placeholder.com/40?text=User'
+          "
+          alt="Profile"
+          class="profile-img"
+        />
+        <span class="user-name">
+          {{ userData?.name || "User" }}
+        </span>
+      </div>
+
+      <!-- Logout -->
+      <a
+        *ngIf="isLoggedIn"
+        href="javascript:void(0)"
+        id="logout"
+        (click)="logout()"
+      >
+        Logout
       </a>
     </li>
-    <li *ngIf="isLoggedIn" class="user-profile" (click)="goToUserDashboard()">
-      <img
-        [src]="
-          userData?.profileImage || 'https://via.placeholder.com/40?text=User'
-        "
-        alt="Profile"
-        class="profile-img"
-      />
-      <span class="user-name">{{ userData?.name || "User" }}</span>
-    </li>
-    <!-- Logout button -->
-    <a
-      *ngIf="isLoggedIn"
-      href="javascript:void(0)"
-      (click)="logout()"
-      id="logout"
-      >Logout</a
-    >
   </ol>
 </div>

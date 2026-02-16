@@ -1,169 +1,100 @@
-/* Navigation container */
+/* ================= NAVIGATION ================= */
+
 .nav {
   width: 100%;
   padding: 20px;
 }
 
-.div:hover {
-  color: #00616e;
-}
-
-/* Flex for nav items */
+/* Main flex container */
 ol {
   list-style: none;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin: 0;
   padding: 0;
-  flex-wrap: wrap; /* ✅ Makes responsive */
-  gap: 17px;
 }
 
-#log:hover {
-  color: #d7372c;
+/* Logo stays on left */
+.logo {
+  margin-right: auto;
 }
 
-#discover:hover {
-  color: #d7372c;
+.logo img {
+  max-height: 40px;
+  object-fit: contain;
 }
 
-.ask-ai {
-  font: 1em sans-serif;
-  font-weight: 600;
-  padding: 8px 16px;
-  border: 2px solid #00616e; /* ✅ visible border */
-  border-radius: 8px; /* rounded corners */
-  color: #00616e;
+/* Right side container (IMPORTANT: wrap right items inside .nav-right) */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* General nav items */
+ol li,
+ol a {
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  color: #333;
+  white-space: nowrap;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-/* Hover effect */
-.ask-ai:hover {
+/* Hover colors */
+#discover:hover,
+#log:hover {
+  color: #d7372c;
+}
+
+/* ================= ASK AI BUTTON ================= */
+
+.ask-ai a {
+  font-weight: 600;
+  padding: 8px 16px;
+  border: 2px solid #00616e;
+  border-radius: 8px;
+  color: #00616e;
+  transition: all 0.3s ease;
+}
+
+.ask-ai a:hover {
   background: #00616e;
   color: #fff;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
-ol li {
-  font-size: 15px;
-  font-weight: 500; /* ✅ little bold */
-  white-space: nowrap;
-}
+/* ================= SIGN UP BUTTON ================= */
 
-/* Logo keeps fixed size */
-.logo img {
-  max-height: 40px;
-}
-
-/* Search bar */
-.search-wrapper {
-  flex: 1;
-  min-width: 400px;
-  display: flex;
-  justify-content: center;
-  height: 50px;
-}
-
-.color:hover {
-  color: #d7372c;
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  overflow: hidden;
-  max-width: 700px;
-  width: 100%;
-  background: #fff;
-}
-
-.search-input {
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  flex: 1;
-  border-right: 1px solid #ddd;
-}
-
-.search-input i {
-  font-size: 18px;
-  color: #666;
-  margin-right: 8px;
-}
-
-.search-input input {
-  border: none;
-  outline: none;
-  font-size: 15px;
-  font-weight: 500;
-  flex: 1;
-}
-
-.location-input input {
-  border: none;
-  outline: none;
-  font-size: 15px;
-  font-weight: 500;
-  padding: 10px;
-  width: 120px;
-  text-align: center;
-}
-
-/* Button */
-.search-btn {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  background: #f44336;
-  border: none;
-  outline: none;
-  padding: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: right;
-  transition: background 0.2s;
-}
-
-.search-btn:hover {
-  background: #d7372c;
-}
-
-.search-btn i {
-  font-size: 18px;
-  color: #fff;
-}
-
-/* Sign up button */
 #sign {
-  padding: 10px 25px;
-  color: white;
+  padding: 8px 20px;
+  color: #fff;
   border-radius: 8px;
   background-color: #00616e;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
 }
 
 #sign:hover {
   background-color: #004c56;
 }
 
-/* User Profile Section */
+/* ================= USER PROFILE ================= */
+
 .user-profile {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 15px;
+  padding: 6px 14px;
   border-radius: 25px;
-  background: #f0f0f0;
+  background: #f3f3f3;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .user-profile:hover {
-  background: #e0e0e0;
+  background: #e5e5e5;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -178,8 +109,9 @@ ol li {
   font-size: 14px;
   font-weight: 600;
   color: #333;
-  white-space: nowrap;
 }
+
+/* ================= CHAT ================= */
 
 .nav-chat {
   display: flex;
@@ -190,8 +122,12 @@ ol li {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #333;
   font-weight: 600;
+  color: #333;
+}
+
+.chat-link:hover {
+  color: #00616e;
 }
 
 .chat-dot {
@@ -202,69 +138,41 @@ ol li {
   display: inline-block;
 }
 
-/* Logout button */
+/* ================= LOGOUT ================= */
+
 #logout {
-  padding: 8px 20px;
+  padding: 6px 18px;
   color: #d7372c;
   border: 1px solid #d7372c;
   border-radius: 6px;
-  transition: all 0.3s ease;
   font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 #logout:hover {
   background: #d7372c;
-  color: white;
+  color: #fff;
 }
 
-@media (max-width: 943px) {
-  .search-wrapper {
-    display: none;
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 768px) {
+  .nav {
+    padding: 15px 20px;
   }
 
   ol {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 40px;
-    width: 100%;
-    padding: 0;
-    padding-bottom: 5px;
-  }
-
-  .search-wrapper {
-    width: 100%;
-    order: -1; /* moves search bar to the top */
-    padding: 10px 0;
-  }
-
-  .search-bar {
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 711px) {
-  ol {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
-    padding: 0;
-    padding-bottom: 5px;
-  }
-}
-
-@media (max-width: 613px) {
-  ol {
-    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 20px;
-    width: 100%;
-    padding: 0;
-    padding-bottom: 5px;
+  }
+
+  .logo {
+    margin-right: 0;
+  }
+
+  .nav-right {
+    flex-direction: column;
+    gap: 15px;
   }
 }
