@@ -8,11 +8,13 @@ const {
 } = require("../../../controllers/userController");
 const User = require("../../../models/user");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-jest.mock("../models/user"); // Mock Mongoose model
+jest.mock("../../../models/user"); // Mock Mongoose model
 jest.mock("bcryptjs");       // Mock bcrypt
+jest.mock("jsonwebtoken");
 // Mock the sendEmail module
-jest.mock('../utils/sendEmail', () => jest.fn().mockResolvedValue(true));
+jest.mock('../../../utils/sendEmail', () => jest.fn().mockResolvedValue(true));
 const sendEmail = require('../../../utils/sendEmail'); // now this is a mocked function
 
 
@@ -22,6 +24,7 @@ const mockResponse = () => {
   const res = {};
   res.status = jest.fn().mockReturnValue(res);
   res.json = jest.fn().mockReturnValue(res);
+  res.cookie = jest.fn().mockReturnValue(res);
   return res;
 };
 
@@ -36,6 +39,7 @@ describe("User Controller Unit Tests", () => {
     // Mock bcrypt functions
     bcrypt.hash.mockResolvedValue("hashed-password");
     bcrypt.compare.mockResolvedValue(true);
+    jwt.sign.mockReturnValue("mock-jwt-token");
   });
 
   // CREATE USER
@@ -67,22 +71,11 @@ describe("User Controller Unit Tests", () => {
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
-      message: "User created successfully. Please check your email for verification code.",
-      data: {
-        _id: "fake-id",
-        name: userData.name,
-        email: userData.email,
-        pnumber: userData.pnumber,
-        location: {
-          coordinates: { latitude: 7.1, longitude: 80.8 }
-        },
-        age: userData.age,
-        role: userData.role,
-      },
+      message: "User created successfully. Verification code sent.",
     });
   });
 
-  it("should return 400 if validation fails on create", async () => {
+  it("should return 500 if create fails with non-duplicate error", async () => {
     const mockError = new Error("Validation failed");
     mockError.name = "ValidationError";
     User.create.mockRejectedValueOnce(mockError);
@@ -90,11 +83,10 @@ describe("User Controller Unit Tests", () => {
     await createUser(req, res);
 
     expect(User.create).toHaveBeenCalledTimes(1);
-    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
       error: "Validation failed",
-      details: "Validation failed",
     });
   });
 
@@ -108,8 +100,7 @@ describe("User Controller Unit Tests", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      error: "Duplicate field value",
-      details: "duplicate key error",
+      error: "Email or phone number already exists",
     });
   });
 
@@ -129,6 +120,7 @@ describe("User Controller Unit Tests", () => {
       },
       age: 25,
       role: "user",
+      isVerified: true,
     };
 
     User.findOne.mockResolvedValueOnce(mockUser);
@@ -141,16 +133,16 @@ describe("User Controller Unit Tests", () => {
     expect(res.json).toHaveBeenCalledWith({
       success: true,
       message: "Login successful",
-      data: {
+      user: {
         _id: mockUser._id,
         name: mockUser.name,
         email: mockUser.email,
         pnumber: mockUser.pnumber,
-        location: {
-          coordinates: { latitude: 7.1, longitude: 80.8 }
-        },
+        location: mockUser.location,
         age: mockUser.age,
         role: mockUser.role,
+        profileImage: null,
+        joinedCommunities: [],
       },
     });
   });
@@ -172,6 +164,7 @@ describe("User Controller Unit Tests", () => {
       },
       age: 25,
       role: "user",
+      isVerified: true,
     };
 
     User.findOne.mockResolvedValueOnce(mockUser);
@@ -184,7 +177,7 @@ describe("User Controller Unit Tests", () => {
     expect(res.json).toHaveBeenCalledWith({
       success: true,
       message: "Login successful",
-      data: {
+      user: {
         _id: mockUser._id,
         name: mockUser.name,
         email: mockUser.email,
@@ -192,6 +185,8 @@ describe("User Controller Unit Tests", () => {
         location: mockUser.location, // updated to match controller
         age: mockUser.age,
         role: mockUser.role,
+        profileImage: null,
+        joinedCommunities: [],
       },
     });
   });

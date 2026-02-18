@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Feedback = require("../../../models/feedback"); // Adjust path if needed
 
 // Mock the Feedback model
-jest.mock("../models/feedback");
+jest.mock("../../../models/feedback");
 
 describe("Feedback Model (mocked) - Unit Tests", () => {
     afterEach(() => {

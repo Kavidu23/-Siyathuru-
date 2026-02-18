@@ -1,7 +1,7 @@
 const { createFeedback, getFeedbacks } = require("../../../controllers/feedbackController");
 const Feedback = require("../../../models/feedback");
 
-jest.mock("../models/feedback");
+jest.mock("../../../models/feedback");
 
 // Mock Request & Response
 const mockRequest = () => ({ body: {}, params: {}, files: {} });

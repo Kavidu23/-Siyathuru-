@@ -7,13 +7,13 @@ describe("authMiddleware", () => {
     let req, res, next;
 
     beforeEach(() => {
-        req = { headers: {} };
+        req = { cookies: {} };
         res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
         next = jest.fn();
     });
 
     it("should call next() with valid token", () => {
-        req.headers.authorization = "Bearer valid-token";
+        req.cookies.authToken = "valid-token";
         jwt.verify.mockReturnValue({ _id: "userId", role: "leader" });
 
         authMiddleware(req, res, next);
@@ -31,7 +31,7 @@ describe("authMiddleware", () => {
     });
 
     it("should return 403 if token invalid", () => {
-        req.headers.authorization = "Bearer invalid-token";
+        req.cookies.authToken = "invalid-token";
         jwt.verify.mockImplementation(() => { throw new Error("fail"); });
 
         authMiddleware(req, res, next);

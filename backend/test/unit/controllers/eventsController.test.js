@@ -7,9 +7,11 @@ const {
 } = require("../../../controllers/eventsController");
 
 const Event = require("../../../models/events");
+const sendEmail = require("../../../utils/sendEmail");
 
 // Mock the controller module
-jest.mock("../models/events");
+jest.mock("../../../models/events");
+jest.mock("../../../utils/sendEmail", () => jest.fn());
 
 const mockRequest = () => ({ body: {}, params: {} });
 const mockResponse = () => {
@@ -145,9 +147,21 @@ describe("Events Controller Unit Tests", () => {
 
     // DELETE
     it("should delete an event successfully", async () => {
-        const deletedEvent = { _id: "1", title: "Event Y" };
+        const foundEvent = {
+            _id: "1",
+            title: "Event Y",
+            eventDate: new Date("2025-01-01"),
+            eventTime: "10:00",
+            location: "Colombo",
+            communityId: { name: "Community A" },
+            attendees: [{ email: "a@test.com" }, { email: "b@test.com" }],
+        };
         req.params.id = "1";
-        Event.findByIdAndDelete.mockResolvedValueOnce(deletedEvent);
+        const secondPopulate = jest.fn().mockResolvedValueOnce(foundEvent);
+        const firstPopulate = jest.fn().mockReturnValueOnce({ populate: secondPopulate });
+        Event.findById.mockReturnValueOnce({ populate: firstPopulate });
+        Event.findByIdAndDelete.mockResolvedValueOnce({ _id: "1" });
+        sendEmail.mockResolvedValue(true);
 
         await deleteEvent(req, res);
 
@@ -155,13 +169,15 @@ describe("Events Controller Unit Tests", () => {
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({
             success: true,
-            message: "Event deleted successfully",
+            message: "Event deleted successfully & notifications sent",
         });
     });
 
     it("should return 404 if event to delete not found", async () => {
         req.params.id = "1";
-        Event.findByIdAndDelete.mockResolvedValueOnce(null);
+        const secondPopulate = jest.fn().mockResolvedValueOnce(null);
+        const firstPopulate = jest.fn().mockReturnValueOnce({ populate: secondPopulate });
+        Event.findById.mockReturnValueOnce({ populate: firstPopulate });
 
         await deleteEvent(req, res);
 

@@ -7,7 +7,7 @@ const {
 } = require("../../../controllers/requestsController");
 
 const Request = require("../../../models/requests");
-jest.mock("../models/requests");
+jest.mock("../../../models/requests");
 
 const mockRequest = () => ({ body: {}, params: {} });
 const mockResponse = () => {

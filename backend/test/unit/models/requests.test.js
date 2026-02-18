@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Request = require('../../../models/requests'); // path
 
 // Mock the Request model
-jest.mock('../models/requests');
+jest.mock('../../../models/requests');
 
 describe('Request Model (mocked) - Unit Tests', () => {
     afterEach(() => {

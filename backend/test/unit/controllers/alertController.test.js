@@ -7,8 +7,12 @@ const {
 } = require("../../../controllers/alertController");
 
 const Alert = require("../../../models/alert");
+const Community = require("../../../models/communities");
+const sendEmail = require("../../../utils/sendEmail");
 
-jest.mock("../models/alert");
+jest.mock("../../../models/alert");
+jest.mock("../../../models/communities");
+jest.mock("../../../utils/sendEmail", () => jest.fn());
 
 // Fake req/res mocks
 const mockRequest = () => ({ body: {}, params: {} });
@@ -40,6 +44,12 @@ describe("Alert Controller Unit Tests", () => {
         req.body = alertData;
 
         Alert.create.mockResolvedValueOnce({ ...alertData, _id: "fake-id" });
+        Community.findById.mockReturnValueOnce({
+            populate: jest.fn().mockResolvedValueOnce({
+                members: [{ email: "user1@test.com" }, { email: "user2@test.com" }],
+            }),
+        });
+        sendEmail.mockResolvedValueOnce();
 
         await createAlert(req, res);
 
@@ -87,7 +97,9 @@ describe("Alert Controller Unit Tests", () => {
             { _id: "1", title: "Alert 1", message: "Message 1", severity: "low", isActive: true },
             { _id: "2", title: "Alert 2", message: "Message 2", severity: "high", isActive: false },
         ];
-        Alert.find.mockResolvedValueOnce(mockAlerts);
+        Alert.find.mockReturnValueOnce({
+            populate: jest.fn().mockResolvedValueOnce(mockAlerts),
+        });
 
         await getAlerts(req, res);
 

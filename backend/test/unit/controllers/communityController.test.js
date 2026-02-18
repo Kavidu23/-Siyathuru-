@@ -7,13 +7,15 @@ const {
 } = require("../../../controllers/communityController");
 
 const sendEmail = require("../../../utils/sendEmail");
-jest.mock("../utils/sendEmail");
+jest.mock("../../../utils/sendEmail");
 
 const Community = require("../../../models/communities");
-jest.mock("../models/communities");
+const User = require("../../../models/user");
+jest.mock("../../../models/communities");
+jest.mock("../../../models/user");
 
 // Mock Request & Response
-const mockRequest = () => ({ body: {}, params: {}, files: {} });
+const mockRequest = () => ({ body: {}, params: {}, files: {}, user: { id: "leader-id" } });
 const mockResponse = () => {
     const res = {};
     res.status = jest.fn().mockReturnValue(res);
@@ -30,7 +32,7 @@ describe("Community Controller Unit Tests (with nested objects)", () => {
         jest.clearAllMocks();
     });
 
-    // ✅ CREATE COMMUNITY
+    // CREATE COMMUNITY
     it("should create a community (with nested objects and images) successfully", async () => {
         req.body = {
             name: "Youth Empowerment Forum",
@@ -64,6 +66,7 @@ describe("Community Controller Unit Tests (with nested objects)", () => {
 
         const mockCreated = { ...req.body, bannerImage: req.files.bannerImage[0].path, profileImage: req.files.profileImage[0].path, _id: "mock-id" };
         Community.create.mockResolvedValueOnce(mockCreated);
+        User.findByIdAndUpdate.mockResolvedValueOnce({ _id: "leader-id" });
 
         await createCommunity(req, res);
 
@@ -100,6 +103,7 @@ describe("Community Controller Unit Tests (with nested objects)", () => {
 
         const mockCreated = { ...req.body, _id: "mock-id" };
         Community.create.mockResolvedValueOnce(mockCreated);
+        User.findByIdAndUpdate.mockResolvedValueOnce({ _id: "leader-id" });
         sendEmail.mockResolvedValueOnce(true);
 
         await createCommunity(req, res);
@@ -143,7 +147,7 @@ describe("Community Controller Unit Tests (with nested objects)", () => {
         });
     });
 
-    // ✅ READ ALL
+    // READ ALL
     it("should fetch all communities", async () => {
         const mockCommunities = [
             { _id: "1", name: "A", type: "Youth Club" },
@@ -162,11 +166,13 @@ describe("Community Controller Unit Tests (with nested objects)", () => {
         });
     });
 
-    // ✅ READ ONE
+    // READ ONE
     it("should fetch community by ID", async () => {
         req.params.id = "1";
         const mockCommunity = { _id: "1", name: "Test" };
-        Community.findById.mockResolvedValueOnce(mockCommunity);
+        Community.findById.mockReturnValueOnce({
+            populate: jest.fn().mockResolvedValueOnce(mockCommunity),
+        });
 
         await getCommunityById(req, res);
 
@@ -180,7 +186,9 @@ describe("Community Controller Unit Tests (with nested objects)", () => {
 
     it("should return 404 if community not found", async () => {
         req.params.id = "1";
-        Community.findById.mockResolvedValueOnce(null);
+        Community.findById.mockReturnValueOnce({
+            populate: jest.fn().mockResolvedValueOnce(null),
+        });
 
         await getCommunityById(req, res);
 
@@ -191,7 +199,7 @@ describe("Community Controller Unit Tests (with nested objects)", () => {
         });
     });
 
-    // ✅ UPDATE
+    // UPDATE
     it("should update community and handle image upload", async () => {
         req.params.id = "1";
         req.body = {
@@ -237,7 +245,7 @@ describe("Community Controller Unit Tests (with nested objects)", () => {
         });
     });
 
-    // ✅ DELETE
+    // DELETE
     it("should delete community successfully", async () => {
         req.params.id = "1";
         const deleted = { _id: "1", name: "Deleted" };

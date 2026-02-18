@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const User = require("../../../models/user"); // adjust path if needed
 
 // Mock the User model
-jest.mock("../models/user");
+jest.mock("../../../models/user");
 
 describe("User Model (mocked) - Unit Tests", () => {
     afterEach(() => {

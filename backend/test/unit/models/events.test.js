@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Event = require("../../../models/events"); // path
 
 // Mock the Event model
-jest.mock("../models/events");
+jest.mock("../../../models/events");
 
 describe("Event Model (mocked) - Unit Tests", () => {
     afterEach(() => {

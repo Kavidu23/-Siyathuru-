@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Alert = require("../../../models/alert"); // alert model path
 
 // Mock the Alert model
-jest.mock("../models/alert");
+jest.mock("../../../models/alert");
 
 describe("Alert Model (mocked) - Unit Tests", () => {
     afterEach(() => {
