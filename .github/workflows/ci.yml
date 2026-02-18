@@ -14,9 +14,9 @@ jobs:
         with:
           node-version: 18
 
-      # ======================
+
       # Backend
-      # ======================
+
       - name: Install backend dependencies
         run: |
           cd backend
@@ -27,9 +27,9 @@ jobs:
           cd backend
           npm test
 
-      # ======================
+
       # Frontend
-      # ======================
+
       - name: Install frontend dependencies
         run: |
           cd frontend
