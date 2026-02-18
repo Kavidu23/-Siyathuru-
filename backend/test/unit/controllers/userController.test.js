@@ -5,15 +5,15 @@ const {
   updateUser,
   deleteUser,
   loginUser,
-} = require("../controllers/userController");
-const User = require("../models/user");
+} = require("../../../controllers/userController");
+const User = require("../../../models/user");
 const bcrypt = require("bcryptjs");
 
 jest.mock("../models/user"); // Mock Mongoose model
 jest.mock("bcryptjs");       // Mock bcrypt
 // Mock the sendEmail module
 jest.mock('../utils/sendEmail', () => jest.fn().mockResolvedValue(true));
-const sendEmail = require('../utils/sendEmail'); // now this is a mocked function
+const sendEmail = require('../../../utils/sendEmail'); // now this is a mocked function
 
 
 // Helpers to create fake req/res

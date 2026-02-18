@@ -1,4 +1,4 @@
-const router = require("../routes/requestsRoutes");
+const router = require("../../../routes/requestsRoutes");
 
 const {
     createRequest,
@@ -6,7 +6,7 @@ const {
     getRequestById,
     updateRequest,
     deleteRequest,
-} = require("../controllers/requestsController");
+} = require("../../../controllers/requestsController");
 
 // Mock the controller module
 jest.mock("../controllers/requestsController");

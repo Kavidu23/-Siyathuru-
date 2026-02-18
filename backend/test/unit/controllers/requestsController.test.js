@@ -4,9 +4,9 @@ const {
     getRequestById,
     updateRequest,
     deleteRequest,
-} = require("../controllers/requestsController");
+} = require("../../../controllers/requestsController");
 
-const Request = require("../models/requests");
+const Request = require("../../../models/requests");
 jest.mock("../models/requests");
 
 const mockRequest = () => ({ body: {}, params: {} });

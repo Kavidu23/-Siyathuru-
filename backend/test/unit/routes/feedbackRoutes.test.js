@@ -1,6 +1,6 @@
 const express = require("express");
-const router = require("../routes/feedbackRoutes"); // your feedback router
-const { createFeedback, getFeedbacks } = require("../controllers/feedbackController");
+const router = require("../../../routes/feedbackRoutes"); // your feedback router
+const { createFeedback, getFeedbacks } = require("../../../controllers/feedbackController");
 
 jest.mock("../controllers/feedbackController");
 

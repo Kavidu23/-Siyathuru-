@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Event = require("../models/events"); // path
+const Event = require("../../../models/events"); // path
 
 // Mock the Event model
 jest.mock("../models/events");

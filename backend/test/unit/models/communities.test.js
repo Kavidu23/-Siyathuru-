@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Community = require("../models/communities"); // adjust path if needed
+const Community = require("../../../models/communities"); // adjust path if needed
 
 // Mock the Community model
 jest.mock("../models/communities");

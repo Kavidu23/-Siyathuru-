@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Alert = require("../models/alert"); // alert model path
+const Alert = require("../../../models/alert"); // alert model path
 
 // Mock the Alert model
 jest.mock("../models/alert");

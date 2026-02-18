@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Feedback = require("../models/feedback"); // Adjust path if needed
+const Feedback = require("../../../models/feedback"); // Adjust path if needed
 
 // Mock the Feedback model
 jest.mock("../models/feedback");

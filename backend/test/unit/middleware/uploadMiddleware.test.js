@@ -18,9 +18,9 @@ jest.mock("../config/cloudinary", () => ({
         config: jest.fn(),
     }
 }));
-const cloudinary = require("../config/cloudinary");
+const cloudinary = require("../../../config/cloudinary");
 
-const upload = require("../middleware/upload");
+const upload = require("../../../middleware/upload");
 
 describe("Upload Middleware Configuration", () => {
     it("should initialize CloudinaryStorage with the correct configuration", () => {

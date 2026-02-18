@@ -1,4 +1,4 @@
-const router = require("../routes/eventsRoutes"); // The router file
+const router = require("../../../routes/eventsRoutes"); // The router file
 
 const {
     createEvent,
@@ -6,7 +6,7 @@ const {
     getEventById,
     updateEvent,
     deleteEvent,
-} = require("../controllers/eventsController");
+} = require("../../../controllers/eventsController");
 
 // Mock the controller module
 jest.mock("../controllers/eventsController");

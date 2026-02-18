@@ -1,5 +1,5 @@
-const { createFeedback, getFeedbacks } = require("../controllers/feedbackController");
-const Feedback = require("../models/feedback");
+const { createFeedback, getFeedbacks } = require("../../../controllers/feedbackController");
+const Feedback = require("../../../models/feedback");
 
 jest.mock("../models/feedback");
 

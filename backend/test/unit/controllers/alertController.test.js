@@ -4,9 +4,9 @@ const {
     getAlertById,
     updateAlert,
     deleteAlert
-} = require("../controllers/alertController");
+} = require("../../../controllers/alertController");
 
-const Alert = require("../models/alert");
+const Alert = require("../../../models/alert");
 
 jest.mock("../models/alert");
 

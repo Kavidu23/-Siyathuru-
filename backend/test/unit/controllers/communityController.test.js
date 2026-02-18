@@ -4,12 +4,12 @@ const {
     getCommunityById,
     updateCommunity,
     deleteCommunity,
-} = require("../controllers/communityController");
+} = require("../../../controllers/communityController");
 
-const sendEmail = require("../utils/sendEmail");
+const sendEmail = require("../../../utils/sendEmail");
 jest.mock("../utils/sendEmail");
 
-const Community = require("../models/communities");
+const Community = require("../../../models/communities");
 jest.mock("../models/communities");
 
 // Mock Request & Response

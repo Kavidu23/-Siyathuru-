@@ -4,9 +4,9 @@ const {
     getEventById,
     updateEvent,
     deleteEvent,
-} = require("../controllers/eventsController");
+} = require("../../../controllers/eventsController");
 
-const Event = require("../models/events");
+const Event = require("../../../models/events");
 
 // Mock the controller module
 jest.mock("../models/events");

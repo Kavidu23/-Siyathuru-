@@ -1,5 +1,5 @@
 const express = require("express");
-const router = require("../routes/alertRoutes"); // Import router directly
+const router = require("../../../routes/alertRoutes"); // Import router directly
 
 const {
     createAlert,
@@ -7,7 +7,7 @@ const {
     getAlertById,
     updateAlert,
     deleteAlert,
-} = require("../controllers/alertController");
+} = require("../../../controllers/alertController");
 
 // Mock the controller module
 jest.mock("../controllers/alertController");

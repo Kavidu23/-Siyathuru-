@@ -1,4 +1,4 @@
-const roleMiddleware = require("../middleware/roleMiddleware");
+const roleMiddleware = require("../../../middleware/roleMiddleware");
 
 describe("roleMiddleware", () => {
     let req, res, next;

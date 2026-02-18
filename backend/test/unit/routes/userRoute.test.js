@@ -1,13 +1,13 @@
 // userRoute.test.js
 
-const router = require("../routes/userRoutes"); // The router file
+const router = require("../../../routes/userRoutes"); // The router file
 const {
     createUser,
     getUsers,
     getUserById,
     updateUser,
     deleteUser,
-} = require("../controllers/userController");
+} = require("../../../controllers/userController");
 
 // Mock the controller module
 jest.mock("../controllers/userController");

@@ -1,11 +1,11 @@
-const router = require("../routes/communityRoutes"); // <-- ADD THIS
+const router = require("../../../routes/communityRoutes"); // <-- ADD THIS
 const {
     createCommunity,
     getCommunities,
     getCommunityById,
     updateCommunity,
     deleteCommunity,
-} = require("../controllers/communityController");
+} = require("../../../controllers/communityController");
 
 jest.mock("../controllers/communityController"); // mock controllers
 
