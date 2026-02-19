@@ -5,6 +5,8 @@ import { Router, RouterLink } from '@angular/router';
 import { CommunityService } from '../services/community.service';
 import { UserService } from '../services/user.service';
 import { finalize } from 'rxjs/operators';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-superadmin',
@@ -118,7 +120,8 @@ export class SuperadminComponent implements OnInit {
         memberCount: (community?.members || []).length,
       }))
       .sort((a, b) => {
-        if (b.memberCount !== a.memberCount) return b.memberCount - a.memberCount;
+        if (b.memberCount !== a.memberCount)
+          return b.memberCount - a.memberCount;
         return a.name.localeCompare(b.name);
       })
       .slice(0, 3);
@@ -165,7 +168,31 @@ export class SuperadminComponent implements OnInit {
       });
   }
 
-  createAdvertisement() {
-    alert('Advertisement creation is not available yet.');
+  downloadReport() {
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(18);
+    doc.text('Communities Analytics Report', 14, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Total Communities: ${this.totalCommunities}`, 14, 35);
+    doc.text(`Total Users: ${this.totalUsers}`, 14, 45);
+    doc.text(`Active Engagement: ${this.activeEngagement}%`, 14, 55);
+
+    // Top Performing Communities Table
+    const tableData = this.topPerformingCommunities.map((c, index) => [
+      index + 1,
+      c.name,
+      c.memberCount,
+    ]);
+
+    autoTable(doc, {
+      startY: 70,
+      head: [['#', 'Community Name', 'Members']],
+      body: tableData,
+    });
+
+    doc.save('communities-report.pdf');
   }
 }
