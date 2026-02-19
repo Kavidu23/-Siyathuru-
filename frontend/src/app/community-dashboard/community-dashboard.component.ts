@@ -340,4 +340,3 @@ export class CommunityDashboardComponent implements OnInit {
     });
   }
 }
-

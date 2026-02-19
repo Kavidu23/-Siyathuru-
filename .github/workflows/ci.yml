@@ -1,46 +1,89 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+  pull_request:
+
+#Prevents multiple CI runs on same branch
+concurrency:
+  group: ci-${{ github.ref }}
+  #Cancels old runs when new commit comes
+  cancel-in-progress: true
+
+#Allows only read access to repo
+permissions:
+  contents: read
 
 jobs:
-  build-and-test:
+  backend:
+    name: Backend Checks
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
 
+      - name: Install dependencies
+        run: npm ci
 
-      # Backend
+      - name: Prettier check
+        run: npm run format:check
 
-      - name: Install backend dependencies
-        run: |
-          cd backend
-          npm install
+      - name: ESLint
+        run: npm run lint
 
-      - name: Run backend tests
-        run: |
-          cd backend
-          npm test
+      - name: Run tests
+        env:
+          CI: true
+        run: npm test
 
+  frontend:
+    name: Frontend Checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
 
-      # Frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm install
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
-      - name: Run frontend tests (Angular + Karma)
-        run: |
-          cd frontend
-          npm test -- --watch=false --browsers=ChromeHeadless
+      - name: Install dependencies
+        run: npm ci
 
-        # Key points:
-        # --watch=false → makes sure Angular tests exit after running (important in CI, otherwise Karma waits forever).
-        # --browsers=ChromeHeadless → runs tests in a headless Chrome, since CI runners don’t have a GUI.
-        # You need separate install/test steps for backend and frontend folders.
+      - name: Prettier check
+        run: npm run format:check
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Build
+        env:
+          CI: true
+        run: npm run build
+
+      - name: Run unit tests (ChromeHeadless)
+        env:
+          CI: true
+        run: npm test -- --watch=false --browsers=ChromeHeadless
