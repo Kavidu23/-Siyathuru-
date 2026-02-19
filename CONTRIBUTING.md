@@ -1,6 +1,6 @@
 # Contributing to Siyathuru - AI-Driven Social Networking for Community Platform
 
-This guide explains how to set up your development environment and contribute to the **Siyathuru project**.
+This guide explains how to contribute to the **Siyathuru project**.
 
 ---
 
