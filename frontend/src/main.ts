@@ -7,7 +7,6 @@ bootstrapApplication(AppComponent, {
   ...appConfig,
   providers: [
     ...(appConfig.providers || []), // keep any existing providers
-    provideHttpClient()             // <-- PROVIDE HttpClient globally
-  ]
-})
-  .catch(err => console.error(err));
+    provideHttpClient(), // <-- PROVIDE HttpClient globally
+  ],
+}).catch((err) => console.error(err));

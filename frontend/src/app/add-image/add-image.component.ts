@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {
-  CommunityPhotoService,
-  CommunityPhoto,
-} from '../services/community-photo.service';
+import { CommunityPhotoService, CommunityPhoto } from '../services/community-photo.service';
 import { finalize } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -89,10 +86,7 @@ export class AddImageComponent implements OnInit {
         error: (err) => {
           console.error(err);
 
-          const msg =
-            err?.error?.error ||
-            err?.error?.message ||
-            'Failed to upload photo';
+          const msg = err?.error?.error || err?.error?.message || 'Failed to upload photo';
 
           alert(msg);
         },
@@ -114,8 +108,7 @@ export class AddImageComponent implements OnInit {
         error: (err) => {
           console.error(err);
 
-          const msg =
-            err?.error?.error || err?.error?.message || 'Failed to load photos';
+          const msg = err?.error?.error || err?.error?.message || 'Failed to load photos';
         },
       });
   }
@@ -134,8 +127,7 @@ export class AddImageComponent implements OnInit {
       error: (err) => {
         console.error(err);
 
-        const msg =
-          err?.error?.error || err?.error?.message || 'Failed to delete photo';
+        const msg = err?.error?.error || err?.error?.message || 'Failed to delete photo';
       },
     });
   }

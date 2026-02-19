@@ -25,13 +25,11 @@ describe('UserDashboardComponent', () => {
 
   beforeEach(() => {
     communityServiceMock = {
-    getAllCommunities: jasmine.createSpy('getAllCommunities').and.returnValue(of([])),
+      getAllCommunities: jasmine.createSpy('getAllCommunities').and.returnValue(of([])),
     };
 
     alertServiceMock = {
-      getAlertsByUserId: jasmine
-        .createSpy('getAlertsByUserId')
-        .and.returnValue(of({ data: [] })),
+      getAlertsByUserId: jasmine.createSpy('getAlertsByUserId').and.returnValue(of({ data: [] })),
     };
 
     eventServiceMock = {
@@ -58,8 +56,7 @@ describe('UserDashboardComponent', () => {
         { provide: UserService, useValue: userServiceMock },
         provideRouter([]),
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     router = TestBed.inject(Router);
     navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));

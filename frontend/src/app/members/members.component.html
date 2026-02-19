@@ -1,9 +1,7 @@
 <section class="event-create-page">
   <div class="header-row">
     <h2 class="section-title">{{ communityName }} Members</h2>
-    <div class="member-count" *ngIf="!isLoading">
-      {{ members.length }} total
-    </div>
+    <div class="member-count" *ngIf="!isLoading">{{ members.length }} total</div>
   </div>
 
   <div *ngIf="isLoading">Loading members...</div>
@@ -19,15 +17,11 @@
       <div class="member-info">
         <strong>
           {{ member.name }}
-          <span *ngIf="member._id === leaderId" class="leader-badge"
-            >Leader</span
-          >
+          <span *ngIf="member._id === leaderId" class="leader-badge">Leader</span>
         </strong>
         <p *ngIf="member.email">{{ member.email }}</p>
       </div>
-      <button class="btn-secondary" (click)="removeMember(member._id)">
-        Remove
-      </button>
+      <button class="btn-secondary" (click)="removeMember(member._id)">Remove</button>
     </div>
   </div>
 </section>

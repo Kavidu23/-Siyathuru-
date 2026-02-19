@@ -22,9 +22,7 @@ describe('NavbarComponent', () => {
 
   const userServiceMock = {
     authState$: new Subject<any>(),
-    validateSession: jasmine
-      .createSpy('validateSession')
-      .and.returnValue(of({})),
+    validateSession: jasmine.createSpy('validateSession').and.returnValue(of({})),
     logoutUser: jasmine.createSpy('logoutUser').and.returnValue(of({})),
   };
 
@@ -36,9 +34,7 @@ describe('NavbarComponent', () => {
   };
 
   const communityServiceMock = {
-    getAllCommunities: jasmine
-      .createSpy('getAllCommunities')
-      .and.returnValue(of({ data: [] })),
+    getAllCommunities: jasmine.createSpy('getAllCommunities').and.returnValue(of({ data: [] })),
   };
 
   beforeEach(async () => {
@@ -57,9 +53,7 @@ describe('NavbarComponent', () => {
     }).compileComponents();
 
     router = TestBed.inject(Router);
-    navigateSpy = spyOn(router, 'navigate').and.returnValue(
-      Promise.resolve(true),
-    );
+    navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
     fixture = TestBed.createComponent(NavbarComponent);
     component = fixture.componentInstance;

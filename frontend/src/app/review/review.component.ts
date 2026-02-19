@@ -97,9 +97,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           if (response?.success) {
-            this.joinRequests = this.joinRequests.filter(
-              (item) => item.user._id !== req.user._id,
-            );
+            this.joinRequests = this.joinRequests.filter((item) => item.user._id !== req.user._id);
             alert('Request approved successfully! ');
           } else {
             alert('Failed to accept request ');
@@ -130,9 +128,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           if (response?.success) {
-            this.joinRequests = this.joinRequests.filter(
-              (item) => item.user._id !== req.user._id,
-            );
+            this.joinRequests = this.joinRequests.filter((item) => item.user._id !== req.user._id);
             alert('Request rejected successfully! ');
           } else {
             alert('Failed to reject request ');

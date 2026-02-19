@@ -23,11 +23,7 @@ export class CommunityPhotoService {
   constructor(private http: HttpClient) {}
 
   /** Upload a photo */
-  uploadPhoto(
-    communityId: string,
-    file: File,
-    caption?: string,
-  ): Observable<CommunityPhoto> {
+  uploadPhoto(communityId: string, file: File, caption?: string): Observable<CommunityPhoto> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('communityId', communityId);
@@ -40,21 +36,15 @@ export class CommunityPhotoService {
 
   /** Get all photos for a community */
   getPhotosByCommunity(communityId: string): Observable<CommunityPhoto[]> {
-    return this.http.get<CommunityPhoto[]>(
-      `${this.baseUrl}/community/${communityId}`,
-      {
-        withCredentials: true,
-      },
-    );
+    return this.http.get<CommunityPhoto[]>(`${this.baseUrl}/community/${communityId}`, {
+      withCredentials: true,
+    });
   }
 
   /** Delete a photo */
-  deletePhoto(
-    photoId: string,
-  ): Observable<{ success: boolean; message: string }> {
-    return this.http.delete<{ success: boolean; message: string }>(
-      `${this.baseUrl}/${photoId}`,
-      { withCredentials: true },
-    );
+  deletePhoto(photoId: string): Observable<{ success: boolean; message: string }> {
+    return this.http.delete<{ success: boolean; message: string }>(`${this.baseUrl}/${photoId}`, {
+      withCredentials: true,
+    });
   }
 }

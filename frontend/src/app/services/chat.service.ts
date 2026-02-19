@@ -29,38 +29,21 @@ export class ChatService {
   hasUnread$ = this.unreadSubject.asObservable();
 
   private lastSeen = new Map<string, number>();
-  private latestThreads = new Map<
-    string,
-    { updatedAt: number; lastSenderId: string }
-  >();
+  private latestThreads = new Map<string, { updatedAt: number; lastSenderId: string }>();
   private currentUserId: string | null = null;
   private unreadUnsubs: Array<() => void> = [];
 
   constructor(private firestore: Firestore) {}
 
-  sendMessage(
-    communityId: string,
-    threadId: string,
-    msg: ChatMessage,
-  ): Promise<any>;
+  sendMessage(communityId: string, threadId: string, msg: ChatMessage): Promise<any>;
   sendMessage(communityId: string, msg: ChatMessage): Promise<any>;
-  sendMessage(
-    communityId: string,
-    arg2: string | ChatMessage,
-    arg3?: ChatMessage,
-  ) {
+  sendMessage(communityId: string, arg2: string | ChatMessage, arg3?: ChatMessage) {
     const threadId = typeof arg2 === 'string' ? arg2 : 'community';
     const msg = typeof arg2 === 'string' ? arg3! : arg2;
 
-    const participantIds = [
-      msg.senderId,
-      msg.recipientId || null,
-    ].filter(Boolean);
+    const participantIds = [msg.senderId, msg.recipientId || null].filter(Boolean);
 
-    const threadRef = doc(
-      this.firestore,
-      `communities/${communityId}/threads/${threadId}`,
-    );
+    const threadRef = doc(this.firestore, `communities/${communityId}/threads/${threadId}`);
 
     setDoc(
       threadRef,
@@ -91,10 +74,7 @@ export class ChatService {
     threadId: string,
     callback: (messages: ChatMessage[]) => void,
   ): () => void;
-  listenMessages(
-    communityId: string,
-    callback: (messages: ChatMessage[]) => void,
-  ): () => void;
+  listenMessages(communityId: string, callback: (messages: ChatMessage[]) => void): () => void;
   listenMessages(
     communityId: string,
     arg2: string | ((messages: ChatMessage[]) => void),
@@ -123,10 +103,7 @@ export class ChatService {
     return unsubscribe as () => void;
   }
 
-  startUnreadListenerForCommunities(
-    userId: string,
-    communityIds: string[],
-  ): () => void {
+  startUnreadListenerForCommunities(userId: string, communityIds: string[]): () => void {
     this.currentUserId = userId;
     this.lastSeen.clear();
     this.latestThreads.clear();
@@ -135,40 +112,33 @@ export class ChatService {
     this.unreadUnsubs.forEach((u) => u());
     this.unreadUnsubs = [];
 
-    communityIds
-      .filter(Boolean)
-      .forEach((communityId) => {
-        const ref = collection(
-          this.firestore,
-          `communities/${communityId}/threads`,
-        );
-        const q = query(ref, where('participantIds', 'array-contains', userId));
+    communityIds.filter(Boolean).forEach((communityId) => {
+      const ref = collection(this.firestore, `communities/${communityId}/threads`);
+      const q = query(ref, where('participantIds', 'array-contains', userId));
 
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-          snapshot.forEach((docSnap) => {
-            const data: any = docSnap.data();
-            const threadId = docSnap.id;
-            const updatedAt = data?.updatedAt?.toMillis
-              ? data.updatedAt.toMillis()
-              : 0;
-            const lastSenderId = data?.lastSenderId || '';
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        snapshot.forEach((docSnap) => {
+          const data: any = docSnap.data();
+          const threadId = docSnap.id;
+          const updatedAt = data?.updatedAt?.toMillis ? data.updatedAt.toMillis() : 0;
+          const lastSenderId = data?.lastSenderId || '';
 
-            this.latestThreads.set(threadId, { updatedAt, lastSenderId });
+          this.latestThreads.set(threadId, { updatedAt, lastSenderId });
 
-            if (!this.lastSeen.has(threadId)) {
-              if (lastSenderId === userId) {
-                this.lastSeen.set(threadId, updatedAt);
-              } else {
-                this.lastSeen.set(threadId, 0);
-              }
+          if (!this.lastSeen.has(threadId)) {
+            if (lastSenderId === userId) {
+              this.lastSeen.set(threadId, updatedAt);
+            } else {
+              this.lastSeen.set(threadId, 0);
             }
-          });
-
-          this.recomputeUnread();
+          }
         });
 
-        this.unreadUnsubs.push(unsubscribe as () => void);
+        this.recomputeUnread();
       });
+
+      this.unreadUnsubs.push(unsubscribe as () => void);
+    });
 
     return () => {
       this.unreadUnsubs.forEach((u) => u());

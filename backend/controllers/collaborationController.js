@@ -1,4 +1,4 @@
-const Community = require("../models/communities");
+const Community = require('../models/communities');
 
 // Suggest Communities based on type and location
 const suggestCommunities = async (req, res) => {
@@ -10,7 +10,7 @@ const suggestCommunities = async (req, res) => {
     if (!baseCommunity) {
       return res.status(404).json({
         success: false,
-        message: "Community not found",
+        message: 'Community not found',
       });
     }
 
@@ -23,10 +23,10 @@ const suggestCommunities = async (req, res) => {
     const suggestedCommunities = await Community.find({
       _id: { $ne: communityId }, // exclude current community
       type: type,
-      "location.coordinates.latitude": {
+      'location.coordinates.latitude': {
         $exists: true,
       },
-      "location.coordinates.longitude": {
+      'location.coordinates.longitude': {
         $exists: true,
       },
     }).lean();
@@ -47,10 +47,7 @@ const suggestCommunities = async (req, res) => {
       const dLon = toRad(lon2 - lon1);
       const a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(toRad(lat1)) *
-        Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
       const cAngle = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       const distance = R * cAngle;
 
@@ -59,14 +56,14 @@ const suggestCommunities = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Suggested communities fetched successfully",
+      message: 'Suggested communities fetched successfully',
       data: filteredSuggestions,
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({
       success: false,
-      message: "Server error",
+      message: 'Server error',
       details: err.message,
     });
   }

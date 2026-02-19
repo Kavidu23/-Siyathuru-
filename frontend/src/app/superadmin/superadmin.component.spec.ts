@@ -16,7 +16,9 @@ describe('SuperadminComponent', () => {
 
   const communityServiceMock = {
     getAllCommunities: jasmine.createSpy('getAllCommunities'),
-    deleteCommunity: jasmine.createSpy('deleteCommunity').and.returnValue(of({ message: 'Removed' })),
+    deleteCommunity: jasmine
+      .createSpy('deleteCommunity')
+      .and.returnValue(of({ message: 'Removed' })),
   };
 
   const userServiceMock = {
@@ -37,8 +39,7 @@ describe('SuperadminComponent', () => {
         { provide: UserService, useValue: userServiceMock },
         provideRouter([]),
       ],
-    })
-      .compileComponents();
+    }).compileComponents();
 
     router = TestBed.inject(Router);
     navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));

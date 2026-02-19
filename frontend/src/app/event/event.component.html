@@ -13,32 +13,21 @@
     <div class="form-group">
       <label>Event Title</label>
 
-      <input
-        type="text"
-        [(ngModel)]="form.title"
-        placeholder="Enter event title"
-      />
+      <input type="text" [(ngModel)]="form.title" placeholder="Enter event title" />
     </div>
 
     <!-- DESCRIPTION -->
     <div class="form-group">
       <label>Description</label>
 
-      <textarea
-        [(ngModel)]="form.description"
-        placeholder="Enter event description"
-      ></textarea>
+      <textarea [(ngModel)]="form.description" placeholder="Enter event description"></textarea>
     </div>
 
     <!-- LOCATION -->
     <div class="form-group">
       <label>Location</label>
 
-      <input
-        type="text"
-        [(ngModel)]="form.location"
-        placeholder="Enter event location"
-      />
+      <input type="text" [(ngModel)]="form.location" placeholder="Enter event location" />
     </div>
 
     <!-- DATE -->
@@ -57,12 +46,8 @@
 
     <!-- ACTIONS -->
     <div class="form-actions">
-      <button
-        class="btn-primary"
-        (click)="createEvent()"
-        [disabled]="isLoading"
-      >
-        {{ isLoading ? "Creating..." : "Create Event" }}
+      <button class="btn-primary" (click)="createEvent()" [disabled]="isLoading">
+        {{ isLoading ? 'Creating...' : 'Create Event' }}
       </button>
     </div>
   </div>

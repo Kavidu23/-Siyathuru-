@@ -2,7 +2,6 @@
 const CommunityPhoto = require('../models/CommunityPhoto');
 const cloudinary = require('../config/cloudinary');
 
-
 // ================= UPLOAD PHOTO =================
 const uploadPhoto = async (req, res) => {
   try {
@@ -19,7 +18,7 @@ const uploadPhoto = async (req, res) => {
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
-        }
+        },
       );
       uploadStream.end(req.file.buffer);
     });

@@ -10,13 +10,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-discovery',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    HttpClientModule,
-    FooterComponent,
-    RouterLink,
-  ],
+  imports: [CommonModule, FormsModule, HttpClientModule, FooterComponent, RouterLink],
   templateUrl: './discovery.component.html',
   styleUrls: ['./discovery.component.css'],
 })
@@ -69,9 +63,7 @@ export class DiscoveryComponent implements AfterViewInit {
         this.filteredCommunities = this.communities;
 
         // 🔥 CREATE UNIQUE TYPES
-        this.uniqueTypes = [
-          ...new Set(this.communities.map((c) => c.type).filter((t) => !!t)),
-        ];
+        this.uniqueTypes = [...new Set(this.communities.map((c) => c.type).filter((t) => !!t))];
 
         this.refreshMarkers();
       },
@@ -144,8 +136,7 @@ export class DiscoveryComponent implements AfterViewInit {
       // ---- 2. Join Type Filter ----
       const matchesJoinType =
         this.selectedJoinType === 'all' ||
-        (community.isPrivate ? 'request' : 'free') ===
-          this.selectedJoinType.toLowerCase();
+        (community.isPrivate ? 'request' : 'free') === this.selectedJoinType.toLowerCase();
 
       return matchesType && matchesJoinType;
     });

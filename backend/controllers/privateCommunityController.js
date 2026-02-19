@@ -1,6 +1,6 @@
-const Community = require("../models/communities");
-const User = require("../models/user");
-const sendEmail = require("../utils/sendEmail");
+const Community = require('../models/communities');
+const User = require('../models/user');
+const sendEmail = require('../utils/sendEmail');
 
 /* SEND JOIN REQUEST / JOIN COMMUNITY */
 const joinCommunity = async (req, res) => {
@@ -12,7 +12,7 @@ const joinCommunity = async (req, res) => {
     if (!community) {
       return res.status(404).json({
         success: false,
-        error: "Community not found"
+        error: 'Community not found',
       });
     }
 
@@ -20,50 +20,45 @@ const joinCommunity = async (req, res) => {
     if (!community.isPrivate) {
       return res.status(400).json({
         success: false,
-        error: "This endpoint is only for private communities"
+        error: 'This endpoint is only for private communities',
       });
     }
 
     // Already a member
-    if (community.members.some(m => m.toString() === userId)) {
+    if (community.members.some((m) => m.toString() === userId)) {
       return res.status(400).json({
         success: false,
-        error: "You are already a member"
+        error: 'You are already a member',
       });
     }
 
     // Already requested
-    const alreadyRequested = community.joinRequests.some(
-      r => r.user.toString() === userId
-    );
+    const alreadyRequested = community.joinRequests.some((r) => r.user.toString() === userId);
 
     if (alreadyRequested) {
       return res.status(400).json({
         success: false,
-        error: "Join request already sent"
+        error: 'Join request already sent',
       });
     }
 
     // Send join request
-    await Community.findByIdAndUpdate(
-      communityId,
-      { $addToSet: { joinRequests: { user: userId } } }
-    );
+    await Community.findByIdAndUpdate(communityId, {
+      $addToSet: { joinRequests: { user: userId } },
+    });
 
     return res.status(200).json({
       success: true,
-      message: "Join request sent. Awaiting approval."
+      message: 'Join request sent. Awaiting approval.',
     });
-
   } catch (err) {
     res.status(500).json({
       success: false,
-      error: "Server error",
-      details: err.message
+      error: 'Server error',
+      details: err.message,
     });
   }
 };
-
 
 /* USER CANCEL JOIN REQUEST */
 const cancelJoinRequest = async (req, res) => {
@@ -74,19 +69,19 @@ const cancelJoinRequest = async (req, res) => {
     const result = await Community.findByIdAndUpdate(
       communityId,
       { $pull: { joinRequests: { user: userId } } },
-      { new: true }
+      { new: true },
     );
 
     if (!result) {
-      return res.status(404).json({ success: false, error: "Community not found" });
+      return res.status(404).json({ success: false, error: 'Community not found' });
     }
 
     res.status(200).json({
       success: true,
-      message: "Join request cancelled"
+      message: 'Join request cancelled',
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: "Server error", details: err.message });
+    res.status(500).json({ success: false, error: 'Server error', details: err.message });
   }
 };
 
@@ -97,69 +92,60 @@ const handleJoinRequest = async (req, res) => {
     const { userId, approve } = req.body;
     const leaderId = req.user.id;
 
-    const community = await Community.findById(communityId).populate("leader");
+    const community = await Community.findById(communityId).populate('leader');
     if (!community) {
-      return res.status(404).json({ success: false, error: "Community not found" });
+      return res.status(404).json({ success: false, error: 'Community not found' });
     }
 
     // Authorization
     if (community.leader._id.toString() !== leaderId) {
-      return res.status(403).json({ success: false, error: "Not authorized" });
+      return res.status(403).json({ success: false, error: 'Not authorized' });
     }
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ success: false, error: "User not found" });
+      return res.status(404).json({ success: false, error: 'User not found' });
     }
 
     // Remove request first
-    await Community.findByIdAndUpdate(
-      communityId,
-      { $pull: { joinRequests: { user: userId } } }
-    );
+    await Community.findByIdAndUpdate(communityId, { $pull: { joinRequests: { user: userId } } });
 
     if (approve) {
       // Add member
-      await Community.findByIdAndUpdate(
-        communityId,
-        { $addToSet: { members: userId } }
-      );
+      await Community.findByIdAndUpdate(communityId, { $addToSet: { members: userId } });
 
-      await User.findByIdAndUpdate(
-        userId,
-        { $addToSet: { joinedCommunities: communityId } }
-      );
+      await User.findByIdAndUpdate(userId, { $addToSet: { joinedCommunities: communityId } });
 
       // 📧 EMAIL APPROVAL
       await sendEmail(
         user.email,
-        "Community Join Request Approved 🎉",
+        'Community Join Request Approved 🎉',
         `Hello ${user.name}, your request to join "${community.name}" has been approved.`,
         `<p>Hello <strong>${user.name}</strong>,</p>
-         <p>Your request to join <strong>${community.name}</strong> has been approved 🎉</p>`
+         <p>Your request to join <strong>${community.name}</strong> has been approved 🎉</p>`,
       );
 
       return res.status(200).json({
         success: true,
-        message: "Join request approved"
+        message: 'Join request approved',
       });
     }
 
     // EMAIL REJECTION
     await sendEmail(
       user.email,
-      "Community Join Request Rejected",
+      'Community Join Request Rejected',
       `Hello ${user.name}, your request to join "${community.name}" was rejected.`,
       `<p>Hello <strong>${user.name}</strong>,</p>
-       <p>Your request to join <strong>${community.name}</strong> was rejected.</p>`
+       <p>Your request to join <strong>${community.name}</strong> was rejected.</p>`,
     );
 
     res.status(200).json({
       success: true,
-      message: "Join request rejected"
+      message: 'Join request rejected',
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: "Server error", details: err.message });
+    res.status(500).json({ success: false, error: 'Server error', details: err.message });
   }
 };
 
@@ -168,22 +154,21 @@ const getJoinRequests = async (req, res) => {
   try {
     const communityId = req.params.id;
     const leaderId = req.user.id;
-    const community = await Community.findById(communityId).populate("joinRequests.user");
+    const community = await Community.findById(communityId).populate('joinRequests.user');
 
     if (!community) {
-      return res.status(404).json({ success: false, error: "Community not found" });
+      return res.status(404).json({ success: false, error: 'Community not found' });
     }
     // Authorization
     if (community.leader.toString() !== leaderId) {
-      return res.status(403).json({ success: false, error: "Not authorized" });
+      return res.status(403).json({ success: false, error: 'Not authorized' });
     }
     res.status(200).json({
       success: true,
-      joinRequests: community.joinRequests
+      joinRequests: community.joinRequests,
     });
-  }
-  catch (err) {
-    res.status(500).json({ success: false, error: "Server error", details: err.message });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Server error', details: err.message });
   }
 };
 
@@ -191,5 +176,5 @@ module.exports = {
   joinCommunity,
   cancelJoinRequest,
   handleJoinRequest,
-  getJoinRequests
+  getJoinRequests,
 };

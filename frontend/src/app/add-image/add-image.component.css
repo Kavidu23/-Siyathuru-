@@ -5,7 +5,7 @@
 
 /* SECTION TITLE */
 .section-title {
-  font-family: "Oswald", sans-serif;
+  font-family: 'Oswald', sans-serif;
   font-size: var(--header--font--size);
   margin-bottom: var(--spacing-md);
 }
@@ -25,7 +25,7 @@
   align-items: center;
 }
 
-.upload-section input[type="file"] {
+.upload-section input[type='file'] {
   padding: var(--spacing-sm);
   border-radius: var(--border-radius-input);
   border: 1px solid var(--border-color-light);
@@ -33,7 +33,7 @@
   cursor: pointer;
 }
 
-.upload-section input[type="text"] {
+.upload-section input[type='text'] {
   flex: 1;
   padding: var(--spacing-sm);
   border-radius: var(--border-radius-input);

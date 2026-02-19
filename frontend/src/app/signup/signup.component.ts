@@ -1,17 +1,6 @@
-import {
-  Component,
-  EventEmitter,
-  Output,
-  OnInit,
-  OnDestroy,
-} from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, OnDestroy } from '@angular/core';
 
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  AbstractControl,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../services/user.service';
@@ -57,11 +46,9 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscription = this.modalService.signupVisible$.subscribe(
-      (visible) => {
-        this.isVisible = visible;
-      },
-    );
+    this.subscription = this.modalService.signupVisible$.subscribe((visible) => {
+      this.isVisible = visible;
+    });
 
     this.http.get<any[]>('districts.json').subscribe(
       (data: any[]) => {
@@ -73,9 +60,7 @@ export class SignupComponent implements OnInit, OnDestroy {
           longitude: d.lng,
         }));
         // optional: sort alphabetically
-        this.cities.sort((a: any, b: any) =>
-          a.name_en.localeCompare(b.name_en),
-        );
+        this.cities.sort((a: any, b: any) => a.name_en.localeCompare(b.name_en));
       },
       (error: any) => console.error('Could not load districts.json', error),
     );
@@ -94,18 +79,9 @@ export class SignupComponent implements OnInit, OnDestroy {
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', Validators.required],
         city: ['', Validators.required],
-        latitude: [
-          '',
-          [Validators.required, Validators.min(-90), Validators.max(90)],
-        ],
-        longitude: [
-          '',
-          [Validators.required, Validators.min(-180), Validators.max(180)],
-        ],
-        age: [
-          '',
-          [Validators.required, Validators.min(13), Validators.max(120)],
-        ],
+        latitude: ['', [Validators.required, Validators.min(-90), Validators.max(90)]],
+        longitude: ['', [Validators.required, Validators.min(-180), Validators.max(180)]],
+        age: ['', [Validators.required, Validators.min(13), Validators.max(120)]],
         memberType: ['', Validators.required],
       },
       { validators: this.passwordMatchValidator },
@@ -200,10 +176,7 @@ export class SignupComponent implements OnInit, OnDestroy {
           this.submitUserWithImage(payload);
         },
         (uploadErr) => {
-          console.warn(
-            'Image upload failed, creating user without image:',
-            uploadErr,
-          );
+          console.warn('Image upload failed, creating user without image:', uploadErr);
           this.submitUserWithImage(payload);
         },
       );
@@ -225,10 +198,7 @@ export class SignupComponent implements OnInit, OnDestroy {
           email: [payload.email, [Validators.required, Validators.email]],
           code: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
         });
-        alert(
-          res?.message ||
-            'Account created. Enter verification code sent to your email.',
-        );
+        alert(res?.message || 'Account created. Enter verification code sent to your email.');
       },
       (err) => {
         this.isLoading = false;

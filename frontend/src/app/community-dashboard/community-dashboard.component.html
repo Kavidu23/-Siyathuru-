@@ -25,9 +25,7 @@
         </div>
 
         <div class="action-cta">
-          <button class="btn-primary" (click)="goToRequests()">
-            Review Requests
-          </button>
+          <button class="btn-primary" (click)="goToRequests()">Review Requests</button>
         </div>
       </div>
 
@@ -39,9 +37,7 @@
         </div>
 
         <div class="action-cta">
-          <button class="btn-primary" (click)="goToCreateEvent()">
-            Post New Event
-          </button>
+          <button class="btn-primary" (click)="goToCreateEvent()">Post New Event</button>
         </div>
       </div>
 
@@ -53,9 +49,7 @@
         </div>
 
         <div class="action-cta">
-          <button class="btn-alert" (click)="goToAlert()">
-            Send Emergency Alert
-          </button>
+          <button class="btn-alert" (click)="goToAlert()">Send Emergency Alert</button>
         </div>
       </div>
 
@@ -64,9 +58,7 @@
         <div class="metric">
           <h2>Verification</h2>
           <p *ngIf="selectedCommunity?.isVerified">Community Verified</p>
-          <p *ngIf="!selectedCommunity?.isVerified">
-            Request Community Verification
-          </p>
+          <p *ngIf="!selectedCommunity?.isVerified">Request Community Verification</p>
         </div>
 
         <div class="action-cta">
@@ -75,7 +67,7 @@
             (click)="requestVerification()"
             [disabled]="isVerifying || selectedCommunity?.isVerified"
           >
-            {{ selectedCommunity?.isVerified ? "Verified" : "Request Now" }}
+            {{ selectedCommunity?.isVerified ? 'Verified' : 'Request Now' }}
           </button>
         </div>
       </div>
@@ -134,14 +126,12 @@
         <span> ⚠️ Severity: {{ al.severity }} </span>
 
         <span>
-          📅 {{ al.alertDate | date: "mediumDate" }}
-          <ng-container *ngIf="al.alertTime"
-            >⏰ {{ al.alertTime }}</ng-container
-          >
+          📅 {{ al.alertDate | date: 'mediumDate' }}
+          <ng-container *ngIf="al.alertTime">⏰ {{ al.alertTime }}</ng-container>
         </span>
 
         <span
-          >Status: <b>{{ al.isActive ? "Active" : "Inactive" }}</b></span
+          >Status: <b>{{ al.isActive ? 'Active' : 'Inactive' }}</b></span
         >
       </div>
 
@@ -153,9 +143,7 @@
       </div>
     </div>
 
-    <div *ngIf="alerts.length === 0" class="no-events">
-      No alerts available.
-    </div>
+    <div *ngIf="alerts.length === 0" class="no-events">No alerts available.</div>
   </section>
 
   <!-- ========== UPCOMING EVENTS ========== -->
@@ -168,9 +156,7 @@
 
         <span> 📍 {{ ev.location }} </span>
 
-        <span>
-          📅 {{ ev.eventDate | date: "mediumDate" }} ⏰ {{ ev.eventTime }}
-        </span>
+        <span> 📅 {{ ev.eventDate | date: 'mediumDate' }} ⏰ {{ ev.eventTime }} </span>
 
         <span> 👥 Attendees: {{ ev.attendees.length || 0 }} </span>
       </div>
@@ -197,9 +183,7 @@
           {{ totalMembers }}
         </p>
         <div class="member-actions">
-          <button class="btn-primary" (click)="goToMembers()">
-            View Members
-          </button>
+          <button class="btn-primary" (click)="goToMembers()">View Members</button>
         </div>
       </div>
 

@@ -73,9 +73,7 @@ describe('SignupComponent', () => {
   });
 
   it('patches latitude and longitude when a city is selected', () => {
-    component.cities = [
-      { id: 1, name_en: 'Colombo', latitude: 6.9271, longitude: 79.8612 },
-    ];
+    component.cities = [{ id: 1, name_en: 'Colombo', latitude: 6.9271, longitude: 79.8612 }];
 
     component.onCitySelected({ target: { value: 1 } });
 

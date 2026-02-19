@@ -1,11 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -90,8 +85,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res: any) => {
           this.message =
-            res?.message ||
-            'If your email exists, a reset link has been sent to your inbox.';
+            res?.message || 'If your email exists, a reset link has been sent to your inbox.';
         },
         error: (err: any) => {
           this.error = err?.error?.error || 'Failed to send reset link.';

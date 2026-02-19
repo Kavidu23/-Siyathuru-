@@ -10,26 +10,19 @@
     </div>
 
     <div class="community-logo">
-      <img
-        [src]="community?.profileImage || 'default-logo.jpg'"
-        alt="Community Logo"
-      />
+      <img [src]="community?.profileImage || 'default-logo.jpg'" alt="Community Logo" />
     </div>
   </div>
 
   <!-- Identity Section -->
   <div class="identity-card">
-    <h1 class="community-name">{{ community?.name || "No name" }}</h1>
+    <h1 class="community-name">{{ community?.name || 'No name' }}</h1>
     <p class="mission">
-      {{ community?.mission || "No mission" }}
+      {{ community?.mission || 'No mission' }}
     </p>
     <div class="verification">
-      <span class="verified-badge" *ngIf="community?.isVerified">
-        ✔ Verified Community
-      </span>
-      <span class="unverified-badge" *ngIf="!community?.isVerified">
-        Not Verified
-      </span>
+      <span class="verified-badge" *ngIf="community?.isVerified"> ✔ Verified Community </span>
+      <span class="unverified-badge" *ngIf="!community?.isVerified"> Not Verified </span>
     </div>
     <div class="stats">
       <div>
@@ -46,37 +39,23 @@
     <div class="action-buttons">
       <div class="buttonin">
         <ng-container *ngIf="isMember">
-          <button class="btn-primary" disabled>
-            <i class="bx bx-check"></i> Joined
-          </button>
+          <button class="btn-primary" disabled><i class="bx bx-check"></i> Joined</button>
           <button class="btn-danger" (click)="leaveCommunity()">
             <i class="bx bx-log-out"></i> Leave
           </button>
         </ng-container>
 
         <ng-container *ngIf="!isMember">
-          <button
-            class="btn-primary"
-            *ngIf="!community?.isPrivate"
-            (click)="joinCommunity()"
-          >
+          <button class="btn-primary" *ngIf="!community?.isPrivate" (click)="joinCommunity()">
             <i class="bx bx-group"></i> Join Community
           </button>
 
           <ng-container *ngIf="community?.isPrivate">
-            <button
-              class="btn-danger"
-              *ngIf="isRequestPending"
-              (click)="cancelJoinRequest()"
-            >
+            <button class="btn-danger" *ngIf="isRequestPending" (click)="cancelJoinRequest()">
               <i class="bx bx-time"></i> Request Pending (Cancel?)
             </button>
 
-            <button
-              class="btn-primary"
-              *ngIf="!isRequestPending"
-              (click)="requestJoinCommunity()"
-            >
+            <button class="btn-primary" *ngIf="!isRequestPending" (click)="requestJoinCommunity()">
               <i class="bx bx-paper-plane"></i> Request to Join
             </button>
           </ng-container>
@@ -88,16 +67,11 @@
   <!-- About + Info -->
   <div class="about-section">
     <h2>About Us</h2>
-    <p>{{ community?.description || "No description" }}</p>
+    <p>{{ community?.description || 'No description' }}</p>
     <div class="info-grid">
-      <div><strong>Type: </strong>{{ community?.type || "No type" }}</div>
-      <div>
-        <strong>Location: </strong
-        >{{ community?.location.address || "No address" }}
-      </div>
-      <div>
-        <strong>Contact: </strong>{{ community?.contact.email || "No email" }}
-      </div>
+      <div><strong>Type: </strong>{{ community?.type || 'No type' }}</div>
+      <div><strong>Location: </strong>{{ community?.location.address || 'No address' }}</div>
+      <div><strong>Contact: </strong>{{ community?.contact.email || 'No email' }}</div>
       <!--&#64;-->
     </div>
     <div class="map-container">
@@ -114,7 +88,7 @@
     <div class="events-carousel">
       <div class="event-card" *ngFor="let up of upcomingEvents">
         <h4>{{ up.title }}</h4>
-        <p>{{ up.eventDate | date: "yyyy-MM-dd" }}</p>
+        <p>{{ up.eventDate | date: 'yyyy-MM-dd' }}</p>
       </div>
     </div>
   </div>
@@ -128,11 +102,7 @@
 
     <!-- Show gallery photos -->
     <div class="gallery" *ngFor="let ph of communityPhotos">
-      <img
-        [src]="ph.imageUrl"
-        alt="Community Event"
-        (click)="openImage(ph.imageUrl)"
-      />
+      <img [src]="ph.imageUrl" alt="Community Event" (click)="openImage(ph.imageUrl)" />
     </div>
   </div>
 

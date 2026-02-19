@@ -20,24 +20,20 @@ export class UserService {
   // ================= AUTH METHODS =================
 
   loginUser(payload: { email: string; password: string }): Observable<any> {
-    return this.http
-      .post<any>(`${this.baseUrl}/login`, payload, { withCredentials: true })
-      .pipe(
-        tap((res) => {
-          // ✅ Only update auth state, do NOT store sensitive info in localStorage
-          this.authState.next(res.user);
-        }),
-      );
+    return this.http.post<any>(`${this.baseUrl}/login`, payload, { withCredentials: true }).pipe(
+      tap((res) => {
+        // ✅ Only update auth state, do NOT store sensitive info in localStorage
+        this.authState.next(res.user);
+      }),
+    );
   }
 
   logoutUser(): Observable<any> {
-    return this.http
-      .post(`${this.baseUrl}/logout`, {}, { withCredentials: true })
-      .pipe(
-        tap(() => {
-          this.authState.next(null);
-        }),
-      );
+    return this.http.post(`${this.baseUrl}/logout`, {}, { withCredentials: true }).pipe(
+      tap(() => {
+        this.authState.next(null);
+      }),
+    );
   }
 
   getCurrentUser() {

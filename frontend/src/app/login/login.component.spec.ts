@@ -18,9 +18,7 @@ describe('LoginComponent', () => {
   };
 
   const userServiceMock = {
-    validateSession: jasmine
-      .createSpy('validateSession')
-      .and.returnValue(of({})),
+    validateSession: jasmine.createSpy('validateSession').and.returnValue(of({})),
     loginUser: jasmine.createSpy('loginUser'),
   };
 
@@ -35,9 +33,7 @@ describe('LoginComponent', () => {
     }).compileComponents();
 
     router = TestBed.inject(Router);
-    navigateSpy = spyOn(router, 'navigate').and.returnValue(
-      Promise.resolve(true),
-    );
+    navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
     const fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
@@ -61,9 +57,7 @@ describe('LoginComponent', () => {
 
     expect(component.submitted).toBeTrue();
     expect(userServiceMock.loginUser).not.toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      'Please enter valid email and password.',
-    );
+    expect(alertSpy).toHaveBeenCalledWith('Please enter valid email and password.');
   });
 
   it('navigates to home on successful regular user login', () => {
@@ -105,9 +99,7 @@ describe('LoginComponent', () => {
 
     component.onSubmit();
 
-    expect(alertSpy).toHaveBeenCalledWith(
-      'Welcome Leader! Please create your first community.',
-    );
+    expect(alertSpy).toHaveBeenCalledWith('Welcome Leader! Please create your first community.');
     expect(navigateSpy).toHaveBeenCalledWith(['/create-community']);
   });
 });

@@ -10,29 +10,19 @@
       <div class="user-text">
         <strong>{{ req.user.name }}</strong>
         <p class="request-msg">{{ req.user.email }}</p>
-        <small>Requested on: {{ req.requestedAt | date: "medium" }}</small>
+        <small>Requested on: {{ req.requestedAt | date: 'medium' }}</small>
       </div>
     </div>
     <div class="action-area">
-      <button
-        class="btn-primary"
-        [disabled]="req.loading"
-        (click)="acceptRequest(req)"
-      >
-        {{ req.loading && req.accepting ? "Accepting..." : "Accept" }}
+      <button class="btn-primary" [disabled]="req.loading" (click)="acceptRequest(req)">
+        {{ req.loading && req.accepting ? 'Accepting...' : 'Accept' }}
       </button>
-      <button
-        class="btn-danger"
-        [disabled]="req.loading"
-        (click)="rejectRequest(req)"
-      >
-        {{ req.loading && !req.accepting ? "Rejecting..." : "Reject" }}
+      <button class="btn-danger" [disabled]="req.loading" (click)="rejectRequest(req)">
+        {{ req.loading && !req.accepting ? 'Rejecting...' : 'Reject' }}
       </button>
     </div>
   </div>
 
   <!-- EMPTY STATE -->
-  <p class="empty" *ngIf="!isLoading && joinRequests.length === 0">
-    No pending requests
-  </p>
+  <p class="empty" *ngIf="!isLoading && joinRequests.length === 0">No pending requests</p>
 </div>

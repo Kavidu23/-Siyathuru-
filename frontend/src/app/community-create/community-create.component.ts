@@ -56,36 +56,22 @@ export class CommunityCreateComponent {
       address: ['', Validators.required],
       latitude: [
         '',
-        [
-          Validators.required,
-          Validators.pattern(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/),
-        ],
+        [Validators.required, Validators.pattern(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/)],
       ],
       longitude: [
         '',
         [
           Validators.required,
-          Validators.pattern(
-            /^[-+]?((1[0-7]\d)|([1-9]?\d))(\.\d+)?|180(\.0+)?$/,
-          ),
+          Validators.pattern(/^[-+]?((1[0-7]\d)|([1-9]?\d))(\.\d+)?|180(\.0+)?$/),
         ],
       ],
       contactName: ['', [Validators.required, Validators.minLength(3)]],
       phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
-      facebook: [
-        '',
-        Validators.pattern(/https?:\/\/(www\.)?facebook\.com\/.+/),
-      ],
-      instagram: [
-        '',
-        Validators.pattern(/https?:\/\/(www\.)?instagram\.com\/.+/),
-      ],
+      facebook: ['', Validators.pattern(/https?:\/\/(www\.)?facebook\.com\/.+/)],
+      instagram: ['', Validators.pattern(/https?:\/\/(www\.)?instagram\.com\/.+/)],
       whatsapp: ['', Validators.pattern(/https?:\/\/wa\.me\/\d+/)],
-      reddit: [
-        '',
-        Validators.pattern(/https?:\/\/(www\.)?reddit\.com\/user\/.+/),
-      ],
+      reddit: ['', Validators.pattern(/https?:\/\/(www\.)?reddit\.com\/user\/.+/)],
       isPrivate: [false],
     });
   }
@@ -159,10 +145,7 @@ export class CommunityCreateComponent {
     }
 
     // 2️⃣ Validate 'Others' type
-    if (
-      this.communityForm.value.type === 'Others' &&
-      !this.communityForm.value.otherType
-    ) {
+    if (this.communityForm.value.type === 'Others' && !this.communityForm.value.otherType) {
       alert('Please specify your community type.');
       return;
     }
@@ -195,10 +178,7 @@ export class CommunityCreateComponent {
         }
       },
       (err) => {
-        console.warn(
-          'Banner upload failed, creating community without banner:',
-          err,
-        );
+        console.warn('Banner upload failed, creating community without banner:', err);
         uploadCount++;
         if (uploadCount === 2) {
           this.submitCommunityWithImages(bannerUrl, profileUrl);
@@ -216,10 +196,7 @@ export class CommunityCreateComponent {
         }
       },
       (err) => {
-        console.warn(
-          'Profile upload failed, creating community without profile:',
-          err,
-        );
+        console.warn('Profile upload failed, creating community without profile:', err);
         uploadCount++;
         if (uploadCount === 2) {
           this.submitCommunityWithImages(bannerUrl, profileUrl);
@@ -229,10 +206,7 @@ export class CommunityCreateComponent {
   }
 
   // Submit community with uploaded image URLs
-  submitCommunityWithImages(
-    bannerUrl: string | null,
-    profileUrl: string | null,
-  ) {
+  submitCommunityWithImages(bannerUrl: string | null, profileUrl: string | null) {
     // Create payload with image URLs
     const payload: any = {
       name: this.f['name'].value,

@@ -16,8 +16,7 @@ import { CommunityPhotoService } from '../services/community-photo.service';
 // Fix Leaflet icon issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
@@ -29,9 +28,7 @@ L.Icon.Default.mergeOptions({
   templateUrl: './community-profile.component.html',
   styleUrls: ['./community-profile.component.css'],
 })
-export class CommunityProfileComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class CommunityProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   map!: L.Map;
   community: any = null;
   communityPhotos: any[] = [];
@@ -108,10 +105,7 @@ export class CommunityProfileComponent
     });
   }
 
-  private buildEventDateTime(
-    eventDate: string,
-    eventTime?: string,
-  ): Date | null {
+  private buildEventDateTime(eventDate: string, eventTime?: string): Date | null {
     if (!eventDate) return null;
     const date = new Date(eventDate);
     if (Number.isNaN(date.getTime())) return null;
@@ -155,9 +149,7 @@ export class CommunityProfileComponent
     const userId = String(this.user._id);
 
     // ---- MEMBER CHECK ----
-    this.isMember = (this.community.members || []).some(
-      (m: any) => String(m?._id || m) === userId,
-    );
+    this.isMember = (this.community.members || []).some((m: any) => String(m?._id || m) === userId);
 
     // ---- REQUEST PENDING (PRIVATE) ----
     if (this.community.isPrivate && !this.isMember) {
@@ -194,10 +186,7 @@ export class CommunityProfileComponent
         // Update auth state user (not localStorage!)
         const updatedUser = {
           ...this.user,
-          joinedCommunities: [
-            ...(this.user.joinedCommunities || []),
-            communityId,
-          ],
+          joinedCommunities: [...(this.user.joinedCommunities || []), communityId],
         };
 
         this.userService['authState'].next(updatedUser);
@@ -280,22 +269,18 @@ export class CommunityProfileComponent
   cancelJoinRequest() {
     if (!this.user) return;
 
-    this.privateCommunityService
-      .cancelJoinRequest(this.community._id)
-      .subscribe({
-        next: (res: any) => {
-          alert(res.message || 'Join request cancelled');
+    this.privateCommunityService.cancelJoinRequest(this.community._id).subscribe({
+      next: (res: any) => {
+        alert(res.message || 'Join request cancelled');
 
-          this.community.joinRequests = (
-            this.community.joinRequests || []
-          ).filter(
-            (r: any) => String(r.user?._id || r.user) !== String(this.user._id),
-          );
+        this.community.joinRequests = (this.community.joinRequests || []).filter(
+          (r: any) => String(r.user?._id || r.user) !== String(this.user._id),
+        );
 
-          this.checkMembershipState();
-        },
-        error: () => alert('Failed to cancel join request'),
-      });
+        this.checkMembershipState();
+      },
+      error: () => alert('Failed to cancel join request'),
+    });
   }
 
   // ============ MAP ============
@@ -313,9 +298,7 @@ export class CommunityProfileComponent
     }).addTo(this.map);
 
     if (this.community?.location?.coordinates) {
-      L.marker([lat, lon])
-        .addTo(this.map)
-        .bindPopup(`<b>${this.community.name} 🚩</b>`);
+      L.marker([lat, lon]).addTo(this.map).bindPopup(`<b>${this.community.name} 🚩</b>`);
     }
   }
 

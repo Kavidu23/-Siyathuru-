@@ -20,10 +20,7 @@
           placeholder="Type a location"
         />
         <ul *ngIf="locationSuggestions.length" class="suggestions-list">
-          <li
-            *ngFor="let suggestion of locationSuggestions"
-            (click)="selectLocation(suggestion)"
-          >
+          <li *ngFor="let suggestion of locationSuggestions" (click)="selectLocation(suggestion)">
             {{ suggestion.district }}
           </li>
         </ul>
@@ -48,12 +45,8 @@
         </select>
       </div>
       <div class="filter-buttons">
-        <button class="apply-btn" (click)="applyFilters()">
-          Apply Filters
-        </button>
-        <button class="apply-btn" (click)="resetFilters()">
-          Reset Filters
-        </button>
+        <button class="apply-btn" (click)="applyFilters()">Apply Filters</button>
+        <button class="apply-btn" (click)="resetFilters()">Reset Filters</button>
       </div>
     </aside>
 
@@ -77,7 +70,7 @@
           <h3>{{ community.name }}</h3>
           <p class="address">{{ community.location.address }}</p>
           <p class="type" [ngClass]="{ private: community.isPrivate }">
-            Type: {{ community.isPrivate ? "request" : "free" }}
+            Type: {{ community.isPrivate ? 'request' : 'free' }}
           </p>
         </div>
       </div>

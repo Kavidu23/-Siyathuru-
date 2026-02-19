@@ -84,9 +84,7 @@ export class SuperadminComponent implements OnInit {
           (u: any) => (u?.joinedCommunities || []).length > 0,
         ).length;
         this.activeEngagement =
-          this.totalUsers > 0
-            ? Math.round((activeUsers / this.totalUsers) * 100)
-            : 0;
+          this.totalUsers > 0 ? Math.round((activeUsers / this.totalUsers) * 100) : 0;
       },
       error: () => {
         this.errorMessage = 'Failed to load users';
@@ -103,8 +101,7 @@ export class SuperadminComponent implements OnInit {
           const communities = res?.data || res || [];
           this.communities = communities;
           this.totalCommunities = communities.length;
-          this.topPerformingCommunities =
-            this.buildTopPerformingCommunities(communities);
+          this.topPerformingCommunities = this.buildTopPerformingCommunities(communities);
         },
         error: () => {
           this.errorMessage = 'Failed to load communities';
@@ -120,8 +117,7 @@ export class SuperadminComponent implements OnInit {
         memberCount: (community?.members || []).length,
       }))
       .sort((a, b) => {
-        if (b.memberCount !== a.memberCount)
-          return b.memberCount - a.memberCount;
+        if (b.memberCount !== a.memberCount) return b.memberCount - a.memberCount;
         return a.name.localeCompare(b.name);
       })
       .slice(0, 3);
@@ -142,9 +138,7 @@ export class SuperadminComponent implements OnInit {
 
   RemoveCommunity(community: any) {
     if (!community?._id) return;
-    const ok = confirm(
-      `Remove community "${community.name || 'this community'}"?`,
-    );
+    const ok = confirm(`Remove community "${community.name || 'this community'}"?`);
     if (!ok) return;
 
     this.isDeleting = true;
@@ -153,13 +147,9 @@ export class SuperadminComponent implements OnInit {
       .pipe(finalize(() => (this.isDeleting = false)))
       .subscribe({
         next: (res: any) => {
-          this.communities = this.communities.filter(
-            (c) => c._id !== community._id,
-          );
+          this.communities = this.communities.filter((c) => c._id !== community._id);
           this.totalCommunities = this.communities.length;
-          this.topPerformingCommunities = this.buildTopPerformingCommunities(
-            this.communities,
-          );
+          this.topPerformingCommunities = this.buildTopPerformingCommunities(this.communities);
           alert(res?.message || 'Community deactivated successfully');
         },
         error: (err: any) => {

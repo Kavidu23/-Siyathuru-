@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FeedbackService {
   // Base URL automatically switches for local or Docker
@@ -11,7 +11,7 @@ export class FeedbackService {
     ? 'http://localhost:3000/api/feedbacks'
     : 'http://backend:3000/api/feedbacks'; // backend service name in Docker
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   // POST feedback
   createFeedback(feedback: any): Observable<any> {
@@ -22,5 +22,4 @@ export class FeedbackService {
   getFeedbacks(): Observable<any> {
     return this.http.get<any>(this.baseUrl);
   }
-
 }

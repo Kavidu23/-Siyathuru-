@@ -29,16 +29,8 @@
     <!-- Profile Photo Upload -->
     <div class="photo-upload" *ngIf="!verificationPending">
       <label for="profilePic" class="photo-preview">
-        <img
-          *ngIf="!profilePreview"
-          src="default-logo.jpg"
-          alt="Default profile"
-        />
-        <img
-          *ngIf="profilePreview"
-          [src]="profilePreview"
-          alt="Profile photo"
-        />
+        <img *ngIf="!profilePreview" src="default-logo.jpg" alt="Default profile" />
+        <img *ngIf="profilePreview" [src]="profilePreview" alt="Profile photo" />
       </label>
       <span class="upload-logo-text">Upload Profile Photo</span>
       <input
@@ -64,11 +56,7 @@
           <small>Username is required.</small>
         </div>
 
-        <input
-          formControlName="email"
-          type="email"
-          placeholder="Email Address"
-        />
+        <input formControlName="email" type="email" placeholder="Email Address" />
         <div class="error" *ngIf="submitted && f['email'].errors">
           <small>Email is required.</small>
         </div>
@@ -101,20 +89,12 @@
 
       <!-- RIGHT COLUMN -->
       <div class="column">
-        <input
-          formControlName="password"
-          type="password"
-          placeholder="Password"
-        />
+        <input formControlName="password" type="password" placeholder="Password" />
         <div class="error" *ngIf="submitted && f['password'].errors">
           <small>Password is required.</small>
         </div>
 
-        <input
-          formControlName="confirmPassword"
-          type="password"
-          placeholder="Re-Enter Password"
-        />
+        <input formControlName="confirmPassword" type="password" placeholder="Re-Enter Password" />
         <div class="error" *ngIf="submitted && f['confirmPassword'].errors">
           <small>Confirm password is required.</small>
         </div>
@@ -145,17 +125,11 @@
       </div>
 
       <!-- Submit -->
-      <button type="submit" class="signup-btn" [disabled]="isLoading">
-        Sign Up
-      </button>
+      <button type="submit" class="signup-btn" [disabled]="isLoading">Sign Up</button>
     </form>
 
     <div class="verify-form-container" *ngIf="verificationPending">
-      <form
-        class="verify-form"
-        [formGroup]="verifyForm"
-        (ngSubmit)="verifyCode()"
-      >
+      <form class="verify-form" [formGroup]="verifyForm" (ngSubmit)="verifyCode()">
         <p class="verify-instructions">
           Enter the 6-digit verification code sent to {{ createdEmail }}
         </p>
@@ -177,9 +151,7 @@
           <small>Enter the 6-digit code.</small>
         </div>
         <div class="verify-button-group">
-          <button type="submit" class="signup-btn" [disabled]="isLoading">
-            Verify
-          </button>
+          <button type="submit" class="signup-btn" [disabled]="isLoading">Verify</button>
           <button
             type="button"
             class="signup-btn signup-btn-secondary"

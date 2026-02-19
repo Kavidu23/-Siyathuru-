@@ -68,10 +68,9 @@ export class CommunityService {
 
   // DELETE: remove a member from community (leader only)
   removeMember(communityId: string, memberId: string): Observable<any> {
-    return this.http.delete<any>(
-      `${this.baseUrl}/${communityId}/members/${memberId}`,
-      { withCredentials: true },
-    );
+    return this.http.delete<any>(`${this.baseUrl}/${communityId}/members/${memberId}`, {
+      withCredentials: true,
+    });
   }
 
   // POST: request to join a private community

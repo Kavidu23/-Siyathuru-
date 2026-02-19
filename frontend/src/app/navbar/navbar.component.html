@@ -13,9 +13,7 @@
       <div id="google_translate_element"></div>
 
       <!-- Discover -->
-      <a *ngIf="showPublicNav" routerLink="/discover" id="discover"
-        >Discover</a
-      >
+      <a *ngIf="showPublicNav" routerLink="/discover" id="discover">Discover</a>
 
       <!-- Ask AI -->
       <div class="ask-ai" *ngIf="showPublicNav">
@@ -23,22 +21,12 @@
       </div>
 
       <!-- Login -->
-      <a
-        *ngIf="!isLoggedIn"
-        href="javascript:void(0)"
-        id="log"
-        (click)="openLoginModal()"
-      >
+      <a *ngIf="!isLoggedIn" href="javascript:void(0)" id="log" (click)="openLoginModal()">
         Login
       </a>
 
       <!-- Sign Up -->
-      <a
-        *ngIf="!isLoggedIn"
-        href="javascript:void(0)"
-        id="sign"
-        (click)="openSignupModal()"
-      >
+      <a *ngIf="!isLoggedIn" href="javascript:void(0)" id="sign" (click)="openSignupModal()">
         Sign Up
       </a>
 
@@ -51,32 +39,19 @@
       </div>
 
       <!-- User Profile -->
-      <div
-        *ngIf="isLoggedIn"
-        class="user-profile"
-        (click)="goToUserDashboard()"
-      >
+      <div *ngIf="isLoggedIn" class="user-profile" (click)="goToUserDashboard()">
         <img
-          [src]="
-            userData?.profileImage || 'https://via.placeholder.com/40?text=User'
-          "
+          [src]="userData?.profileImage || 'https://via.placeholder.com/40?text=User'"
           alt="Profile"
           class="profile-img"
         />
         <span class="user-name">
-          {{ userData?.name || "User" }}
+          {{ userData?.name || 'User' }}
         </span>
       </div>
 
       <!-- Logout -->
-      <a
-        *ngIf="isLoggedIn"
-        href="javascript:void(0)"
-        id="logout"
-        (click)="logout()"
-      >
-        Logout
-      </a>
+      <a *ngIf="isLoggedIn" href="javascript:void(0)" id="logout" (click)="logout()"> Logout </a>
     </li>
   </ol>
 </div>

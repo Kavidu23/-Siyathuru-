@@ -23,8 +23,7 @@ describe('AlertComponent', () => {
         { provide: AlertService, useValue: alertServiceMock },
         { provide: ActivatedRoute, useValue: { queryParams: queryParams$ } },
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AlertComponent);
     component = fixture.componentInstance;

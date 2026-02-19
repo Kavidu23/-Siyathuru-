@@ -1,10 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ModalService } from '../services/modal.service';
 import { UserService } from '../services/user.service';
 import { Subscription } from 'rxjs';

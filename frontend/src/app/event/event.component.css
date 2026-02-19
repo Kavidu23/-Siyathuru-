@@ -3,7 +3,7 @@
 }
 
 .section-title {
-  font-family: "Oswald", sans-serif;
+  font-family: 'Oswald', sans-serif;
   font-size: var(--header--font--size);
   margin-bottom: var(--spacing-md);
 }

@@ -8,8 +8,8 @@
   border-radius: 20px;
 }
 
-.create-group{
-    font-family: "Oswald", sans-serif;
+.create-group {
+  font-family: 'Oswald', sans-serif;
 }
 
 .footer-top {
@@ -75,7 +75,6 @@
 .social-icons a:hover {
   color: #ff3b81;
 }
-
 
 .footer-bottom {
   text-align: center;

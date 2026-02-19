@@ -50,10 +50,7 @@ export class AlertService {
   }
 
   // Update an alert
-  updateAlert(
-    alertId: string,
-    payload: Partial<AlertPayload>,
-  ): Observable<AlertResponse> {
+  updateAlert(alertId: string, payload: Partial<AlertPayload>): Observable<AlertResponse> {
     return this.http.put<AlertResponse>(`${this.baseUrl}/${alertId}`, payload, {
       withCredentials: true,
     });

@@ -51,7 +51,7 @@
 }
 
 .community-name {
-  font-family: "Oswald", sans-serif;
+  font-family: 'Oswald', sans-serif;
   font-size: 30px;
   font-weight: 600;
 }
@@ -187,16 +187,16 @@
 }
 
 /* Brand colors on hover */
-.social-icons a[aria-label="Facebook"] {
+.social-icons a[aria-label='Facebook'] {
   color: #1877f2;
 }
-.social-icons a[aria-label="Instagram"] {
+.social-icons a[aria-label='Instagram'] {
   color: #e1306c;
 }
-.social-icons a[aria-label="WhatsApp"] {
+.social-icons a[aria-label='WhatsApp'] {
   color: #25d366;
 }
-.social-icons a[aria-label="Reddit"] {
+.social-icons a[aria-label='Reddit'] {
   color: #ff4500;
 }
 
@@ -210,7 +210,7 @@
 }
 
 .about-section h2 {
-  font-family: "Oswald", sans-serif;
+  font-family: 'Oswald', sans-serif;
   font-size: 20px;
   margin-bottom: var(--spacing-md);
 }
@@ -244,7 +244,7 @@
 }
 
 .activity-section h2 {
-  font-family: "Oswald", sans-serif;
+  font-family: 'Oswald', sans-serif;
   font-size: 20px;
   margin-bottom: var(--spacing-md);
 }
@@ -282,7 +282,7 @@
 }
 
 .gallery-section h2 {
-  font-family: "Oswald", sans-serif;
+  font-family: 'Oswald', sans-serif;
   font-size: 20px;
   margin-bottom: var(--spacing-md);
 }

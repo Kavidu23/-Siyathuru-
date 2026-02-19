@@ -47,11 +47,11 @@
 }
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   margin-left: 10px;
   margin-right: 10px;
   background-color: #fffcfc; /* Sets a base background color */
-  background-image: url("https://www.transparenttextures.com/patterns/church.png"); /* Sets a background pattern image */
+  background-image: url('https://www.transparenttextures.com/patterns/church.png'); /* Sets a background pattern image */
 }
 
 a {
@@ -74,7 +74,7 @@ a {
   z-index: 100000; /* ensure overlay sits above modals */
   pointer-events: auto;
   gap: 20px;
-  font-family: "Oswald", sans-serif;
+  font-family: 'Oswald', sans-serif;
   color: var(--primary-color);
 }
 

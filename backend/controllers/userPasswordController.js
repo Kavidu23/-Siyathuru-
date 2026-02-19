@@ -1,7 +1,7 @@
-const User = require("../models/user.js");
-const bcrypt = require("bcryptjs");
-const sendEmail = require("../utils/sendEmail");
-const crypto = require("crypto");
+const User = require('../models/user.js');
+const bcrypt = require('bcryptjs');
+const sendEmail = require('../utils/sendEmail');
+const crypto = require('crypto');
 
 /* REQUEST PASSWORD RESET */
 const requestPasswordReset = async (req, res) => {
@@ -11,7 +11,7 @@ const requestPasswordReset = async (req, res) => {
     if (!email) {
       return res.status(400).json({
         success: false,
-        error: "Email is required",
+        error: 'Email is required',
       });
     }
 
@@ -21,27 +21,24 @@ const requestPasswordReset = async (req, res) => {
     if (!user) {
       return res.status(200).json({
         success: true,
-        message: "If the email exists, a password reset link has been sent.",
+        message: 'If the email exists, a password reset link has been sent.',
       });
     }
 
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    const hashedToken = crypto
-      .createHash("sha256")
-      .update(resetToken)
-      .digest("hex");
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
     user.resetPasswordToken = hashedToken;
     user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
     await user.save();
 
-    const frontendBaseUrl = process.env.FRONTEND_URL || "http://localhost:4200";
+    const frontendBaseUrl = process.env.FRONTEND_URL || 'http://localhost:4200';
     const resetLink = `${frontendBaseUrl}/forgot-password?token=${resetToken}`;
 
-    const subject = "Reset your Siyathuru password";
+    const subject = 'Reset your Siyathuru password';
     const text = `You requested a password reset. Use this link within 15 minutes: ${resetLink}`;
     const html = `
-      <p>Hello ${user.name || ""},</p>
+      <p>Hello ${user.name || ''},</p>
       <p>You requested to reset your Siyathuru password.</p>
       <p><a href="${resetLink}">Reset Password</a></p>
       <p>This link expires in 15 minutes.</p>
@@ -51,17 +48,17 @@ const requestPasswordReset = async (req, res) => {
     try {
       await sendEmail(user.email, subject, text, html);
     } catch (emailErr) {
-      console.error("Password reset email failed:", emailErr.message);
+      console.error('Password reset email failed:', emailErr.message);
     }
 
     return res.status(200).json({
       success: true,
-      message: "If the email exists, a password reset link has been sent.",
+      message: 'If the email exists, a password reset link has been sent.',
     });
   } catch (err) {
     return res.status(500).json({
       success: false,
-      error: "Server error",
+      error: 'Server error',
       details: err.message,
     });
   }
@@ -75,18 +72,18 @@ const resetPassword = async (req, res) => {
     if (!token || !password) {
       return res.status(400).json({
         success: false,
-        error: "Token and new password are required",
+        error: 'Token and new password are required',
       });
     }
 
     if (String(password).length < 6) {
       return res.status(400).json({
         success: false,
-        error: "Password must be at least 6 characters",
+        error: 'Password must be at least 6 characters',
       });
     }
 
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
     const user = await User.findOne({
       resetPasswordToken: hashedToken,
@@ -96,7 +93,7 @@ const resetPassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        error: "Invalid or expired reset token",
+        error: 'Invalid or expired reset token',
       });
     }
 
@@ -107,12 +104,12 @@ const resetPassword = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Password reset successful. You can now log in.",
+      message: 'Password reset successful. You can now log in.',
     });
   } catch (err) {
     return res.status(500).json({
       success: false,
-      error: "Server error",
+      error: 'Server error',
       details: err.message,
     });
   }

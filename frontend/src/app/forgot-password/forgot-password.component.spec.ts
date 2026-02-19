@@ -25,8 +25,7 @@ describe('ForgotPasswordComponent', () => {
           useValue: { queryParamMap: of(convertToParamMap({})) },
         },
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ForgotPasswordComponent);
     component = fixture.componentInstance;

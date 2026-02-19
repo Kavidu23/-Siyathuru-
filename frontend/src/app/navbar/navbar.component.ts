@@ -90,15 +90,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.communitiesSub = this.communityService.getAllCommunities().subscribe({
       next: (res: any) => {
         const all: any[] = res?.data || res || [];
-        const userJoinedIds = (this.userData?.joinedCommunities || []).map(
-          (c: any) => String(c),
-        );
+        const userJoinedIds = (this.userData?.joinedCommunities || []).map((c: any) => String(c));
 
         const communities = all.filter((c) => {
           const isLeader = c?.leader?._id === userId || c?.leader === userId;
           const isMember = c?.members?.some(
-            (m: any) =>
-              m?._id === userId || m === userId || String(m) === userId,
+            (m: any) => m?._id === userId || m === userId || String(m) === userId,
           );
           const inUserJoined = userJoinedIds.includes(String(c._id));
           return isLeader || isMember || inUserJoined;
@@ -107,10 +104,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         const communityIds = communities.map((c) => c._id).filter(Boolean);
 
         this.unreadUnsub?.();
-        this.unreadUnsub = this.chatService.startUnreadListenerForCommunities(
-          userId,
-          communityIds,
-        );
+        this.unreadUnsub = this.chatService.startUnreadListenerForCommunities(userId, communityIds);
       },
       error: () => {
         this.unreadUnsub?.();

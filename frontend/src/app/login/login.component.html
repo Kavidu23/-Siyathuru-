@@ -10,45 +10,33 @@
     </div>
 
     <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <input
-        formControlName="email"
-        type="email"
-        placeholder="Email"
-        required
-      />
+      <input formControlName="email" type="email" placeholder="Email" required />
       <div class="error" *ngIf="submitted && f['email'].errors">
         <small>
-          {{
-            f["email"].errors["required"]
-              ? "Email is required."
-              : "Please enter a valid email."
-          }}
+          {{ f['email'].errors['required'] ? 'Email is required.' : 'Please enter a valid email.' }}
         </small>
       </div>
 
-      <input
-        formControlName="password"
-        type="password"
-        placeholder="Password"
-        required
-      />
+      <input formControlName="password" type="password" placeholder="Password" required />
       <div class="error" *ngIf="submitted && f['password'].errors">
         <small>
           {{
-            f["password"].errors["required"]
-              ? "Password is required."
-              : "Password must be at least 6 characters."
+            f['password'].errors['required']
+              ? 'Password is required.'
+              : 'Password must be at least 6 characters.'
           }}
         </small>
       </div>
 
       <button type="submit" class="login-btn" [disabled]="isLoading">
-        {{ isLoading ? "Logging in..." : "Login" }}
+        {{ isLoading ? 'Logging in...' : 'Login' }}
       </button>
     </form>
 
     <div class="links">
-      <a href="javascript:void(0)" class="forgot-link" (click)="openForgotPassword()">Forgot password?</a>
+      <a href="javascript:void(0)" class="forgot-link" (click)="openForgotPassword()"
+        >Forgot password?</a
+      >
       <p>
         Don’t have an account?
         <a href="javascript:void(0)" (click)="openSignup()">Sign up</a>
@@ -56,4 +44,3 @@
     </div>
   </div>
 </div>
-

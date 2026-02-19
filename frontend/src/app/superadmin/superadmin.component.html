@@ -16,9 +16,7 @@
           <p>Community Performance Report</p>
         </div>
         <div class="action-cta">
-          <button class="btn-primary" (click)="downloadReport()">
-            Download Report
-          </button>
+          <button class="btn-primary" (click)="downloadReport()">Download Report</button>
         </div>
       </div>
     </div>
@@ -54,18 +52,12 @@
         </div>
         <div class="upcoming-actions">
           <a class="view-btn" (click)="viewCommunity(c._id)">View</a>
-          <a
-            class="edit-link"
-            (click)="RemoveCommunity(c)"
-            [class.disabled]="isDeleting"
-          >
+          <a class="edit-link" (click)="RemoveCommunity(c)" [class.disabled]="isDeleting">
             Remove
           </a>
         </div>
       </div>
-      <div *ngIf="!isLoading && communities.length === 0">
-        No communities found.
-      </div>
+      <div *ngIf="!isLoading && communities.length === 0">No communities found.</div>
     </div>
   </section>
 
@@ -84,8 +76,7 @@
             *ngFor="let community of topPerformingCommunities; let i = index"
             [hidden]="isLoading"
           >
-            {{ i + 1 }}. {{ community.name }} -
-            {{ formatNumber(community.memberCount) }} members
+            {{ i + 1 }}. {{ community.name }} - {{ formatNumber(community.memberCount) }} members
           </li>
         </ul>
       </div>

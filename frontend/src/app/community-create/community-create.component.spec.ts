@@ -22,10 +22,7 @@ describe('CommunityCreateComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CommunityCreateComponent],
-      providers: [
-        { provide: CommunityService, useValue: communityServiceMock },
-        provideRouter([]),
-      ],
+      providers: [{ provide: CommunityService, useValue: communityServiceMock }, provideRouter([])],
     }).compileComponents();
 
     router = TestBed.inject(Router);

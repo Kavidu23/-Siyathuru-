@@ -1,5 +1,5 @@
 * {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .pro-page {
@@ -88,7 +88,7 @@
 }
 
 .benefits li::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   top: 8px;

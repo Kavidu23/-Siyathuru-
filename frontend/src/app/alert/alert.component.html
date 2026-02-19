@@ -5,20 +5,13 @@
     <!-- TITLE -->
     <div class="form-group">
       <label>Alert Title</label>
-      <input
-        type="text"
-        placeholder="Enter alert title"
-        [(ngModel)]="form.title"
-      />
+      <input type="text" placeholder="Enter alert title" [(ngModel)]="form.title" />
     </div>
 
     <!-- MESSAGE -->
     <div class="form-group">
       <label>Message</label>
-      <textarea
-        placeholder="Enter alert message"
-        [(ngModel)]="form.message"
-      ></textarea>
+      <textarea placeholder="Enter alert message" [(ngModel)]="form.message"></textarea>
     </div>
 
     <!-- SEVERITY -->
@@ -39,12 +32,8 @@
 
     <!-- BUTTON -->
     <div class="form-actions">
-      <button
-        class="btn-primary"
-        (click)="createAlert()"
-        [disabled]="isLoading"
-      >
-        {{ isLoading ? "Creating..." : "Create Alert" }}
+      <button class="btn-primary" (click)="createAlert()" [disabled]="isLoading">
+        {{ isLoading ? 'Creating...' : 'Create Alert' }}
       </button>
     </div>
   </div>

@@ -89,17 +89,14 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
         const all: any[] = res?.data || res || [];
         const userId = this.userData._id;
 
-        const userJoinedIds = (this.userData?.joinedCommunities || []).map(
-          (c: any) => String(c),
-        );
+        const userJoinedIds = (this.userData?.joinedCommunities || []).map((c: any) => String(c));
 
         // ===== JOINED COMMUNITIES =====
         this.joinedCommunities = all.filter((c) => {
           const isLeader = c?.leader?._id === userId || c?.leader === userId;
 
           const isMember = c?.members?.some(
-            (m: any) =>
-              m?._id === userId || m === userId || String(m) === userId,
+            (m: any) => m?._id === userId || m === userId || String(m) === userId,
           );
 
           const inUserJoined = userJoinedIds.includes(String(c._id));
@@ -122,19 +119,17 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
 
     this.isLoadingAlerts = true;
 
-    const sub = this.alertService
-      .getAlertsByUserId(this.userData._id)
-      .subscribe({
-        next: (res: any) => {
-          this.alerts = res?.data || [];
-          this.alertsCount = this.alerts.length;
-        },
-        error: (err) => {
-          console.error('Failed to load user alerts', err);
-          this.isLoadingAlerts = false;
-        },
-        complete: () => (this.isLoadingAlerts = false),
-      });
+    const sub = this.alertService.getAlertsByUserId(this.userData._id).subscribe({
+      next: (res: any) => {
+        this.alerts = res?.data || [];
+        this.alertsCount = this.alerts.length;
+      },
+      error: (err) => {
+        console.error('Failed to load user alerts', err);
+        this.isLoadingAlerts = false;
+      },
+      complete: () => (this.isLoadingAlerts = false),
+    });
 
     this.subs.push(sub);
   }
@@ -145,69 +140,65 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
 
     const now = new Date();
 
-    const sub = this.eventService
-      .getEventsByUserId(this.userData._id)
-      .subscribe({
-        next: (res: any) => {
-          const allEvents = res?.data || [];
+    const sub = this.eventService.getEventsByUserId(this.userData._id).subscribe({
+      next: (res: any) => {
+        const allEvents = res?.data || [];
 
-          this.upcomingEvents = allEvents
-            .map((ev: any) => {
-              // normalize attendees
-              ev.attendees =
-                ev.attendees?.map((a: any) =>
-                  typeof a === 'string' ? { _id: a } : a,
-                ) || [];
-              return ev;
-            })
+        this.upcomingEvents = allEvents
+          .map((ev: any) => {
+            // normalize attendees
+            ev.attendees =
+              ev.attendees?.map((a: any) => (typeof a === 'string' ? { _id: a } : a)) || [];
+            return ev;
+          })
 
-            // FILTER FUTURE EVENTS
-            .filter((ev: any) => {
-              if (!ev.eventDate) return false;
+          // FILTER FUTURE EVENTS
+          .filter((ev: any) => {
+            if (!ev.eventDate) return false;
 
-              let eventDateTime = new Date(ev.eventDate);
+            let eventDateTime = new Date(ev.eventDate);
 
-              if (ev.eventTime) {
-                let time = ev.eventTime;
-                const isPM = time.includes('PM');
+            if (ev.eventTime) {
+              let time = ev.eventTime;
+              const isPM = time.includes('PM');
 
-                time = time.replace(' AM', '').replace(' PM', '');
+              time = time.replace(' AM', '').replace(' PM', '');
 
-                let [h, m] = time.split(':');
+              let [h, m] = time.split(':');
 
-                let hour = parseInt(h, 10);
-                const minute = parseInt(m, 10);
+              let hour = parseInt(h, 10);
+              const minute = parseInt(m, 10);
 
-                if (isPM && hour !== 12) hour += 12;
-                if (!isPM && hour === 12) hour = 0;
+              if (isPM && hour !== 12) hour += 12;
+              if (!isPM && hour === 12) hour = 0;
 
-                eventDateTime.setHours(hour, minute, 0, 0);
-              }
+              eventDateTime.setHours(hour, minute, 0, 0);
+            }
 
-              return eventDateTime > now;
-            })
+            return eventDateTime > now;
+          })
 
-            // SORT ASCENDING
-            .sort((a: any, b: any) => {
-              let aTime = new Date(a.eventDate).getTime();
-              let bTime = new Date(b.eventDate).getTime();
+          // SORT ASCENDING
+          .sort((a: any, b: any) => {
+            let aTime = new Date(a.eventDate).getTime();
+            let bTime = new Date(b.eventDate).getTime();
 
-              // add time if exists
-              if (a.eventTime) {
-                const [ah, am] = this.parseTime(a.eventTime);
-                aTime += ah * 3600 * 1000 + am * 60 * 1000;
-              }
-              if (b.eventTime) {
-                const [bh, bm] = this.parseTime(b.eventTime);
-                bTime += bh * 3600 * 1000 + bm * 60 * 1000;
-              }
+            // add time if exists
+            if (a.eventTime) {
+              const [ah, am] = this.parseTime(a.eventTime);
+              aTime += ah * 3600 * 1000 + am * 60 * 1000;
+            }
+            if (b.eventTime) {
+              const [bh, bm] = this.parseTime(b.eventTime);
+              bTime += bh * 3600 * 1000 + bm * 60 * 1000;
+            }
 
-              return aTime - bTime;
-            });
-        },
+            return aTime - bTime;
+          });
+      },
 
-        error: (err) => console.error('Failed to load events', err),
-      });
+      error: (err) => console.error('Failed to load events', err),
+    });
 
     this.subs.push(sub);
   }
@@ -243,9 +234,7 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const ok = confirm(
-      'Once you join this event, you cannot change your RSVP. Continue?',
-    );
+    const ok = confirm('Once you join this event, you cannot change your RSVP. Continue?');
 
     if (!ok) return;
 

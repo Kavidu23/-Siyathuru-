@@ -9,10 +9,7 @@ import { finalize } from 'rxjs/operators';
 import { AlertService } from '../services/alert.service';
 import { RecentEventComponent } from '../recent-event/recent-event.component';
 import { ChatService } from '../services/chat.service';
-import {
-  CollaborationService,
-  SuggestionResponse,
-} from '../services/collaboration.service';
+import { CollaborationService, SuggestionResponse } from '../services/collaboration.service';
 
 interface Community {
   _id: string;
@@ -85,9 +82,7 @@ export class CommunityDashboardComponent implements OnInit {
     this.communityService.getAllCommunities().subscribe({
       next: (response: any) => {
         const communities = response.data || response;
-        const mine = communities.find(
-          (c: Community) => c.leader === this.currentUser._id,
-        );
+        const mine = communities.find((c: Community) => c.leader === this.currentUser._id);
 
         if (mine) {
           this.selectedCommunity = mine;
@@ -146,10 +141,7 @@ export class CommunityDashboardComponent implements OnInit {
     });
   }
 
-  private buildEventDateTime(
-    eventDate: string,
-    eventTime?: string,
-  ): Date | null {
+  private buildEventDateTime(eventDate: string, eventTime?: string): Date | null {
     if (!eventDate) return null;
     const date = new Date(eventDate);
     if (Number.isNaN(date.getTime())) return null;
@@ -186,9 +178,7 @@ export class CommunityDashboardComponent implements OnInit {
       .pipe(finalize(() => (this.isDeleting = false)))
       .subscribe({
         next: (res) => {
-          this.upcomingEvents = this.upcomingEvents.filter(
-            (ev) => ev._id !== id,
-          );
+          this.upcomingEvents = this.upcomingEvents.filter((ev) => ev._id !== id);
           alert(res.message || 'Event removed successfully');
         },
         error: (err) => alert(err?.error?.message || 'Failed to delete event'),
@@ -241,8 +231,7 @@ export class CommunityDashboardComponent implements OnInit {
         this.alerts = this.alerts.filter((al) => al._id !== alert._id);
         window.alert(res.message || 'Alert removed successfully');
       },
-      error: (err) =>
-        window.alert(err?.error?.message || 'Failed to remove alert'),
+      error: (err) => window.alert(err?.error?.message || 'Failed to remove alert'),
     });
   }
 

@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 const {
-    createEvent,
-    getEvents,
-    getEventById,
-    updateEvent,
-    deleteEvent,
-    joinEvent,          // NEW
-    getEventsByUserId,  // NEW
+  createEvent,
+  getEvents,
+  getEventById,
+  updateEvent,
+  deleteEvent,
+  joinEvent, // NEW
+  getEventsByUserId, // NEW
 } = require('../controllers/eventsController');
 
 const authMiddleware = require('../middleware/authMiddleware');
@@ -19,8 +19,8 @@ const leaderOnly = roleMiddleware(['leader']);
 const memberOnly = roleMiddleware(['member']);
 
 // ===== Public routes =====
-router.get('/', getEvents);           // Get all events
-router.get('/:id', getEventById);     // Get single event by ID
+router.get('/', getEvents); // Get all events
+router.get('/:id', getEventById); // Get single event by ID
 
 // ===== Member-only routes =====
 router.get('/user/:userId', authMiddleware, memberOnly, getEventsByUserId);

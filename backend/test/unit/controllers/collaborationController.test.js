@@ -1,7 +1,7 @@
-const { suggestCommunities } = require("../../../controllers/collaborationController");
-const Community = require("../../../models/communities");
+const { suggestCommunities } = require('../../../controllers/collaborationController');
+const Community = require('../../../models/communities');
 
-jest.mock("../../../models/communities");
+jest.mock('../../../models/communities');
 
 const mockRequest = () => ({ params: {} });
 const mockResponse = () => {
@@ -11,7 +11,7 @@ const mockResponse = () => {
   return res;
 };
 
-describe("Collaboration Controller Unit Tests", () => {
+describe('Collaboration Controller Unit Tests', () => {
   let req, res;
 
   beforeEach(() => {
@@ -20,26 +20,26 @@ describe("Collaboration Controller Unit Tests", () => {
     jest.clearAllMocks();
   });
 
-  it("should return 404 when base community is not found", async () => {
-    req.params.communityId = "missing-community";
+  it('should return 404 when base community is not found', async () => {
+    req.params.communityId = 'missing-community';
     Community.findById.mockResolvedValueOnce(null);
 
     await suggestCommunities(req, res);
 
-    expect(Community.findById).toHaveBeenCalledWith("missing-community");
+    expect(Community.findById).toHaveBeenCalledWith('missing-community');
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: "Community not found",
+      message: 'Community not found',
     });
   });
 
-  it("should return nearby suggested communities with same type", async () => {
-    req.params.communityId = "base-community";
+  it('should return nearby suggested communities with same type', async () => {
+    req.params.communityId = 'base-community';
 
     const baseCommunity = {
-      _id: "base-community",
-      type: "Volunteer",
+      _id: 'base-community',
+      type: 'Volunteer',
       location: {
         coordinates: { latitude: 6.9271, longitude: 79.8612 },
       },
@@ -47,22 +47,22 @@ describe("Collaboration Controller Unit Tests", () => {
 
     const candidates = [
       {
-        _id: "nearby-1",
-        type: "Volunteer",
+        _id: 'nearby-1',
+        type: 'Volunteer',
         location: {
           coordinates: { latitude: 6.93, longitude: 79.87 },
         },
       },
       {
-        _id: "far-1",
-        type: "Volunteer",
+        _id: 'far-1',
+        type: 'Volunteer',
         location: {
           coordinates: { latitude: 7.2906, longitude: 80.6337 },
         },
       },
       {
-        _id: "missing-coordinates",
-        type: "Volunteer",
+        _id: 'missing-coordinates',
+        type: 'Volunteer',
         location: {},
       },
     ];
@@ -74,32 +74,32 @@ describe("Collaboration Controller Unit Tests", () => {
 
     await suggestCommunities(req, res);
 
-    expect(Community.findById).toHaveBeenCalledWith("base-community");
+    expect(Community.findById).toHaveBeenCalledWith('base-community');
     expect(Community.find).toHaveBeenCalledWith({
-      _id: { $ne: "base-community" },
-      type: "Volunteer",
-      "location.coordinates.latitude": { $exists: true },
-      "location.coordinates.longitude": { $exists: true },
+      _id: { $ne: 'base-community' },
+      type: 'Volunteer',
+      'location.coordinates.latitude': { $exists: true },
+      'location.coordinates.longitude': { $exists: true },
     });
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
-      message: "Suggested communities fetched successfully",
+      message: 'Suggested communities fetched successfully',
       data: [candidates[0]],
     });
   });
 
-  it("should return 500 on unexpected error", async () => {
-    req.params.communityId = "base-community";
-    Community.findById.mockRejectedValueOnce(new Error("DB failure"));
+  it('should return 500 on unexpected error', async () => {
+    req.params.communityId = 'base-community';
+    Community.findById.mockRejectedValueOnce(new Error('DB failure'));
 
     await suggestCommunities(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: "Server error",
-      details: "DB failure",
+      message: 'Server error',
+      details: 'DB failure',
     });
   });
 });

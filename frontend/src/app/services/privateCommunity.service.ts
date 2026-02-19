@@ -30,11 +30,7 @@ export class PrivateCommunityService {
   }
 
   /* LEADER: APPROVE / REJECT JOIN REQUEST */
-  handleJoinRequest(
-    communityId: string,
-    userId: string,
-    approve: boolean,
-  ): Observable<any> {
+  handleJoinRequest(communityId: string, userId: string, approve: boolean): Observable<any> {
     return this.http.post<any>(
       `${this.baseUrl}/${communityId}/requests/handle`,
       { userId, approve },

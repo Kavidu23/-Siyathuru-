@@ -19,17 +19,13 @@ export const authGuard: CanActivateFn = (route) => {
 
   const currentUser = userService.getCurrentUser();
   if (currentUser) {
-    return isAllowed(currentUser, roles)
-      ? true
-      : router.createUrlTree(['/home']);
+    return isAllowed(currentUser, roles) ? true : router.createUrlTree(['/home']);
   }
 
   return userService.validateSession().pipe(
     map((res: any) => {
       const user = res?.user || userService.getCurrentUser();
-      return isAllowed(user, roles)
-        ? true
-        : router.createUrlTree(['/home']);
+      return isAllowed(user, roles) ? true : router.createUrlTree(['/home']);
     }),
     catchError(() => of(router.createUrlTree(['/home']))),
   );

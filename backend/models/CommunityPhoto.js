@@ -23,7 +23,7 @@ const communityPhotoSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // createdAt & updatedAt
-  }
+  },
 );
 
 module.exports = mongoose.model('CommunityPhoto', communityPhotoSchema);

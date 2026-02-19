@@ -52,10 +52,7 @@ export class RecentEventComponent implements OnInit {
             return eventDateTime <= now; // only past events
           })
           .sort(
-            (
-              a: { eventDate: string | number | Date },
-              b: { eventDate: string | number | Date },
-            ) =>
+            (a: { eventDate: string | number | Date }, b: { eventDate: string | number | Date }) =>
               new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime(),
           );
       },

@@ -18,7 +18,9 @@ describe('ReviewComponent', () => {
         joinRequests: [],
       }),
     ),
-    handleJoinRequest: jasmine.createSpy('handleJoinRequest').and.returnValue(of({ success: true })),
+    handleJoinRequest: jasmine
+      .createSpy('handleJoinRequest')
+      .and.returnValue(of({ success: true })),
   };
 
   const userServiceMock = {};
@@ -33,8 +35,7 @@ describe('ReviewComponent', () => {
         { provide: PrivateCommunityService, useValue: privateCommunityServiceMock },
         { provide: UserService, useValue: userServiceMock },
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ReviewComponent);
     component = fixture.componentInstance;

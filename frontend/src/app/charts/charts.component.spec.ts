@@ -15,7 +15,7 @@ describe('ChartDashboardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ChartDashboardComponent],
-      providers: [{ provide: ViewportScroller, useClass: MockViewportScroller }]
+      providers: [{ provide: ViewportScroller, useClass: MockViewportScroller }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChartDashboardComponent);
@@ -41,7 +41,7 @@ describe('ChartDashboardComponent', () => {
 
   it('should have correct chart headings', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const headings = Array.from(compiled.querySelectorAll('h3')).map(h => h.textContent?.trim());
+    const headings = Array.from(compiled.querySelectorAll('h3')).map((h) => h.textContent?.trim());
     expect(headings).toContain('User Growth Trend');
     expect(headings).toContain('User Activity Breakdown');
     expect(headings).toContain('Community Categories');

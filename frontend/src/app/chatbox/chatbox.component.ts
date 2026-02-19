@@ -75,15 +75,14 @@ export class ChatboxComponent implements OnInit, OnDestroy {
         const all: any[] = res?.data || res || [];
         const userId = this.currentUser._id;
 
-        const userJoinedIds = (this.currentUser?.joinedCommunities || []).map(
-          (c: any) => String(c),
+        const userJoinedIds = (this.currentUser?.joinedCommunities || []).map((c: any) =>
+          String(c),
         );
 
         this.joinedCommunities = all.filter((c) => {
           const isLeader = c?.leader?._id === userId || c?.leader === userId;
           const isMember = c?.members?.some(
-            (m: any) =>
-              m?._id === userId || m === userId || String(m) === userId,
+            (m: any) => m?._id === userId || m === userId || String(m) === userId,
           );
           const inUserJoined = userJoinedIds.includes(String(c._id));
           return isLeader || isMember || inUserJoined;
@@ -131,15 +130,12 @@ export class ChatboxComponent implements OnInit, OnDestroy {
         const community = res?.data || res;
         if (!community) return;
 
-        const leaderId =
-          community?.leader?._id || community?.leader || '';
+        const leaderId = community?.leader?._id || community?.leader || '';
         const isLeader = leaderId === this.currentUser._id;
 
         if (isLeader) {
           const members = community.members || [];
-          this.contacts = members.filter(
-            (m: any) => m?._id && m._id !== leaderId,
-          );
+          this.contacts = members.filter((m: any) => m?._id && m._id !== leaderId);
           this.selectedContact = this.contacts[0] || null;
           if (this.selectedContact) {
             this.openThread(this.selectedContact);
@@ -182,11 +178,7 @@ export class ChatboxComponent implements OnInit, OnDestroy {
   openThread(contact: any) {
     if (!this.currentUser?._id || !contact?._id || !this.communityId) return;
 
-    const threadId = this.buildThreadId(
-      this.currentUser._id,
-      contact._id,
-      this.communityId,
-    );
+    const threadId = this.buildThreadId(this.currentUser._id, contact._id, this.communityId);
 
     this.stopListening?.();
     this.stopListening = this.chatService.listenMessages(
@@ -198,9 +190,7 @@ export class ChatboxComponent implements OnInit, OnDestroy {
         const last = this.messages[this.messages.length - 1];
         const lastTs =
           last?.timestamp?.toMillis?.() ||
-          (last?.timestamp?.seconds
-            ? last.timestamp.seconds * 1000
-            : undefined);
+          (last?.timestamp?.seconds ? last.timestamp.seconds * 1000 : undefined);
 
         this.chatService.markThreadSeen(threadId, lastTs);
       },
@@ -219,11 +209,7 @@ export class ChatboxComponent implements OnInit, OnDestroy {
     const user = this.currentUser || this.userService.getCurrentUser();
     if (!user || !this.communityId || !this.selectedContact?._id) return;
 
-    const threadId = this.buildThreadId(
-      user._id,
-      this.selectedContact._id,
-      this.communityId,
-    );
+    const threadId = this.buildThreadId(user._id, this.selectedContact._id, this.communityId);
 
     this.chatService.sendMessage(this.communityId, threadId, {
       senderId: user._id,

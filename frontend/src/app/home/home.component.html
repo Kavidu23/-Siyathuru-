@@ -1,22 +1,15 @@
 <!-- Hero Section -->
 <section class="hero-section">
   <div class="mid">
-    <p id="firstpara">
-      Your community. Reimagined. Connecting people. Building change.
-    </p>
+    <p id="firstpara">Your community. Reimagined. Connecting people. Building change.</p>
     <p id="secondpara">
       Siyathuru is where AI meets community, helping you discover, connect,<br />
-      and empower together, with live maps, instant messaging, smart
-      collaboration tools,<br />
+      and empower together, with live maps, instant messaging, smart collaboration tools,<br />
       and life-saving alerts.
     </p>
     <div class="button-align">
-      <button *ngIf="!isLoggedIn" (click)="openSignupModal()" id="joinbtn">
-        Join Now
-      </button>
-      <button *ngIf="!isLoggedIn" (click)="openvid()" id="joinbtn">
-        Need Help?
-      </button>
+      <button *ngIf="!isLoggedIn" (click)="openSignupModal()" id="joinbtn">Join Now</button>
+      <button *ngIf="!isLoggedIn" (click)="openvid()" id="joinbtn">Need Help?</button>
     </div>
   </div>
   <img src="1.png" alt="Community visual" class="hero-image left" />
@@ -36,22 +29,15 @@
       <img src="messaging.png" alt="Real-time messaging" class="feature-img" />
       <h3>💬 Real-time Messaging</h3>
       <p>
-        Stay connected with your group through instant communication tools and
-        collaborate with events.
+        Stay connected with your group through instant communication tools and collaborate with
+        events.
       </p>
     </div>
 
     <div class="feature-card">
-      <img
-        src="collaboration.png"
-        alt="Smart collaboration"
-        class="feature-img"
-      />
+      <img src="collaboration.png" alt="Smart collaboration" class="feature-img" />
       <h3>🤝 Smart Collaboration</h3>
-      <p>
-        AI-powered insights help you build stronger, more impactful community
-        groups.
-      </p>
+      <p>AI-powered insights help you build stronger, more impactful community groups.</p>
     </div>
 
     <div class="feature-card">
@@ -69,22 +55,16 @@
     <div class="meetup-content">
       <h1>Be Part of the Movement</h1>
       <p>
-        Join thousands of Sri Lankans building stronger communities together.
-        Connect, support, and grow with people who care.
+        Join thousands of Sri Lankans building stronger communities together. Connect, support, and
+        grow with people who care.
       </p>
-      <a *ngIf="!isLoggedIn" class="signup-button" (click)="openSignupModal()"
-        >Get Started</a
-      >
+      <a *ngIf="!isLoggedIn" class="signup-button" (click)="openSignupModal()">Get Started</a>
     </div>
 
     <!-- Right Illustration -->
     <div class="meetup-illustration-right">
       <div class="image-overlay-group">
-        <img
-          src="right.png"
-          alt="Two people stretching"
-          class="main-fitness-image"
-        />
+        <img src="right.png" alt="Two people stretching" class="main-fitness-image" />
       </div>
       <div class="deco-wiggle"></div>
       <div class="deco-short-line"></div>
@@ -100,29 +80,21 @@
       <img src="comm1.png" alt="Volunteering Group" />
       <div class="community-info">
         <h3>Volunteering Group</h3>
-        <p>
-          Dedicated volunteers coming together to create positive change across
-          Sri Lanka.
-        </p>
+        <p>Dedicated volunteers coming together to create positive change across Sri Lanka.</p>
       </div>
     </div>
     <div class="community-card">
       <img src="comm2.png" alt="Taxi Community" />
       <div class="community-info">
         <h3>Taxi Community</h3>
-        <p>
-          A vibrant group of Sri Lankan taxi and tuk-tuk drivers building strong
-          connections.
-        </p>
+        <p>A vibrant group of Sri Lankan taxi and tuk-tuk drivers building strong connections.</p>
       </div>
     </div>
     <div class="community-card">
       <img src="comm3.png" alt="Village Community" />
       <div class="community-info">
         <h3>Village Community</h3>
-        <p>
-          A peaceful village scene showcasing traditional life and strong bonds.
-        </p>
+        <p>A peaceful village scene showcasing traditional life and strong bonds.</p>
       </div>
     </div>
     <div class="community-card">
@@ -130,8 +102,8 @@
       <div class="community-info">
         <h3>Death Aid Society</h3>
         <p>
-          A compassionate community supporting families with funeral
-          arrangements, rituals, and emotional care.
+          A compassionate community supporting families with funeral arrangements, rituals, and
+          emotional care.
         </p>
       </div>
     </div>
@@ -145,9 +117,7 @@
   <div *ngIf="loading">Loading feedbacks...</div>
   <div *ngIf="errorMessage">{{ errorMessage }}</div>
   <div class="feedback-bubbles" *ngIf="!loading && !errorMessage">
-    <div class="bubble" *ngFor="let fb of feedbacks">
-      “{{ fb.message }} !” – {{ fb.name }}
-    </div>
+    <div class="bubble" *ngFor="let fb of feedbacks">“{{ fb.message }} !” – {{ fb.name }}</div>
   </div>
 </section>
 

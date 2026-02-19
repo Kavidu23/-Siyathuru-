@@ -1,12 +1,8 @@
 <div class="dashboard">
   <div class="profile-info">
-    <img
-      [src]="userData?.profileImage || 'default-logo.jpg'"
-      alt="Profile"
-      class="profile-pic"
-    />
+    <img [src]="userData?.profileImage || 'default-logo.jpg'" alt="Profile" class="profile-pic" />
     <div class="text">
-      <h2>Hi 👋, {{ userData?.name || "User" }}!</h2>
+      <h2>Hi 👋, {{ userData?.name || 'User' }}!</h2>
       <p>Community User Dashboard</p>
     </div>
   </div>
@@ -37,20 +33,20 @@
       <div class="alert-card compact-card" *ngFor="let al of alerts">
         <div class="card-top">
           <div class="title">
-            {{ al.title || "Community Alert" }}
+            {{ al.title || 'Community Alert' }}
           </div>
           <span class="badge" [class]="al.severity">
-            {{ al.severity || "info" }}
+            {{ al.severity || 'info' }}
           </span>
         </div>
 
         <div class="meta">
           <span class="from">
-            {{ al.communityId?.name || "Your Community" }}
+            {{ al.communityId?.name || 'Your Community' }}
           </span>
           <span class="dot">•</span>
           <span class="date">
-            {{ al.createdAt | date: "mediumDate" }}
+            {{ al.createdAt | date: 'mediumDate' }}
           </span>
         </div>
 
@@ -74,13 +70,13 @@
         <div class="card-top">
           <div class="title">{{ ev.title }}</div>
           <span class="badge neutral">
-            {{ ev.eventDate | date: "mediumDate" }}
+            {{ ev.eventDate | date: 'mediumDate' }}
           </span>
         </div>
 
         <div class="meta">
           <span class="from">
-            {{ ev.communityId?.name || "My Community" }}
+            {{ ev.communityId?.name || 'My Community' }}
           </span>
           <span class="dot">•</span>
           <span class="date">{{ ev.eventTime }}</span>
@@ -95,12 +91,8 @@
         </div>
 
         <!-- JOIN BUTTON -->
-        <button
-          class="member-view-btn"
-          (click)="joinEvent(ev)"
-          [disabled]="isUserJoinedEvent(ev)"
-        >
-          {{ isUserJoinedEvent(ev) ? "Already Joined" : "Join Event" }}
+        <button class="member-view-btn" (click)="joinEvent(ev)" [disabled]="isUserJoinedEvent(ev)">
+          {{ isUserJoinedEvent(ev) ? 'Already Joined' : 'Join Event' }}
         </button>
       </div>
 
@@ -116,13 +108,11 @@
         <div class="member-community-icon">🤝</div>
         <div class="member-community-info">
           <strong>{{ c.name }}</strong>
-          <p>{{ c.description || c.about || "No description" }}</p>
+          <p>{{ c.description || c.about || 'No description' }}</p>
         </div>
         <a class="member-view-btn" (click)="viewCommunity(c._id)">View</a>
         <!-- Add this: Check if private and show request button instead -->
-        <a *ngIf="c.isPrivate && !c.isJoined" class="member-request-btn">
-          Request
-        </a>
+        <a *ngIf="c.isPrivate && !c.isJoined" class="member-request-btn"> Request </a>
       </div>
       <div *ngIf="joinedCommunities.length === 0" style="padding: 1rem">
         You haven't joined any communities yet.

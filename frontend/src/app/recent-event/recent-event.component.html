@@ -5,16 +5,12 @@
     <div class="recent-info">
       <strong>{{ ev.title }}</strong>
       <span> 📍 {{ ev.location }} </span>
-      <span>
-        📅 {{ ev.eventDate | date: "mediumDate" }} ⏰ {{ ev.eventTime }}
-      </span>
+      <span> 📅 {{ ev.eventDate | date: 'mediumDate' }} ⏰ {{ ev.eventTime }} </span>
       <span> 👥 Attendees: {{ ev.attendees.length || 0 }} </span>
     </div>
 
     <div class="recent-actions"></div>
   </div>
 
-  <div *ngIf="recentEvents.length === 0" class="no-events">
-    No recent events found.
-  </div>
+  <div *ngIf="recentEvents.length === 0" class="no-events">No recent events found.</div>
 </section>

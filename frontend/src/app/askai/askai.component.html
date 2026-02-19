@@ -29,10 +29,7 @@
           class="suggestion-card"
           [routerLink]="['/community', community._id]"
         >
-          <img
-            [src]="community.profileImage || 'assets/default-user.png'"
-            [alt]="community.name"
-          />
+          <img [src]="community.profileImage || 'assets/default-user.png'" [alt]="community.name" />
           <div class="suggestion-info">
             <h3>{{ community.name }}</h3>
             <p>{{ community.type || 'Community' }}</p>

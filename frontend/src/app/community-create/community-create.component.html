@@ -15,9 +15,7 @@
     <div class="banner upload-banner">
       <label for="bannerUpload" class="upload-banner-label">
         <i class="bx bx-image-add"></i>
-        <span id="uploading2" *ngIf="!isBannerUploading"
-          >Click here to upload banner image</span
-        >
+        <span id="uploading2" *ngIf="!isBannerUploading">Click here to upload banner image</span>
         <span id="uploading" *ngIf="isBannerUploading">Uploading...</span>
       </label>
       <input
@@ -33,11 +31,7 @@
 
     <div class="community-logo upload-logo">
       <label for="logoUpload">
-        <img
-          *ngIf="!profilePreview"
-          src="default-logo.jpg"
-          alt="Community Logo"
-        />
+        <img *ngIf="!profilePreview" src="default-logo.jpg" alt="Community Logo" />
         <!-- Show uploaded logo preview -->
         <img
           *ngIf="profilePreview"
@@ -69,18 +63,10 @@
 
         <div class="form-group">
           <label>Community Name *</label>
-          <input
-            type="text"
-            formControlName="name"
-            placeholder="Enter community name"
-          />
+          <input type="text" formControlName="name" placeholder="Enter community name" />
           <div class="error" *ngIf="submitted && f['name'].errors">
-            <small *ngIf="f['name'].errors['required']"
-              >Community Name is required.</small
-            >
-            <small *ngIf="f['name'].errors['minlength']"
-              >Minimum 3 characters required.</small
-            >
+            <small *ngIf="f['name'].errors['required']">Community Name is required.</small>
+            <small *ngIf="f['name'].errors['minlength']">Minimum 3 characters required.</small>
           </div>
         </div>
 
@@ -103,11 +89,7 @@
         <!-- Show input only if 'Others' is selected -->
         <div class="form-group" *ngIf="f['type'].value === 'Others'">
           <label>Enter Type *</label>
-          <input
-            type="text"
-            formControlName="otherType"
-            placeholder="Enter type"
-          />
+          <input type="text" formControlName="otherType" placeholder="Enter type" />
           <div class="error" *ngIf="submitted && f['otherType'].errors">
             <small>Type is required.</small>
           </div>
@@ -115,14 +97,9 @@
 
         <div class="form-group">
           <label>Mission</label>
-          <textarea
-            formControlName="mission"
-            placeholder="State your mission"
-          ></textarea>
+          <textarea formControlName="mission" placeholder="State your mission"></textarea>
           <div class="error" *ngIf="submitted && f['mission'].errors">
-            <small *ngIf="f['mission'].errors['maxlength']"
-              >Maximum 50 characters allowed.</small
-            >
+            <small *ngIf="f['mission'].errors['maxlength']">Maximum 50 characters allowed.</small>
           </div>
         </div>
 
@@ -144,11 +121,7 @@
         <h2>Location</h2>
         <div class="form-group">
           <label>Address</label>
-          <input
-            formControlName="address"
-            type="text"
-            placeholder="Enter address"
-          />
+          <input formControlName="address" type="text" placeholder="Enter address" />
           <div class="error" *ngIf="submitted && f['address'].errors">
             <small>Address is required.</small>
           </div>
@@ -157,36 +130,20 @@
         <div class="coords">
           <div class="form-group">
             <label>Latitude</label>
-            <input
-              type="number"
-              formControlName="latitude"
-              placeholder="e.g., 6.9271"
-            />
+            <input type="number" formControlName="latitude" placeholder="e.g., 6.9271" />
             <div class="error" *ngIf="submitted && f['latitude'].errors">
-              <small *ngIf="f['latitude'].errors['required']"
-                >Latitude is required.</small
-              >
-              <small *ngIf="f['latitude'].errors['pattern']"
-                >Invalid latitude value.</small
-              >
+              <small *ngIf="f['latitude'].errors['required']">Latitude is required.</small>
+              <small *ngIf="f['latitude'].errors['pattern']">Invalid latitude value.</small>
             </div>
           </div>
 
           <!--Longitute-->
           <div class="form-group">
             <label>Longitude</label>
-            <input
-              type="number"
-              formControlName="longitude"
-              placeholder="e.g., 79.8612"
-            />
+            <input type="number" formControlName="longitude" placeholder="e.g., 79.8612" />
             <div class="error" *ngIf="submitted && f['longitude'].errors">
-              <small *ngIf="f['longitude'].errors['required']"
-                >Longitude is required.</small
-              >
-              <small *ngIf="f['longitude'].errors['pattern']"
-                >Invalid longitude value.</small
-              >
+              <small *ngIf="f['longitude'].errors['required']">Longitude is required.</small>
+              <small *ngIf="f['longitude'].errors['pattern']">Invalid longitude value.</small>
             </div>
           </div>
         </div>
@@ -196,15 +153,9 @@
         <h2>Contact Details</h2>
         <div class="form-group">
           <label>Contact Name</label>
-          <input
-            type="text"
-            formControlName="contactName"
-            placeholder="Full name"
-          />
+          <input type="text" formControlName="contactName" placeholder="Full name" />
           <div class="error" *ngIf="submitted && f['contactName'].errors">
-            <small *ngIf="f['contactName'].errors['required']"
-              >Contact Name is required.</small
-            >
+            <small *ngIf="f['contactName'].errors['required']">Contact Name is required.</small>
             <small *ngIf="f['contactName'].errors['minlength']"
               >Minimum 3 characters required.</small
             >
@@ -213,35 +164,19 @@
 
         <div class="form-group">
           <label>Phone</label>
-          <input
-            formControlName="phone"
-            type="text"
-            placeholder="Phone number"
-          />
+          <input formControlName="phone" type="text" placeholder="Phone number" />
           <div class="error" *ngIf="submitted && f['phone'].errors">
-            <small *ngIf="f['phone'].errors['required']"
-              >Phone number is required.</small
-            >
-            <small *ngIf="f['phone'].errors['pattern']"
-              >Invalid phone number.</small
-            >
+            <small *ngIf="f['phone'].errors['required']">Phone number is required.</small>
+            <small *ngIf="f['phone'].errors['pattern']">Invalid phone number.</small>
           </div>
         </div>
 
         <div class="form-group">
           <label>Email</label>
-          <input
-            formControlName="email"
-            type="email"
-            placeholder="Email address"
-          />
+          <input formControlName="email" type="email" placeholder="Email address" />
           <div class="error" *ngIf="submitted && f['email'].errors">
-            <small *ngIf="f['email'].errors['required']"
-              >Email is required.</small
-            >
-            <small *ngIf="f['email'].errors['email']"
-              >Invalid email address.</small
-            >
+            <small *ngIf="f['email'].errors['required']">Email is required.</small>
+            <small *ngIf="f['email'].errors['email']">Invalid email address.</small>
           </div>
         </div>
       </div>
@@ -256,9 +191,7 @@
             formControlName="facebook"
             placeholder="https://www.facebook.com/yourpage"
           />
-          <small *ngIf="submitted && f['facebook'].errors"
-            >Invalid Facebook URL.</small
-          >
+          <small *ngIf="submitted && f['facebook'].errors">Invalid Facebook URL.</small>
         </div>
         <div class="form-group">
           <label>Instagram</label>
@@ -267,9 +200,7 @@
             formControlName="instagram"
             placeholder="https://www.instagram.com/yourprofile"
           />
-          <small *ngIf="submitted && f['instagram'].errors"
-            >Invalid Instagram URL.</small
-          >
+          <small *ngIf="submitted && f['instagram'].errors">Invalid Instagram URL.</small>
         </div>
         <div class="form-group">
           <label>WhatsApp</label>
@@ -278,9 +209,7 @@
             formControlName="whatsapp"
             placeholder="https://wa.me/yourphonenumber"
           />
-          <small *ngIf="submitted && f['whatsapp'].errors"
-            >Invalid WhatsApp URL.</small
-          >
+          <small *ngIf="submitted && f['whatsapp'].errors">Invalid WhatsApp URL.</small>
         </div>
         <div class="form-group">
           <label>Reddit</label>
@@ -289,9 +218,7 @@
             formControlName="reddit"
             placeholder="https://www.reddit.com/user/yourname"
           />
-          <small *ngIf="submitted && f['reddit'].errors"
-            >Invalid Reddit URL.</small
-          >
+          <small *ngIf="submitted && f['reddit'].errors">Invalid Reddit URL.</small>
         </div>
       </div>
 
@@ -308,9 +235,7 @@
       <div class="action-buttons">
         <div class="buttonin">
           <button type="submit" class="btn-primary">Save</button>
-          <button type="reset" class="btn-secondary" (click)="onReset()">
-            Clear
-          </button>
+          <button type="reset" class="btn-secondary" (click)="onReset()">Clear</button>
         </div>
       </div>
     </form>
