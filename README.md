@@ -1,4 +1,4 @@
-# "Siyathuru"- AI-Driven Social Networking for Community Platform
+# Siyathuru - AI-Driven Social Networking for Community Platform
 
 Siyathuru is a web based community platform focused on Sri Lankan communities. It combines community discovery, membership workflows, event management, alerts, AI-assisted recommendations, and role-based collaboration tools.
 
@@ -6,24 +6,28 @@ Siyathuru is a web based community platform focused on Sri Lankan communities. I
 
 - User registration with email verification code flow
 - Login/logout with JWT stored in an HTTP-only cookie (`authToken`)
+- Forgot password flow with email reset link + secure token-based password reset
 - Role-based access (`member`, `leader`, `admin`)
 - Community CRUD with public/private join behavior
 - Private community join-request handling
 - Event CRUD, event joining, and attendee notification emails on cancellation
 - Community alerts with role restrictions
+- Super admin analytics with PDF report download (`communities-report.pdf`)
 - Community photo uploads with NSFW image filtering
 - AI endpoint (Hugging Face Inference) for community recommendations
 - Community collaboration suggestions based on type + geolocation proximity
 - Angular discovery page with Leaflet map + OpenStreetMap tiles
 - Firebase Firestore-backed chat threads in the frontend
+- Community Performance Report download for the super admin
 
 ## Tech stack
 
-- Frontend: Angular 18, RxJS, Leaflet, Chart.js, AngularFire (Firestore)
+- Frontend: Angular 18, RxJS, Leaflet, Chart.js, AngularFire (Firestore), jsPDF
 - Backend: Node.js, Express 5, Mongoose, JWT, Multer, Cloudinary, Nodemailer
 - AI/Moderation: Hugging Face Inference API, TensorFlow.js + `nsfwjs`
 - Database: MongoDB
 - Containerization: Docker + Docker Compose
+- Formatting: Prettier (frontend + backend)
 
 ## High-level architecture
 
@@ -96,6 +100,7 @@ SMTP_USER=your_smtp_user
 SMTP_PASS=your_smtp_pass
 SMTP_REJECT_UNAUTHORIZED=false
 MAIL_FROM="Siyathuru <no-reply@example.com>"
+FRONTEND_URL="http://localhost:4200"
 ```
 
 Notes:
@@ -155,6 +160,10 @@ Services:
 - `/api/ai` - AI community recommendation endpoint
 - `/api/collaborations` - suggested similar communities for leaders
 
+Important user auth endpoints:
+- `POST /api/users/forgot-password` - request password reset email
+- `POST /api/users/reset-password` - reset password using reset token
+
 ## Testing
 
 Backend (Jest + Supertest):
@@ -171,6 +180,35 @@ cd frontend
 npm test
 ```
 
+Integration tests (backend):
+
+```bash
+cd backend
+npm test -- test/integration/users.integration.test.js
+```
+
+## Code formatting
+
+Backend:
+
+```bash
+cd backend
+npm run format
+npm run format:check
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm run format
+npm run format:check
+```
+
+Prettier config is defined in:
+- `backend/.prettierrc`
+- `frontend/.prettierrc`
+
 ## Security model (current)
 
 - JWT auth via HTTP-only cookie
@@ -181,7 +219,7 @@ npm test
 ## Known implementation notes
 
 - CORS origin is currently hardcoded to `http://localhost:4200` in `backend/server.js`.
-- No lint script is currently configured in either package.
+- No lint script is currently configured in either package (formatting is handled by Prettier).
 
 ## Maintainer
 
