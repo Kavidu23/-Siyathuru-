@@ -67,6 +67,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.modalService.openSignup();
   }
 
+  openForgotPassword() {
+    this.closeLogin();
+    this.router.navigate(['/forgot-password']);
+  }
+
   closeLogin() {
     this.modalService.closeLogin();
   }

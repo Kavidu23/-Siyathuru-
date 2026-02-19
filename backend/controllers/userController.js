@@ -2,6 +2,7 @@ const User = require("../models/user.js");
 const bcrypt = require("bcryptjs");
 const sendEmail = require("../utils/sendEmail");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 /* CREATE USER */
 const createUser = async (req, res) => {
@@ -317,8 +318,6 @@ const getUserByCommunity = async (req, res) => {
     });
   }
 };
-
-
 
 /* EXPORTS */
 module.exports = {

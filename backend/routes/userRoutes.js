@@ -10,13 +10,20 @@ const {
     loginUser,
     logoutUser,
     getUserByCommunity,
-    getMe
+    getMe,
 } = require("../controllers/userController");
+
+const {
+    requestPasswordReset,
+    resetPassword,
+} = require("../controllers/userPasswordController");
 
 // AUTH routes
 router.post("/login", loginUser);       // Login user
 router.post("/logout", logoutUser);     // Logout user
 router.post("/verify", verifyUser);     // Verify user
+router.post("/forgot-password", requestPasswordReset);
+router.post("/reset-password", resetPassword);
 
 // CURRENT USER
 router.get("/me", getMe);               // Must come BEFORE /:id

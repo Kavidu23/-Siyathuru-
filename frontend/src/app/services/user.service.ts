@@ -74,6 +74,17 @@ export class UserService {
     return this.http.post<any>(`${this.baseUrl}/verify`, payload);
   }
 
+  requestPasswordReset(email: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reset-password`, {
+      token,
+      password,
+    });
+  }
+
   uploadProfileImage(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);

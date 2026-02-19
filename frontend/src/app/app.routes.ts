@@ -14,6 +14,7 @@ import { BlogComponent } from './blog/blog.component';
 import { ProComponent } from './pro/pro.component';
 import { AboutComponent } from './about/about.component';
 import { MembersComponent } from './members/members.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -21,6 +22,7 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'discover', component: DiscoveryComponent },
   { path: 'ask-ai', component: AskaiComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
   {
     path: 'user-dashboard',
     component: UserDashboardComponent,

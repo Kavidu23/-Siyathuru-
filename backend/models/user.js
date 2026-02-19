@@ -18,7 +18,9 @@ const userSchema = new mongoose.Schema(
         age: { type: Number },
         joinedCommunities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Community" }],
         verificationCode: { type: Number },
-        isVerified: { type: Boolean, default: false }
+        isVerified: { type: Boolean, default: false },
+        resetPasswordToken: { type: String },
+        resetPasswordExpires: { type: Date }
     },
     { timestamps: true }
 );
