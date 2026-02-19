@@ -1,93 +1,102 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+
 import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;
   let httpMock: HttpTestingController;
-  let baseUrl: string;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [UserService]
     });
+
     service = TestBed.inject(UserService);
     httpMock = TestBed.inject(HttpTestingController);
-
-    // Determine expected base URL
-    baseUrl = window.location.hostname.includes('localhost')
-      ? 'http://localhost:3000/api/users'
-      : 'http://backend:3000/api/users';
   });
 
   afterEach(() => {
-    httpMock.verify(); // Ensure no unmatched requests
+    httpMock.verify();
   });
 
-  it('should be created', () => {
+  it('should create', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should create a new user', () => {
-    const mockUser = { name: 'John', email: 'john@example.com' };
+  it('loginUser sends POST and updates auth state', () => {
+    const user = { _id: 'u1', role: 'member' };
 
-    service.createUser(mockUser).subscribe(res => {
-      expect(res).toEqual(mockUser);
-    });
+    service.loginUser({ email: 'test@example.com', password: 'pass123' }).subscribe();
 
-    const req = httpMock.expectOne(baseUrl);
+    const req = httpMock.expectOne((r) => r.url.endsWith('/api/users/login'));
     expect(req.request.method).toBe('POST');
-    req.flush(mockUser); // mock response
+    expect(req.request.body).toEqual({
+      email: 'test@example.com',
+      password: 'pass123',
+    });
+    expect(req.request.withCredentials).toBeTrue();
+
+    req.flush({ user });
+
+    expect(service.getCurrentUser()).toEqual(user);
+    expect(service.isLoggedIn()).toBeTrue();
   });
 
-  it('should get all users', () => {
-    const mockUsers = [
-      { name: 'John' },
-      { name: 'Jane' }
-    ];
+  it('logoutUser sends POST and clears auth state', () => {
+    service.loginUser({ email: 'test@example.com', password: 'pass123' }).subscribe();
+    const loginReq = httpMock.expectOne((r) => r.url.endsWith('/api/users/login'));
+    loginReq.flush({ user: { _id: 'u1' } });
+    expect(service.isLoggedIn()).toBeTrue();
 
-    service.getUsers().subscribe(users => {
-      expect(users.length).toBe(2);
-      expect(users).toEqual(mockUsers);
-    });
+    service.logoutUser().subscribe();
+    const req = httpMock.expectOne((r) => r.url.endsWith('/api/users/logout'));
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({});
+    expect(req.request.withCredentials).toBeTrue();
 
-    const req = httpMock.expectOne(baseUrl);
+    req.flush({});
+
+    expect(service.getCurrentUser()).toBeNull();
+    expect(service.isLoggedIn()).toBeFalse();
+  });
+
+  it('validateSession sets auth state when backend returns valid user', () => {
+    const user = { _id: 'u2', role: 'leader' };
+
+    service.validateSession().subscribe();
+    const req = httpMock.expectOne((r) => r.url.endsWith('/api/users/me'));
     expect(req.request.method).toBe('GET');
-    req.flush(mockUsers);
+    expect(req.request.withCredentials).toBeTrue();
+    req.flush({ success: true, user });
+
+    expect(service.getCurrentUser()).toEqual(user);
   });
 
-  it('should get user by id', () => {
-    const mockUser = { _id: '1', name: 'John' };
+  it('validateSession clears auth state when backend response is invalid', () => {
+    service.loginUser({ email: 'test@example.com', password: 'pass123' }).subscribe();
+    const loginReq = httpMock.expectOne((r) => r.url.endsWith('/api/users/login'));
+    loginReq.flush({ user: { _id: 'u1' } });
+    expect(service.isLoggedIn()).toBeTrue();
 
-    service.getUserById('1').subscribe(user => {
-      expect(user).toEqual(mockUser);
-    });
+    service.validateSession().subscribe();
+    const req = httpMock.expectOne((r) => r.url.endsWith('/api/users/me'));
+    req.flush({ success: false, user: null });
 
-    const req = httpMock.expectOne(`${baseUrl}/1`);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockUser);
+    expect(service.getCurrentUser()).toBeNull();
+    expect(service.isLoggedIn()).toBeFalse();
   });
 
-  it('should update user by id', () => {
-    const updatedUser = { _id: '1', name: 'John Updated' };
+  it('createUser sends POST to users base endpoint', () => {
+    const payload = { name: 'John', email: 'john@example.com' };
 
-    service.updateUser('1', updatedUser).subscribe(user => {
-      expect(user).toEqual(updatedUser);
-    });
-
-    const req = httpMock.expectOne(`${baseUrl}/1`);
-    expect(req.request.method).toBe('PUT');
-    req.flush(updatedUser);
-  });
-
-  it('should delete user by id', () => {
-    service.deleteUser('1').subscribe(res => {
-      expect(res).toEqual({ message: 'Deleted' });
-    });
-
-    const req = httpMock.expectOne(`${baseUrl}/1`);
-    expect(req.request.method).toBe('DELETE');
-    req.flush({ message: 'Deleted' });
+    service.createUser(payload).subscribe();
+    const req = httpMock.expectOne((r) => r.url.endsWith('/api/users'));
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    req.flush({ success: true });
   });
 });

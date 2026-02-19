@@ -1,5 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+
 import { CommunityService } from './community.service';
 
 describe('CommunityService', () => {
@@ -9,7 +13,6 @@ describe('CommunityService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [CommunityService]
     });
 
     service = TestBed.inject(CommunityService);
@@ -17,62 +20,72 @@ describe('CommunityService', () => {
   });
 
   afterEach(() => {
-    httpMock.verify(); // ensures no open requests
+    httpMock.verify();
   });
 
-  it('should be created', () => {
+  it('should create', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should send POST request to create a community', () => {
-    const mockCommunity = {
-      name: 'Youth Leadership Group',
-      location: 'Colombo',
-      type: 'youth',
-      joinType: 'Free'
-    };
+  it('getAllCommunities sends GET to communities endpoint', () => {
+    service.getAllCommunities().subscribe();
 
-    const mockResponse = {
-      success: true,
-      message: 'Community created successfully'
-    };
+    const req = httpMock.expectOne((r) => r.url.endsWith('/api/communities'));
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+  });
 
-    service.createCommunity(mockCommunity).subscribe(response => {
-      expect(response).toEqual(mockResponse);
-    });
+  it('createCommunityWithPayload sends POST with JSON and credentials', () => {
+    const payload = { name: 'Test Community', type: 'Youth' };
 
-    const req = httpMock.expectOne(service['baseUrl']);
+    service.createCommunityWithPayload(payload).subscribe();
+
+    const req = httpMock.expectOne((r) => r.url.endsWith('/api/communities'));
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(mockCommunity);
-    req.flush(mockResponse);
+    expect(req.request.body).toEqual(payload);
+    expect(req.request.withCredentials).toBeTrue();
+    expect(req.request.headers.get('Content-Type')).toBe('application/json');
+    req.flush({ success: true });
   });
 
-  it('should GET all communities', () => {
-    const mockCommunities = [
-      { name: 'Youth Club', location: 'Colombo', type: 'youth' },
-      { name: 'Women Empowerment Hub', location: 'Kandy', type: 'women' }
-    ];
+  it('uploadCommunityImage sends file as FormData', () => {
+    const file = new File(['x'], 'test.png', { type: 'image/png' });
 
-    service.getAllCommunities().subscribe(data => {
-      expect(data.length).toBe(2);
-      expect(data).toEqual(mockCommunities);
-    });
+    service.uploadCommunityImage(file).subscribe();
 
-    const req = httpMock.expectOne(service['baseUrl']);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockCommunities);
+    const req = httpMock.expectOne((r) => r.url.endsWith('/api/upload'));
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body instanceof FormData).toBeTrue();
+    req.flush({ data: { url: 'https://img.test/test.png' } });
   });
 
-  it('should GET a community by ID', () => {
-    const communityId = '12345';
-    const mockCommunity = { name: 'Youth Club', location: 'Colombo', type: 'youth' };
+  it('deleteCommunity sends DELETE with credentials', () => {
+    service.deleteCommunity('c1').subscribe();
 
-    service.getCommunityById(communityId).subscribe(data => {
-      expect(data).toEqual(mockCommunity);
-    });
+    const req = httpMock.expectOne((r) => r.url.endsWith('/api/communities/c1'));
+    expect(req.request.method).toBe('DELETE');
+    expect(req.request.withCredentials).toBeTrue();
+    req.flush({ success: true });
+  });
 
-    const req = httpMock.expectOne(`${service['baseUrl']}/${communityId}`);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockCommunity);
+  it('joinCommunity sends POST with userId payload', () => {
+    service.joinCommunity('c1', 'u1').subscribe();
+
+    const req = httpMock.expectOne((r) => r.url.endsWith('/api/communities/c1/join'));
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ userId: 'u1' });
+    req.flush({ success: true });
+  });
+
+  it('verifyCommunity sends POST with credentials', () => {
+    service.verifyCommunity('c1').subscribe();
+
+    const req = httpMock.expectOne((r) =>
+      r.url.endsWith('/api/community-verification/verify'),
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ communityId: 'c1' });
+    expect(req.request.withCredentials).toBeTrue();
+    req.flush({ success: true });
   });
 });

@@ -45,7 +45,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   profileFile: File | null = null;
   profilePreview: string | ArrayBuffer | null = null;
 
-  subscription!: Subscription;
+  subscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -82,7 +82,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
   }
 
   initForm() {

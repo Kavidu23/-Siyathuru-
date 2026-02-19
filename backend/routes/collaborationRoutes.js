@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { suggestCommunities } = require('../controllers/collaboration');
+const { suggestCommunities } = require('../controllers/collaborationController');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 

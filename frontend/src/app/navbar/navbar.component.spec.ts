@@ -1,85 +1,103 @@
-// navbar.component.spec.ts (Corrected)
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of, Subject } from 'rxjs';
+import { provideRouter, Router } from '@angular/router';
+
 import { NavbarComponent } from './navbar.component';
 import { ModalService } from '../services/modal.service';
-import { RouterLink, ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
-
-// 1. Mock the ActivatedRoute
-// This is the key fix for the NullInjectorError.
-// We use simple placeholder values since the component doesn't actually interact with the route data.
-class MockActivatedRoute {
-  snapshot = {};
-  params = {};
-}
-
-// 2. Mock the Modal Service
-class MockModalService {
-  openLogin = jasmine.createSpy('openLogin');
-  openSignup = jasmine.createSpy('openSignup');
-}
-
-// 3. Mock the Dependency Component
-import { Component } from '@angular/core';
-@Component({ selector: 'app-language-select', standalone: true, template: '' })
-class MockLanguageSelectComponent {}
+import { UserService } from '../services/user.service';
+import { ChatService } from '../services/chat.service';
+import { CommunityService } from '../services/community.service';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
-  let modalService: MockModalService;
+  let authState$: Subject<any>;
+  let router: Router;
+  let navigateSpy: jasmine.Spy;
+
+  const modalServiceMock = {
+    openLogin: jasmine.createSpy('openLogin'),
+    openSignup: jasmine.createSpy('openSignup'),
+  };
+
+  const userServiceMock = {
+    authState$: new Subject<any>(),
+    validateSession: jasmine
+      .createSpy('validateSession')
+      .and.returnValue(of({})),
+    logoutUser: jasmine.createSpy('logoutUser').and.returnValue(of({})),
+  };
+
+  const chatServiceMock = {
+    hasUnread$: new Subject<boolean>(),
+    startUnreadListenerForCommunities: jasmine
+      .createSpy('startUnreadListenerForCommunities')
+      .and.returnValue(() => {}),
+  };
+
+  const communityServiceMock = {
+    getAllCommunities: jasmine
+      .createSpy('getAllCommunities')
+      .and.returnValue(of({ data: [] })),
+  };
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      // We list the component being tested in imports for standalone setup
-      imports: [NavbarComponent, RouterLink],
-      // FIX: Provide the required services for RouterLink to function
-      providers: [
-        { provide: ModalService, useClass: MockModalService },
-        { provide: ActivatedRoute, useClass: MockActivatedRoute }, // <--- THE FIX
-      ],
-    })
-      // 4. Override to use the Mock Dependency Component
-      .overrideComponent(NavbarComponent, {
-        set: {
-          imports: [RouterLink, MockLanguageSelectComponent],
-        },
-      })
-      .compileComponents();
-  });
+    authState$ = new Subject<any>();
+    userServiceMock.authState$ = authState$;
 
-  beforeEach(() => {
+    await TestBed.configureTestingModule({
+      imports: [NavbarComponent],
+      providers: [
+        { provide: ModalService, useValue: modalServiceMock },
+        { provide: UserService, useValue: userServiceMock },
+        { provide: ChatService, useValue: chatServiceMock },
+        { provide: CommunityService, useValue: communityServiceMock },
+        provideRouter([]),
+      ],
+    }).compileComponents();
+
+    router = TestBed.inject(Router);
+    navigateSpy = spyOn(router, 'navigate').and.returnValue(
+      Promise.resolve(true),
+    );
+
     fixture = TestBed.createComponent(NavbarComponent);
     component = fixture.componentInstance;
-    modalService = TestBed.inject(ModalService) as unknown as MockModalService;
     fixture.detectChanges();
+
+    modalServiceMock.openLogin.calls.reset();
+    modalServiceMock.openSignup.calls.reset();
+    userServiceMock.logoutUser.calls.reset();
+    communityServiceMock.getAllCommunities.calls.reset();
+    chatServiceMock.startUnreadListenerForCommunities.calls.reset();
+    navigateSpy.calls.reset();
   });
 
-  // --- The requested simple test ---
-
-  it('should call openLogin() on ModalService when openLoginModal() is called', () => {
-    // ARRANGE: Ensure the spy hasn't been called yet
-    expect(modalService.openLogin).not.toHaveBeenCalled();
-
-    // ACT: Call the component method
-    component.openLoginModal();
-
-    // ASSERT: Check if the service method was called exactly once
-    expect(modalService.openLogin).toHaveBeenCalledTimes(1);
-  });
-
-  it('should call openSignup() on ModalService when openSignupModal() is called', () => {
-    // ARRANGE: Ensure the spy hasn't been called yet
-    expect(modalService.openLogin).not.toHaveBeenCalled();
-
-    component.openSignupModal();
-
-    // ASSERT: Check if the service method was called exactly once
-    expect(modalService.openSignup).toHaveBeenCalledTimes(1);
-  });
-
-  // Now this test will pass because ActivatedRoute is provided
-  it('should create the component', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('updates login state from authState and loads unread setup for logged user', () => {
+    authState$.next({ _id: 'u1', role: 'member', joinedCommunities: [] });
+
+    expect(component.isLoggedIn).toBeTrue();
+    expect(component.userData?._id).toBe('u1');
+    expect(communityServiceMock.getAllCommunities).toHaveBeenCalled();
+  });
+
+  it('navigates to superadmin for admin user', () => {
+    component.isLoggedIn = true;
+    component.userData = { _id: 'u1', role: 'admin' };
+
+    component.goToUserDashboard();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/superadmin']);
+  });
+
+  it('navigates home after successful logout', () => {
+    component.logout();
+
+    expect(userServiceMock.logoutUser).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(['/home']);
   });
 });

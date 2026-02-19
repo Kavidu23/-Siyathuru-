@@ -1,76 +1,113 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { of, Subject } from 'rxjs';
+import { provideRouter, Router } from '@angular/router';
+
 import { LoginComponent } from './login.component';
 import { ModalService } from '../services/modal.service';
-import { BehaviorSubject } from 'rxjs';
-import { CommonModule } from '@angular/common';
-
-// 1. Mock the ModalService
-class MockModalService {
-  private subject = new BehaviorSubject<boolean>(false);
-  loginVisible$ = this.subject.asObservable();
-
-  closeLogin = jasmine.createSpy('closeLogin');
-  openSignup = jasmine.createSpy('openSignup'); // ✅ Added so we can test it
-
-  emit(value: boolean) {
-    this.subject.next(value);
-  }
-}
+import { UserService } from '../services/user.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
-  let modalService: MockModalService;
+  let router: Router;
+  let navigateSpy: jasmine.Spy;
+
+  const modalServiceMock = {
+    loginVisible$: new Subject<boolean>(),
+    closeLogin: jasmine.createSpy('closeLogin'),
+    openSignup: jasmine.createSpy('openSignup'),
+  };
+
+  const userServiceMock = {
+    validateSession: jasmine
+      .createSpy('validateSession')
+      .and.returnValue(of({})),
+    loginUser: jasmine.createSpy('loginUser'),
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      // Since LoginComponent is standalone, import it instead of declaring
-      imports: [LoginComponent, CommonModule],
-      providers: [{ provide: ModalService, useClass: MockModalService }],
+      imports: [LoginComponent],
+      providers: [
+        { provide: ModalService, useValue: modalServiceMock },
+        { provide: UserService, useValue: userServiceMock },
+        provideRouter([]),
+      ],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LoginComponent);
+    router = TestBed.inject(Router);
+    navigateSpy = spyOn(router, 'navigate').and.returnValue(
+      Promise.resolve(true),
+    );
+
+    const fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
-    modalService = TestBed.inject(ModalService) as unknown as MockModalService;
+    fixture.detectChanges();
 
-    fixture.detectChanges(); // triggers ngOnInit
+    modalServiceMock.closeLogin.calls.reset();
+    modalServiceMock.openSignup.calls.reset();
+    userServiceMock.loginUser.calls.reset();
+    navigateSpy.calls.reset();
   });
 
-  // --- Core Tests ---
-
-  it('should create the component', () => {
+  it('creates form with required validators', () => {
     expect(component).toBeTruthy();
+    expect(component.loginForm.valid).toBeFalse();
   });
 
-  it('should unsubscribe from ModalService on ngOnDestroy', () => {
-    const unsubscribeSpy = spyOn(component.subscription, 'unsubscribe');
-    component.ngOnDestroy();
-    expect(unsubscribeSpy).toHaveBeenCalledTimes(1);
+  it('does not submit when form is invalid', () => {
+    const alertSpy = spyOn(window, 'alert');
+
+    component.onSubmit();
+
+    expect(component.submitted).toBeTrue();
+    expect(userServiceMock.loginUser).not.toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith(
+      'Please enter valid email and password.',
+    );
   });
 
-  it('should set isVisible based on the ModalService stream', () => {
-    expect(component.isVisible).toBe(false);
+  it('navigates to home on successful regular user login', () => {
+    userServiceMock.loginUser.and.returnValue(
+      of({
+        success: true,
+        user: { role: 'member', joinedCommunities: ['c1'] },
+      }),
+    );
+    const alertSpy = spyOn(window, 'alert');
+    component.loginForm.setValue({
+      email: 'test@example.com',
+      password: 'pass123',
+    });
 
-    modalService.emit(true);
+    component.onSubmit();
 
-    expect(component.isVisible).toBe(true);
+    expect(userServiceMock.loginUser).toHaveBeenCalledWith({
+      email: 'test@example.com',
+      password: 'pass123',
+    });
+    expect(modalServiceMock.closeLogin).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith('Login successful!');
+    expect(navigateSpy).toHaveBeenCalledWith(['/home']);
   });
 
-  it('should call closeLogin() on the ModalService when closeLogin() is called', () => {
-    expect(modalService.closeLogin).not.toHaveBeenCalled();
-    component.closeLogin();
-    expect(modalService.closeLogin).toHaveBeenCalledTimes(1);
-  });
+  it('navigates leader to create-community when they have no communities', () => {
+    userServiceMock.loginUser.and.returnValue(
+      of({
+        success: true,
+        user: { role: 'leader', joinedCommunities: [] },
+      }),
+    );
+    const alertSpy = spyOn(window, 'alert');
+    component.loginForm.setValue({
+      email: 'leader@example.com',
+      password: 'pass123',
+    });
 
-  it('should call openSignup() and closeLogin() on the ModalService when OpenSignup() is called', () => {
-    expect(modalService.openSignup).not.toHaveBeenCalled();
-    expect(modalService.closeLogin).not.toHaveBeenCalled();
+    component.onSubmit();
 
-    component.OpenSignup();
-
-    expect(modalService.openSignup).toHaveBeenCalledTimes(1);
-    expect(modalService.closeLogin).toHaveBeenCalledTimes(1);
+    expect(alertSpy).toHaveBeenCalledWith(
+      'Welcome Leader! Please create your first community.',
+    );
+    expect(navigateSpy).toHaveBeenCalledWith(['/create-community']);
   });
 });
