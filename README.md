@@ -18,7 +18,6 @@ Siyathuru is a web based community platform focused on Sri Lankan communities. I
 - Community collaboration suggestions based on type + geolocation proximity
 - Angular discovery page with Leaflet map + OpenStreetMap tiles
 - Firebase Firestore-backed chat threads in the frontend
-- Community Performance Report download for the super admin
 
 ## Tech stack
 
@@ -209,6 +208,33 @@ Prettier config is defined in:
 - `backend/.prettierrc`
 - `frontend/.prettierrc`
 
+## Linting
+
+Backend:
+
+```bash
+cd backend
+npm run lint
+npm run lint:fix
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm run lint
+npm run lint:fix
+```
+
+## CI quality checks
+
+GitHub Actions workflow (`.github/workflows/ci.yml`) runs:
+- Prettier check (`npm run format:check`) on frontend and backend
+- ESLint (`npm run lint`) on frontend and backend
+- Backend tests (`npm test`)
+- Frontend build (`npm run build`)
+- Frontend unit tests in headless Chrome
+
 ## Security model (current)
 
 - JWT auth via HTTP-only cookie
@@ -219,7 +245,7 @@ Prettier config is defined in:
 ## Known implementation notes
 
 - CORS origin is currently hardcoded to `http://localhost:4200` in `backend/server.js`.
-- No lint script is currently configured in either package (formatting is handled by Prettier).
+- Linting is configured in both packages and enforced in CI.
 
 ## Maintainer
 
