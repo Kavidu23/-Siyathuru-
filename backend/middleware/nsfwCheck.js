@@ -1,5 +1,4 @@
 const nsfw = require('nsfwjs');
-const tf = require('@tensorflow/tfjs');
 const { createCanvas, loadImage } = require('canvas');
 
 let model;

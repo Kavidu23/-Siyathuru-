@@ -15,7 +15,6 @@ const createCommunity = async (req, res) => {
       media,
       isPrivate,
       members,
-      leader,
       established,
       bannerImage,
       profileImage,

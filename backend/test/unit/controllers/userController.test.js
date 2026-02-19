@@ -1,6 +1,5 @@
 const {
   createUser,
-  getUsers,
   getUserById,
   updateUser,
   deleteUser,
@@ -15,7 +14,6 @@ jest.mock('bcryptjs'); // Mock bcrypt
 jest.mock('jsonwebtoken');
 // Mock the sendEmail module
 jest.mock('../../../utils/sendEmail', () => jest.fn().mockResolvedValue(true));
-const sendEmail = require('../../../utils/sendEmail'); // now this is a mocked function
 
 // Helpers to create fake req/res
 const mockRequest = () => ({ body: {}, params: {} });

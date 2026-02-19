@@ -2,7 +2,6 @@ const User = require('../models/user.js');
 const bcrypt = require('bcryptjs');
 const sendEmail = require('../utils/sendEmail');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 
 /* CREATE USER */
 const createUser = async (req, res) => {
@@ -163,7 +162,7 @@ const loginUser = async (req, res) => {
         joinedCommunities: user.joinedCommunities || [],
       },
     });
-  } catch (err) {
+  } catch {
     res.status(500).json({
       success: false,
       error: 'Server error',
@@ -261,7 +260,7 @@ const logoutUser = async (req, res) => {
       success: true,
       message: 'Logged out successfully',
     });
-  } catch (err) {
+  } catch {
     res.status(500).json({
       success: false,
       error: 'Server error',
@@ -291,7 +290,7 @@ const getMe = async (req, res) => {
         joinedCommunities: user.joinedCommunities || [],
       },
     });
-  } catch (err) {
+  } catch {
     res.status(401).json({ success: false, error: 'Invalid token' });
   }
 };
