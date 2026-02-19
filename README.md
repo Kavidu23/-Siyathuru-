@@ -1,193 +1,188 @@
-# Siyathuru — The AI-Powered Community Network 🤖
+# "Siyathuru"- AI-Driven Social Networking for Community Platform
 
-Siyathuru is a modern AI-powered web platform for Sri Lankan community groups, designed to help people **discover communities, join events, track contributions, and connect intelligently**.
+Siyathuru is a web based community platform focused on Sri Lankan communities. It combines community discovery, membership workflows, event management, alerts, AI-assisted recommendations, and role-based collaboration tools.
 
----
+## What the project currently includes
 
-## 🚀 Project Overview
+- User registration with email verification code flow
+- Login/logout with JWT stored in an HTTP-only cookie (`authToken`)
+- Role-based access (`member`, `leader`, `admin`)
+- Community CRUD with public/private join behavior
+- Private community join-request handling
+- Event CRUD, event joining, and attendee notification emails on cancellation
+- Community alerts with role restrictions
+- Community photo uploads with NSFW image filtering
+- AI endpoint (Hugging Face Inference) for community recommendations
+- Community collaboration suggestions based on type + geolocation proximity
+- Angular discovery page with Leaflet map + OpenStreetMap tiles
+- Firebase Firestore-backed chat threads in the frontend
 
-Siyathuru demonstrates industry-standard full-stack development through its key features:
+## Tech stack
 
-- **Community Discovery & Events** — Create, join, and RSVP to events with real-time updates.
-- **User & Community Management** — Leaders can create and manage community profiles, members, and event schedules.
-- **AI-Powered Features** — Intelligent event and community recommendations and automated insights.
-- **Cloud-based Deployment** — Secure, scalable, and reliable cloud infrastructure to ensure global accessibility.
+- Frontend: Angular 18, RxJS, Leaflet, Chart.js, AngularFire (Firestore)
+- Backend: Node.js, Express 5, Mongoose, JWT, Multer, Cloudinary, Nodemailer
+- AI/Moderation: Hugging Face Inference API, TensorFlow.js + `nsfwjs`
+- Database: MongoDB
+- Containerization: Docker + Docker Compose
 
----
+## High-level architecture
 
-## 🛠️ Tech Stack
+1. Angular app (`frontend/`) serves UI and calls REST APIs on `http://localhost:3000/api/*` in local mode.
+2. Express app (`backend/server.js`) exposes domain routes and handles auth/authorization.
+3. MongoDB stores users, communities, events, requests, alerts, feedback, and metadata.
+4. Cloudinary stores uploaded images.
+5. Firebase Firestore is used for chat message threads.
+6. Hugging Face Inference powers the AI recommendation endpoint.
 
-The technology stack is carefully selected to provide a robust, scalable, and secure platform.
+## Repository layout
 
-### Frontend
-
-- Angular
-- CSS for a responsive and mobile-first user interface (PWA ready).
-
-### Backend
-
-- Node.js (Express)
-- JWT authentication and role-based access control for security.
-- Python for AI/ML modules via a Flask API.
-
-### Database
-
-- MongoDB for a flexible, document-based database.
-- Socket.IO for real-time communication and instant updates.
-
-### Infrastructure
-
-- AWS / Azure Cloud for a secure and production-ready deployment.
-- Cloud Functions for server-side logic and API integration.
-
----
-
-## 📂 Repository Structure
-
-```
-siyathuru-platform/
-├── assets/
-├── backend/        # Node.js + Express API + AI modules
-├── frontend/       # Angular application
-├── README.md
-└── .gitignore
-```
-
----
-
-## ⚡ Getting Started (Development)
-
-### Prerequisites
-
-- Node.js (v18+)
-- MongoDB (or a cloud-hosted service like MongoDB Atlas)
-- Git
-
-### Clone the repo
-
-```bash
-git clone https://github.com/Kavidu23/siyathuru-platform.git
-cd siyathuru-platform
+```text
+.
+|-- backend/
+|   |-- config/
+|   |-- controllers/
+|   |-- middleware/
+|   |-- models/
+|   |-- routes/
+|   |-- test/
+|   `-- server.js
+|-- frontend/
+|   |-- src/
+|   |-- public/
+|   |-- angular.json
+|   `-- nginx.conf
+|-- docker-compose.yml
+`-- README.md
 ```
 
-### Install & Run
+## Prerequisites
 
-- **Frontend**:
+- Node.js 20+ recommended
+- npm 10+
+- MongoDB (local install or container)
+- Cloudinary account (for uploads)
+- SMTP credentials (for verification/cancellation emails)
+- Hugging Face token (for AI endpoint)
+- Firebase project (Firestore chat)
 
-```bash
-cd frontend
-npm install
-npm start
+## Environment configuration
+
+Create `backend/.env`:
+
+```env
+PORT=3000
+NODE_ENV=development
+JWT_SECRET=replace_with_strong_secret
+
+# Mongo
+MONGO_URI_LOCAL=mongodb://127.0.0.1:27017/
+MONGO_URI_DOCKER=mongodb://mongo:27017/
+MONGO_DB_NAME=Siyathuru
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Hugging Face
+HF_TOKEN=your_hf_token
+HF_CHAT_MODEL=meta-llama/Llama-3.3-70B-Instruct
+
+# SMTP
+SMTP_HOST=smtp.mailtrap.io
+SMTP_PORT=2525
+SMTP_SECURE=false
+SMTP_USER=your_smtp_user
+SMTP_PASS=your_smtp_pass
+SMTP_REJECT_UNAUTHORIZED=false
+MAIL_FROM="Siyathuru <no-reply@example.com>"
 ```
 
-- **Backend**:
+Notes:
+- Backend selects DB URI by `DOCKERIZED` flag. Docker Compose sets `DOCKERIZED=1` automatically.
+- Frontend currently contains Firebase config in `frontend/src/app/environment/environment.ts`.
 
+## Run locally (without Docker)
+
+1. Install backend dependencies:
 ```bash
 cd backend
 npm install
+```
+2. Install frontend dependencies:
+```bash
+cd ../frontend
+npm install
+```
+3. Start backend:
+```bash
+cd ../backend
+npm run dev
+```
+4. Start frontend:
+```bash
+cd ../frontend
 npm start
 ```
 
----
+Endpoints:
+- Frontend: `http://localhost:4200`
+- Backend API: `http://localhost:3000`
 
-## ✅ Features (MVP Roadmap)
+## Run with Docker Compose
 
-- [ ] User authentication (signup/login)
-- [ ] Map integration
-- [ ] Community CRUD (create/list/view/edit)
-- [ ] Join requests & approval system
-- [ ] Events with RSVP tracking
-- [ ] AI-powered event & community recommendations
-- [ ] File uploads for community logos and images
-- [ ] So on…
+```bash
+docker compose up --build
+```
 
----
+Services:
+- Frontend (Nginx): `http://localhost:4200`
+- Backend API: `http://localhost:3000`
+- MongoDB: `mongodb://localhost:27017`
 
-## 🧪 Testing
+## API modules (summary)
 
-- **Backend**: Use Jest to test API endpoints.
-- **Frontend**: Use Jasmine/Karma for unit testing Angular components.
+- `/api/users` - auth, verification, user CRUD, session check
+- `/api/communities` - community CRUD, membership actions
+- `/api/private-communities` - private join request lifecycle
+- `/api/events` - event CRUD, join event, user event feed
+- `/api/requests` - authenticated request management
+- `/api/alerts` - leader/member alert workflows
+- `/api/feedbacks` - feedback create/list
+- `/api/upload` - image upload (Cloudinary + NSFW check)
+- `/api/community-photos` - leader photo gallery management
+- `/api/community-verification` - leader verification request/confirm
+- `/api/ai` - AI community recommendation endpoint
+- `/api/collaborations` - suggested similar communities for leaders
 
-Run backend tests:
+## Testing
+
+Backend (Jest + Supertest):
 
 ```bash
 cd backend
 npm test
 ```
 
----
+Frontend (Angular/Karma):
 
-## 🤝 Workflow
+```bash
+cd frontend
+npm test
+```
 
-As a solo project, a streamlined workflow is key to staying organized:
+## Security model (current)
 
-1. Keep a single main branch.
-2. Create new branches for each feature.
-3. Commit changes with clear messages.
-4. Merge back into main after a feature is complete.
+- JWT auth via HTTP-only cookie
+- Route-level role middleware (`member`, `leader`, `admin`)
+- CORS with credentials enabled for `http://localhost:4200`
+- NSFW image moderation before upload persistence
 
----
+## Known implementation notes
 
-## ⚙️ DevOps Practices
+- CORS origin is currently hardcoded to `http://localhost:4200` in `backend/server.js`.
+- No lint script is currently configured in either package.
 
-To ensure maintainability, scalability, and industry alignment, Siyathuru follows these DevOps practices:
+## Maintainer
 
-- **Version Control & Branching**
-
-  - Single `main` branch (protected with rulesets).
-  - Feature branches (e.g., `feature/auth`, `feature/events`).
-  - Pull Request workflow with required status checks.
-
-- **Continuous Integration (CI)**
-
-  - GitHub Actions workflow runs linting and tests on every push or pull request.
-  - Status checks (e.g., build and test) are enforced before merging.
-
-- **Continuous Deployment (CD)**
-
-  - Manual deployment in the MVP stage.
-  - Future-ready for cloud deployment (AWS/Azure, Docker registry).
-
-- **Dockerization**
-
-  - Each service (frontend, backend) containerized with Docker.
-  - Containers orchestrated via `docker-compose` for local development.
-
-- **Environment Management**
-
-  - `.env` files for secrets (DB URI, JWT secret, API keys).
-  - Secure handling of credentials.
-
-- **Branch Protection Rules**
-  - Require linear history (no direct merge commits).
-  - Require successful status checks before merging.
-  - Enforce pull requests for clean collaboration.
-
----
-
-## 🔌 WebSocket Integration
-
-Real-time communication is a core part of Siyathuru’s functionality.
-
-- **Technology**: Socket.IO integrated with the backend.
-- **Use Cases**:
-  - Live RSVP updates for events.
-  - Instant community announcements.
-  - Real-time chat between members.
-
-This enables Siyathuru to deliver a seamless and interactive experience, keeping users connected with their communities in real time.
-
----
-
-## 📌 Roadmap
-
-- **Phase 1 (MVP)**: Build the core platform (authentication, communities, events).
-- **Phase 2 (Advanced Features)**: Integrate AI for recommendations and file uploads.
-- **Phase 3 (Final Deployment)**: Deploy the platform to a cloud environment (AWS/Azure).
-
----
-
-## 🙋 About
-
-Built by **Kavidu Lakshan**, a final-year student.
-This project aims to demonstrate expertise in full-stack development and solve a tangible social problem using technology and AI.
+Built by Kavidu Lakshan (Rateralalage Thilakarathna).
