@@ -16,6 +16,11 @@ import { finalize } from 'rxjs/operators';
 export class SuperadminComponent implements OnInit {
   currentUser: any = null;
   communities: any[] = [];
+  topPerformingCommunities: Array<{
+    _id: string;
+    name: string;
+    memberCount: number;
+  }> = [];
 
   isLoading = true;
   isDeleting = false;
@@ -96,6 +101,8 @@ export class SuperadminComponent implements OnInit {
           const communities = res?.data || res || [];
           this.communities = communities;
           this.totalCommunities = communities.length;
+          this.topPerformingCommunities =
+            this.buildTopPerformingCommunities(communities);
         },
         error: () => {
           this.errorMessage = 'Failed to load communities';
@@ -103,8 +110,26 @@ export class SuperadminComponent implements OnInit {
       });
   }
 
+  private buildTopPerformingCommunities(communities: any[]) {
+    return [...(communities || [])]
+      .map((community: any) => ({
+        _id: community?._id,
+        name: community?.name || 'Unnamed Community',
+        memberCount: (community?.members || []).length,
+      }))
+      .sort((a, b) => {
+        if (b.memberCount !== a.memberCount) return b.memberCount - a.memberCount;
+        return a.name.localeCompare(b.name);
+      })
+      .slice(0, 3);
+  }
+
   getMemberCount(community: any): number {
     return (community?.members || []).length;
+  }
+
+  formatNumber(value: number): string {
+    return new Intl.NumberFormat('en-US').format(value || 0);
   }
 
   viewCommunity(communityId: string) {
@@ -129,6 +154,9 @@ export class SuperadminComponent implements OnInit {
             (c) => c._id !== community._id,
           );
           this.totalCommunities = this.communities.length;
+          this.topPerformingCommunities = this.buildTopPerformingCommunities(
+            this.communities,
+          );
           alert(res?.message || 'Community deactivated successfully');
         },
         error: (err: any) => {

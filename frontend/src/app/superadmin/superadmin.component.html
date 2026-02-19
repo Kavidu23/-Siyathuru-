@@ -77,27 +77,18 @@
       <div class="ai-card">
         <h4>Top Performing Communities</h4>
         <ul class="ai-list">
-          <li>1️⃣ Green Life — 1,240 members</li>
-          <li>2️⃣ Youth Connect — 980 members</li>
-          <li>3️⃣ Eco Future — 870 members</li>
+          <li *ngIf="isLoading">Loading analytics...</li>
+          <li *ngIf="!isLoading && topPerformingCommunities.length === 0">
+            No community data available yet.
+          </li>
+          <li
+            *ngFor="let community of topPerformingCommunities; let i = index"
+            [hidden]="isLoading"
+          >
+            {{ i + 1 }}. {{ community.name }} -
+            {{ formatNumber(community.memberCount) }} members
+          </li>
         </ul>
-      </div>
-
-      <div class="ai-card">
-        <h4>Subscription Growth (30 days)</h4>
-        <div class="mini-chart">
-          <div class="chart-line"></div>
-        </div>
-        <div class="muted">
-          <p class="mute">+8% increase this month</p>
-          <p id="view" [routerLink]="['/chart']">View Analytics</p>
-        </div>
-      </div>
-
-      <div class="ai-card moderation">
-        <h4>AI Moderation Alerts</h4>
-        <p>3 flagged posts awaiting admin review</p>
-        <button class="btn-secondary">Review Content</button>
       </div>
     </div>
   </section>
