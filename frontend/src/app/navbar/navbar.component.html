@@ -13,10 +13,12 @@
       <div id="google_translate_element"></div>
 
       <!-- Discover -->
-      <a routerLink="/discover" id="discover">Discover</a>
+      <a *ngIf="userData.role != 'admin'" routerLink="/discover" id="discover"
+        >Discover</a
+      >
 
       <!-- Ask AI -->
-      <div class="ask-ai">
+      <div class="ask-ai" *ngIf="userData.role != 'admin'">
         <a routerLink="/ask-ai">Ask AI</a>
       </div>
 
