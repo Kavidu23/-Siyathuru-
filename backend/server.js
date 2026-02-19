@@ -23,9 +23,9 @@ const PORT = process.env.PORT || 3000;
 
 // CORS Configuration
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN, // Your Angular frontend URL
-  credentials: process.env.CORS_CREDENTIALS, // Allow credentials
-  methods: process.env.CORS_METHODS, // Allowed HTTP methods
+  origin: "http://localhost:4200", // Your Angular frontend URL
+  credentials: true, // Allow credentials
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
