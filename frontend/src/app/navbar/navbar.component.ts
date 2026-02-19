@@ -72,6 +72,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.communitiesSub?.unsubscribe();
   }
 
+  get isAdmin(): boolean {
+    return this.userData?.role === 'admin';
+  }
+
+  get showPublicNav(): boolean {
+    return !this.isAdmin;
+  }
+
+  get showChat(): boolean {
+    return this.isLoggedIn && !this.isAdmin;
+  }
+
   private loadChatUnread(userId: string) {
     this.communitiesSub?.unsubscribe();
 

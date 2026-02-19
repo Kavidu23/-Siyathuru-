@@ -13,12 +13,12 @@
       <div id="google_translate_element"></div>
 
       <!-- Discover -->
-      <a *ngIf="userData.role != 'admin'" routerLink="/discover" id="discover"
+      <a *ngIf="showPublicNav" routerLink="/discover" id="discover"
         >Discover</a
       >
 
       <!-- Ask AI -->
-      <div class="ask-ai" *ngIf="userData.role != 'admin'">
+      <div class="ask-ai" *ngIf="showPublicNav">
         <a routerLink="/ask-ai">Ask AI</a>
       </div>
 
@@ -43,9 +43,9 @@
       </a>
 
       <!-- Chat -->
-      <div *ngIf="isLoggedIn" class="nav-chat">
+      <div *ngIf="showChat" class="nav-chat">
         <a routerLink="/chatbox" class="chat-link">
-          <span *ngIf="userData.role != 'admin'">Chat</span>
+          <span>Chat</span>
           <span *ngIf="hasUnread" class="chat-dot"></span>
         </a>
       </div>
