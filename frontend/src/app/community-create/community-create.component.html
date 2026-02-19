@@ -26,7 +26,12 @@
         #bannerInput
         [disabled]="isBannerUploading"
       />
-      <img *ngIf="bannerPreview" [src]="bannerPreview" class="preview-image" />
+      <img
+        *ngIf="bannerPreview"
+        [src]="bannerPreview"
+        class="preview-image"
+        alt="Community banner preview"
+      />
     </div>
 
     <div class="community-logo upload-logo">
@@ -75,7 +80,11 @@
           <div class="chip-group">
             <span
               *ngFor="let t of communityTypes"
+              role="button"
+              tabindex="0"
               (click)="f['type'].setValue(t)"
+              (keydown.enter)="f['type'].setValue(t)"
+              (keydown.space)="f['type'].setValue(t)"
               [class.selected]="f['type'].value === t"
             >
               {{ t }}

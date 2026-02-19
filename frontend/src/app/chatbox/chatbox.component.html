@@ -9,7 +9,11 @@
       class="telegram-contact"
       *ngFor="let c of joinedCommunities"
       [class.active]="selectedCommunity?._id === c._id"
+      role="button"
+      tabindex="0"
       (click)="selectCommunity(c)"
+      (keydown.enter)="selectCommunity(c)"
+      (keydown.space)="selectCommunity(c)"
     >
       <img [src]="c.profileImage || 'assets/default-user.png'" alt="Profile" />
       <div class="contact-info">
@@ -32,7 +36,11 @@
       class="telegram-contact"
       *ngFor="let u of contacts"
       [class.active]="selectedContact?._id === u._id"
+      role="button"
+      tabindex="0"
       (click)="selectContact(u)"
+      (keydown.enter)="selectContact(u)"
+      (keydown.space)="selectContact(u)"
     >
       <img [src]="u.profileImage || 'assets/default-user.png'" alt="Profile" />
       <div class="contact-info">

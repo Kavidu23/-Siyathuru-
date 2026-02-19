@@ -136,10 +136,10 @@
       </div>
 
       <div class="upcoming-actions">
-        <a class="view-btn" (click)="toggleAlertStatus(al)">
+        <button type="button" class="view-btn" (click)="toggleAlertStatus(al)">
           {{ alertButtonLabel(al) }}
-        </a>
-        <a class="remove-btn" (click)="deleteAlert(al)"> Remove </a>
+        </button>
+        <button type="button" class="remove-btn" (click)="deleteAlert(al)">Remove</button>
       </div>
     </div>
 
@@ -162,7 +162,7 @@
       </div>
 
       <div class="upcoming-actions">
-        <a class="remove-btn" (click)="deleteEvent(ev._id)">Remove</a>
+        <button type="button" class="remove-btn" (click)="deleteEvent(ev._id)">Remove</button>
       </div>
     </div>
   </section>

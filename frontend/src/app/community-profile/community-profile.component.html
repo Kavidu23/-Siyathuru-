@@ -102,14 +102,45 @@
 
     <!-- Show gallery photos -->
     <div class="gallery" *ngFor="let ph of communityPhotos">
-      <img [src]="ph.imageUrl" alt="Community Event" (click)="openImage(ph.imageUrl)" />
+      <img
+        [src]="ph.imageUrl"
+        alt="Community Event"
+        role="button"
+        tabindex="0"
+        (click)="openImage(ph.imageUrl)"
+        (keydown.enter)="openImage(ph.imageUrl)"
+        (keydown.space)="openImage(ph.imageUrl)"
+      />
     </div>
   </div>
 
   <!-- Modal Preview -->
-  <div class="image-modal" *ngIf="selectedImage" (click)="closeImage()">
-    <div class="image-modal-content" (click)="$event.stopPropagation()">
-      <span class="close-btn" (click)="closeImage()">&times;</span>
+  <div
+    class="image-modal"
+    *ngIf="selectedImage"
+    role="button"
+    tabindex="0"
+    (click)="closeImage()"
+    (keydown.enter)="closeImage()"
+    (keydown.space)="closeImage()"
+  >
+    <div
+      class="image-modal-content"
+      role="button"
+      tabindex="0"
+      (click)="$event.stopPropagation()"
+      (keydown.enter)="$event.stopPropagation()"
+      (keydown.space)="$event.stopPropagation()"
+    >
+      <span
+        class="close-btn"
+        role="button"
+        tabindex="0"
+        (click)="closeImage()"
+        (keydown.enter)="closeImage()"
+        (keydown.space)="closeImage()"
+        >&times;</span
+      >
       <img [src]="selectedImage" alt="Preview" />
     </div>
   </div>

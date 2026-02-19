@@ -11,7 +11,14 @@
 
 <!-- Signup Modal -->
 <div class="signup-modal" [class.visible]="isVisible" *ngIf="isVisible">
-  <div class="login-overlay" (click)="closeSignup()"></div>
+  <div
+    class="login-overlay"
+    role="button"
+    tabindex="0"
+    (click)="closeSignup()"
+    (keydown.enter)="closeSignup()"
+    (keydown.space)="closeSignup()"
+  ></div>
 
   <div class="signup-box">
     <button class="close-btn" (click)="closeSignup()">×</button>

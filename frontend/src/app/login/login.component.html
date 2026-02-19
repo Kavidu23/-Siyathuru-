@@ -1,5 +1,12 @@
 <div class="login-modal" [class.visible]="isVisible" *ngIf="isVisible">
-  <div class="login-overlay" (click)="closeLogin()"></div>
+  <div
+    class="login-overlay"
+    role="button"
+    tabindex="0"
+    (click)="closeLogin()"
+    (keydown.enter)="closeLogin()"
+    (keydown.space)="closeLogin()"
+  ></div>
 
   <div class="login-box">
     <button class="close-btn" (click)="closeLogin()">×</button>

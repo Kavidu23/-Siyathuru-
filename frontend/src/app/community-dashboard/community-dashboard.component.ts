@@ -211,7 +211,7 @@ export class CommunityDashboardComponent implements OnInit {
       .updateAlert(alert._id, payload)
       .pipe(finalize(() => (this.isUpdatingAlert = false)))
       .subscribe({
-        next: (res) => {
+        next: () => {
           // ✅ Update UI immediately
           alert.isActive = !alert.isActive;
           const status = alert.isActive ? 'activated' : 'deactivated';
@@ -340,3 +340,4 @@ export class CommunityDashboardComponent implements OnInit {
     });
   }
 }
+

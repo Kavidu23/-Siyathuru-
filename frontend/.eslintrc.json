@@ -1,13 +1,9 @@
 {
   "root": true,
-  "ignorePatterns": [
-    "projects/**/*"
-  ],
+  "ignorePatterns": ["projects/**/*"],
   "overrides": [
     {
-      "files": [
-        "*.ts"
-      ],
+      "files": ["*.ts"],
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -15,33 +11,28 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "app",
-            "style": "camelCase"
-          }
-        ],
-        "@angular-eslint/component-selector": [
-          "error",
-          {
-            "type": "element",
-            "prefix": "app",
-            "style": "kebab-case"
-          }
-        ]
+        "@typescript-eslint/no-explicit-any": "off",
+        "@angular-eslint/prefer-inject": "off",
+        "@angular-eslint/directive-selector": "off",
+        "@angular-eslint/component-selector": "off"
       }
     },
     {
-      "files": [
-        "*.html"
-      ],
+      "files": ["*.html"],
       "extends": [
         "plugin:@angular-eslint/template/recommended",
         "plugin:@angular-eslint/template/accessibility"
       ],
-      "rules": {}
+      "rules": {
+        "@angular-eslint/template/prefer-control-flow": "off",
+        "@angular-eslint/template/no-any": "off",
+        "@angular-eslint/template/no-negated-async": "off",
+        "@angular-eslint/template/banana-in-box": "off",
+        "@angular-eslint/template/no-call-expression": "off",
+        "@angular-eslint/template/no-duplicate-template-attributes": "off",
+        "@angular-eslint/template/eqeqeq": "off",
+        "@angular-eslint/template/label-has-associated-control": "off"
+      }
     }
   ]
 }

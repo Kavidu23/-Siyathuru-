@@ -107,8 +107,6 @@ export class AddImageComponent implements OnInit {
 
         error: (err) => {
           console.error(err);
-
-          const msg = err?.error?.error || err?.error?.message || 'Failed to load photos';
         },
       });
   }
@@ -126,8 +124,6 @@ export class AddImageComponent implements OnInit {
 
       error: (err) => {
         console.error(err);
-
-        const msg = err?.error?.error || err?.error?.message || 'Failed to delete photo';
       },
     });
   }

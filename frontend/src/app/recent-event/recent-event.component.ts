@@ -37,11 +37,11 @@ export class RecentEventComponent implements OnInit {
           .filter((ev: any) => {
             if (ev.communityId !== communityId) return false;
 
-            let eventDateTime = new Date(ev.eventDate);
+            const eventDateTime = new Date(ev.eventDate);
             if (ev.eventTime) {
-              let time = ev.eventTime.replace(' AM', '').replace(' PM', '');
+              const time = ev.eventTime.replace(' AM', '').replace(' PM', '');
               const isPM = ev.eventTime.includes('PM');
-              let [h, m] = time.split(':');
+              const [h, m] = time.split(':');
               let hour = parseInt(h, 10);
               const minute = parseInt(m, 10);
               if (isPM && hour !== 12) hour += 12;

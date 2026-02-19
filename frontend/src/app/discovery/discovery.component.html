@@ -20,7 +20,14 @@
           placeholder="Type a location"
         />
         <ul *ngIf="locationSuggestions.length" class="suggestions-list">
-          <li *ngFor="let suggestion of locationSuggestions" (click)="selectLocation(suggestion)">
+          <li
+            *ngFor="let suggestion of locationSuggestions"
+            role="button"
+            tabindex="0"
+            (click)="selectLocation(suggestion)"
+            (keydown.enter)="selectLocation(suggestion)"
+            (keydown.space)="selectLocation(suggestion)"
+          >
             {{ suggestion.district }}
           </li>
         </ul>

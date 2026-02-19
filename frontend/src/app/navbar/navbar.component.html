@@ -39,7 +39,15 @@
       </div>
 
       <!-- User Profile -->
-      <div *ngIf="isLoggedIn" class="user-profile" (click)="goToUserDashboard()">
+      <div
+        *ngIf="isLoggedIn"
+        class="user-profile"
+        role="button"
+        tabindex="0"
+        (click)="goToUserDashboard()"
+        (keydown.enter)="goToUserDashboard()"
+        (keydown.space)="goToUserDashboard()"
+      >
         <img
           [src]="userData?.profileImage || 'https://via.placeholder.com/40?text=User'"
           alt="Profile"

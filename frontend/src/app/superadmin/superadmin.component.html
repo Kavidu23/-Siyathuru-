@@ -51,10 +51,25 @@
           <span>Members: {{ getMemberCount(c) }}</span>
         </div>
         <div class="upcoming-actions">
-          <a class="view-btn" (click)="viewCommunity(c._id)">View</a>
-          <a class="edit-link" (click)="RemoveCommunity(c)" [class.disabled]="isDeleting">
+          <button
+            type="button"
+            class="view-btn"
+            (click)="viewCommunity(c._id)"
+            (keyup.enter)="viewCommunity(c._id)"
+            (keyup.space)="viewCommunity(c._id)"
+          >
+            View
+          </button>
+          <button
+            type="button"
+            class="edit-link"
+            (click)="RemoveCommunity(c)"
+            (keyup.enter)="RemoveCommunity(c)"
+            (keyup.space)="RemoveCommunity(c)"
+            [class.disabled]="isDeleting"
+          >
             Remove
-          </a>
+          </button>
         </div>
       </div>
       <div *ngIf="!isLoading && communities.length === 0">No communities found.</div>

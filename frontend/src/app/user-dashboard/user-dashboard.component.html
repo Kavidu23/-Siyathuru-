@@ -110,7 +110,7 @@
           <strong>{{ c.name }}</strong>
           <p>{{ c.description || c.about || 'No description' }}</p>
         </div>
-        <a class="member-view-btn" (click)="viewCommunity(c._id)">View</a>
+        <button type="button" class="member-view-btn" (click)="viewCommunity(c._id)">View</button>
         <!-- Add this: Check if private and show request button instead -->
         <a *ngIf="c.isPrivate && !c.isJoined" class="member-request-btn"> Request </a>
       </div>

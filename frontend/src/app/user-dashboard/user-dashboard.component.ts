@@ -156,7 +156,7 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
           .filter((ev: any) => {
             if (!ev.eventDate) return false;
 
-            let eventDateTime = new Date(ev.eventDate);
+            const eventDateTime = new Date(ev.eventDate);
 
             if (ev.eventTime) {
               let time = ev.eventTime;
@@ -164,7 +164,7 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
 
               time = time.replace(' AM', '').replace(' PM', '');
 
-              let [h, m] = time.split(':');
+              const [h, m] = time.split(':');
 
               let hour = parseInt(h, 10);
               const minute = parseInt(m, 10);
@@ -207,7 +207,7 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
   parseTime(time: string): [number, number] {
     const isPM = time.includes('PM');
     time = time.replace(' AM', '').replace(' PM', '');
-    let [h, m] = time.split(':');
+    const [h, m] = time.split(':');
     let hour = parseInt(h, 10);
     const minute = parseInt(m, 10);
     if (isPM && hour !== 12) hour += 12;

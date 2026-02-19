@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import * as L from 'leaflet';
@@ -28,7 +28,7 @@ L.Icon.Default.mergeOptions({
   templateUrl: './community-profile.component.html',
   styleUrls: ['./community-profile.component.css'],
 })
-export class CommunityProfileComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CommunityProfileComponent implements OnInit, OnDestroy {
   map!: L.Map;
   community: any = null;
   communityPhotos: any[] = [];
@@ -84,8 +84,6 @@ export class CommunityProfileComponent implements OnInit, AfterViewInit, OnDestr
     // 4. Load upcoming events
     this.loadUpcomingEvents(communityId);
   }
-
-  ngAfterViewInit(): void {}
 
   // -------- EVENTS --------
   loadUpcomingEvents(communityId: string) {

@@ -69,7 +69,7 @@ export class EventComponent implements OnInit {
     };
 
     this.eventService.createEvent(payload).subscribe({
-      next: (res) => {
+      next: () => {
         alert('Event created successfully');
         this.resetForm();
         this.isLoading = false;

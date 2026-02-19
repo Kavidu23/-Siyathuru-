@@ -58,7 +58,9 @@
         Join thousands of Sri Lankans building stronger communities together. Connect, support, and
         grow with people who care.
       </p>
-      <a *ngIf="!isLoggedIn" class="signup-button" (click)="openSignupModal()">Get Started</a>
+      <button *ngIf="!isLoggedIn" type="button" class="signup-button" (click)="openSignupModal()">
+        Get Started
+      </button>
     </div>
 
     <!-- Right Illustration -->
