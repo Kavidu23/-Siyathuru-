@@ -323,10 +323,6 @@ h2 {
   align-items: center;
 }
 
-.view-btn {
-  cursor: pointer;
-}
-
 .add-gallery-btn {
   margin: 10px;
   min-width: none;

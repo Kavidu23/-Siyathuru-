@@ -275,6 +275,22 @@ h2 {
 }
 
 /* BUTTONS */
+.view-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.edit-link {
+  background: none;
+  border: none;
+  color: #c62828;
+  cursor: pointer;
+  font-size: 15px;
+}
+
 .btn-primary {
   background: var(--primary-color);
   color: white;
