@@ -187,12 +187,21 @@ export class CommunityDashboardComponent implements OnInit {
 
   // -------- ALERTS --------
   loadAlerts(communityId: string) {
-    this.alertService.getAlertById(communityId).subscribe({
+    this.alertService.getAlerts().subscribe({
       next: (res) => {
-        this.alerts = res.data || [];
+        const allAlerts = res.data || [];
+        this.alerts = allAlerts.filter(
+          (al: any) => this.getAlertCommunityId(al?.communityId) === String(communityId),
+        );
       },
       error: () => console.log('Failed to load alerts'),
     });
+  }
+
+  private getAlertCommunityId(communityRef: any): string {
+    if (!communityRef) return '';
+    if (typeof communityRef === 'string') return communityRef;
+    return String(communityRef?._id || communityRef?.id || '');
   }
 
   toggleAlertStatus(alert: any) {
