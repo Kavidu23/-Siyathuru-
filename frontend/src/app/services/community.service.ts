@@ -58,12 +58,12 @@ export class CommunityService {
 
   // POST: join a community (body contains { userId })
   joinCommunity(id: string, userId: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/${id}/join`, { userId });
+    return this.http.post<any>(`${this.baseUrl}/${id}/join`, { userId }, { withCredentials: true });
   }
 
   // POST: leave a community (body contains { userId })
   leaveCommunity(id: string, userId: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/${id}/leave`, { userId });
+    return this.http.post<any>(`${this.baseUrl}/${id}/leave`, { userId }, { withCredentials: true });
   }
 
   // DELETE: remove a member from community (leader only)
