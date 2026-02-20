@@ -3,10 +3,60 @@ const bcrypt = require('bcryptjs');
 const sendEmail = require('../utils/sendEmail');
 const jwt = require('jsonwebtoken');
 
+/* CHECK USER AVAILABILITY */
+const checkUserAvailability = async (req, res) => {
+  try {
+    const email = req.query.email?.trim();
+    const pnumber = req.query.pnumber?.trim();
+
+    if (!email && !pnumber) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email or phone number is required',
+      });
+    }
+
+    const conditions = [];
+    if (email) conditions.push({ email });
+    if (pnumber) conditions.push({ pnumber });
+
+    const existingUsers = await User.find({ $or: conditions }, 'email pnumber');
+    const emailExists = !!email && existingUsers.some((user) => user.email === email);
+    const phoneExists = !!pnumber && existingUsers.some((user) => user.pnumber === pnumber);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        emailExists,
+        phoneExists,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
+
 /* CREATE USER */
 const createUser = async (req, res) => {
   try {
     const { profileImage, name, email, pnumber, password, role, age, location } = req.body;
+
+    const existingUser = await User.findOne(
+      {
+        $or: [{ email }, { pnumber }],
+      },
+      '_id',
+    );
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email or phone number already exists',
+      });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -314,6 +364,7 @@ const getUserByCommunity = async (req, res) => {
 
 /* EXPORTS */
 module.exports = {
+  checkUserAvailability,
   createUser,
   verifyUser,
   loginUser,

@@ -168,6 +168,34 @@ export class SignupComponent implements OnInit, OnDestroy {
       // profileImage: (you may upload to cloudinary first and set URL here)
     };
 
+    this.userService.checkUserAvailability(payload.email, payload.pnumber).subscribe(
+      (checkRes) => {
+        const emailExists = !!checkRes?.data?.emailExists;
+        const phoneExists = !!checkRes?.data?.phoneExists;
+
+        if (emailExists || phoneExists) {
+          this.isLoading = false;
+          if (emailExists && phoneExists) {
+            alert('Email and phone number already exist.');
+          } else if (emailExists) {
+            alert('Email already exists.');
+          } else {
+            alert('Phone number already exists.');
+          }
+          return;
+        }
+
+        this.uploadProfileAndCreateUser(payload);
+      },
+      (err) => {
+        this.isLoading = false;
+        console.error('Availability check error:', err);
+        alert(err?.error?.error || 'Could not validate email/phone right now. Please try again.');
+      },
+    );
+  }
+
+  private uploadProfileAndCreateUser(payload: any) {
     // Upload profile image if selected, then create user
     if (this.profileFile) {
       this.userService.uploadProfileImage(this.profileFile).subscribe(

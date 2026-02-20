@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {
+  checkUserAvailability,
   createUser,
   getUsers,
   getUserById,
@@ -24,6 +25,7 @@ router.post('/reset-password', resetPassword);
 
 // CURRENT USER
 router.get('/me', getMe); // Must come BEFORE /:id
+router.get('/check-availability', checkUserAvailability); // Must come BEFORE /:id
 
 // CRUD routes
 router.get('/', getUsers); // Get all users

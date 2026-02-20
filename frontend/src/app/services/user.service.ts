@@ -66,6 +66,12 @@ export class UserService {
     return this.http.post<any>(this.baseUrl, user);
   }
 
+  checkUserAvailability(email: string, pnumber: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/check-availability?email=${encodeURIComponent(email)}&pnumber=${encodeURIComponent(pnumber)}`,
+    );
+  }
+
   verifyUser(payload: { email: string; code: number }): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/verify`, payload);
   }
