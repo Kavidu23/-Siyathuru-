@@ -31,6 +31,7 @@ L.Icon.Default.mergeOptions({
 export class CommunityProfileComponent implements OnInit, OnDestroy {
   map!: L.Map;
   community: any = null;
+  communityEvents: any[] = [];
   communityPhotos: any[] = [];
   upcomingEvents: any[] = [];
   selectedImage: string | null = null;
@@ -92,15 +93,23 @@ export class CommunityProfileComponent implements OnInit, OnDestroy {
         const allEvents = res.data || [];
         const now = new Date();
 
-        this.upcomingEvents = allEvents
-          .filter((ev) => ev.communityId === communityId)
-          .filter((ev) => {
-            const dt = this.buildEventDateTime(ev.eventDate, ev.eventTime);
-            return dt ? dt > now : false;
-          });
+        this.communityEvents = allEvents.filter(
+          (ev) => this.getEventCommunityId(ev?.communityId) === String(communityId),
+        );
+
+        this.upcomingEvents = this.communityEvents.filter((ev) => {
+          const dt = this.buildEventDateTime(ev.eventDate, ev.eventTime);
+          return dt ? dt > now : false;
+        });
       },
       error: () => console.log('Failed to load events'),
     });
+  }
+
+  private getEventCommunityId(communityRef: any): string {
+    if (!communityRef) return '';
+    if (typeof communityRef === 'string') return communityRef;
+    return String(communityRef?._id || communityRef?.id || '');
   }
 
   private buildEventDateTime(eventDate: string, eventTime?: string): Date | null {
