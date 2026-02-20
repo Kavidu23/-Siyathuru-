@@ -3,6 +3,7 @@ import { CommunityCreateComponent } from './community-create.component';
 import { CommunityService } from '../services/community.service';
 import { of } from 'rxjs';
 import { provideRouter, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 describe('CommunityCreateComponent', () => {
   let component: CommunityCreateComponent;
@@ -22,7 +23,16 @@ describe('CommunityCreateComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CommunityCreateComponent],
-      providers: [{ provide: CommunityService, useValue: communityServiceMock }, provideRouter([])],
+      providers: [
+        { provide: CommunityService, useValue: communityServiceMock },
+        {
+          provide: HttpClient,
+          useValue: {
+            get: () => of([]),
+          },
+        },
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     router = TestBed.inject(Router);
@@ -47,6 +57,7 @@ describe('CommunityCreateComponent', () => {
     form.controls['name'].setValue('Test Community');
     form.controls['type'].setValue('Youth');
     form.controls['address'].setValue('Colombo');
+    form.controls['city'].setValue(0);
     form.controls['latitude'].setValue(6.9271);
     form.controls['longitude'].setValue(79.8612);
     form.controls['contactName'].setValue('John Doe');
@@ -68,6 +79,7 @@ describe('CommunityCreateComponent', () => {
     form.controls['name'].setValue('Test Community');
     form.controls['type'].setValue('Youth');
     form.controls['address'].setValue('Colombo');
+    form.controls['city'].setValue(0);
     form.controls['latitude'].setValue(6.9271);
     form.controls['longitude'].setValue(79.8612);
     form.controls['contactName'].setValue('John Doe');

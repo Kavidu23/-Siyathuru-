@@ -136,25 +136,20 @@
           </div>
         </div>
 
-        <div class="coords">
-          <div class="form-group">
-            <label>Latitude</label>
-            <input type="number" formControlName="latitude" placeholder="e.g., 6.9271" />
-            <div class="error" *ngIf="submitted && f['latitude'].errors">
-              <small *ngIf="f['latitude'].errors['required']">Latitude is required.</small>
-              <small *ngIf="f['latitude'].errors['pattern']">Invalid latitude value.</small>
-            </div>
+        <div class="form-group">
+          <label>District</label>
+          <select formControlName="city" (change)="onCitySelected($event)">
+            <option value="">Select District</option>
+            <option *ngFor="let city of cities" [value]="city.id">
+              {{ city.name_en }}
+            </option>
+          </select>
+          <div class="error" *ngIf="submitted && f['city'].errors">
+            <small>District is required.</small>
           </div>
 
-          <!--Longitute-->
-          <div class="form-group">
-            <label>Longitude</label>
-            <input type="number" formControlName="longitude" placeholder="e.g., 79.8612" />
-            <div class="error" *ngIf="submitted && f['longitude'].errors">
-              <small *ngIf="f['longitude'].errors['required']">Longitude is required.</small>
-              <small *ngIf="f['longitude'].errors['pattern']">Invalid longitude value.</small>
-            </div>
-          </div>
+          <input formControlName="latitude" type="number" readonly style="display: none" />
+          <input formControlName="longitude" type="number" readonly style="display: none" />
         </div>
       </div>
 

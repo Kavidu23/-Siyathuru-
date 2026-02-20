@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommunityService } from '../services/community.service';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -6,6 +6,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { CommonModule } from '@angular/common';
 import imageCompression from 'browser-image-compression';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-community-create',
@@ -14,8 +15,9 @@ import { Router } from '@angular/router';
   templateUrl: './community-create.component.html',
   styleUrls: ['./community-create.component.css'],
 })
-export class CommunityCreateComponent {
+export class CommunityCreateComponent implements OnInit {
   communityForm: FormGroup;
+  cities: any[] = [];
 
   // Banner & Logo
   bannerFile: File | null = null;
@@ -46,6 +48,7 @@ export class CommunityCreateComponent {
     private fb: FormBuilder,
     private communityService: CommunityService,
     private router: Router,
+    private http: HttpClient,
   ) {
     this.communityForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -54,6 +57,7 @@ export class CommunityCreateComponent {
       mission: ['', Validators.maxLength(500)],
       description: ['', Validators.maxLength(1000)],
       address: ['', Validators.required],
+      city: ['', Validators.required],
       latitude: [
         '',
         [Validators.required, Validators.pattern(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/)],
@@ -76,8 +80,39 @@ export class CommunityCreateComponent {
     });
   }
 
+  ngOnInit() {
+    this.http.get<any[]>('districts.json').subscribe({
+      next: (data: any[]) => {
+        this.cities = data.map((d: any, i: number) => ({
+          id: i,
+          name_en: d.district,
+          latitude: d.lat,
+          longitude: d.lng,
+        }));
+        this.cities.sort((a: any, b: any) => a.name_en.localeCompare(b.name_en));
+      },
+      error: (error: any) => console.error('Could not load districts.json', error),
+    });
+  }
+
   get f() {
     return this.communityForm.controls;
+  }
+
+  onCitySelected(event: any) {
+    const cityId = event.target.value;
+    const city = this.cities.find((c) => c.id == cityId);
+    if (city) {
+      this.communityForm.patchValue({
+        latitude: city.latitude,
+        longitude: city.longitude,
+      });
+    } else {
+      this.communityForm.patchValue({
+        latitude: '',
+        longitude: '',
+      });
+    }
   }
 
   async onBannerSelected(event: Event) {
