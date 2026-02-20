@@ -25,6 +25,7 @@ describe('SuperadminComponent', () => {
     getCurrentUser: jasmine.createSpy('getCurrentUser').and.callFake(() => currentUser),
     validateSession: jasmine.createSpy('validateSession').and.returnValue(of({ user: null })),
     getUsers: jasmine.createSpy('getUsers').and.returnValue(of({ data: [] })),
+    deleteUser: jasmine.createSpy('deleteUser').and.returnValue(of({ message: 'User removed' })),
   };
 
   beforeEach(async () => {
@@ -50,6 +51,7 @@ describe('SuperadminComponent', () => {
 
     navigateSpy.calls.reset();
     communityServiceMock.deleteCommunity.calls.reset();
+    userServiceMock.deleteUser.calls.reset();
   });
 
   it('should create', () => {
@@ -114,5 +116,31 @@ describe('SuperadminComponent', () => {
     expect(component.totalCommunities).toBe(1);
     expect(component.isDeleting).toBeFalse();
     expect(alertSpy).toHaveBeenCalledWith('Removed');
+  });
+
+  it('removes platform user and updates totals on success', () => {
+    spyOn(window, 'confirm').and.returnValue(true);
+    const alertSpy = spyOn(window, 'alert');
+    component.platformUsers = [
+      { _id: 'u2', joinedCommunities: ['c1'], role: 'member' },
+      { _id: 'u3', joinedCommunities: [], role: 'leader' },
+    ];
+    component.totalUsers = 2;
+    component.activeEngagement = 50;
+
+    component.removeUser({ _id: 'u2', name: 'Member User' });
+
+    expect(userServiceMock.deleteUser).toHaveBeenCalledWith('u2');
+    expect(component.platformUsers.length).toBe(1);
+    expect(component.totalUsers).toBe(1);
+    expect(component.activeEngagement).toBe(0);
+    expect(alertSpy).toHaveBeenCalledWith('User removed');
+  });
+
+  it('does not remove current admin user', () => {
+    const alertSpy = spyOn(window, 'alert');
+    component.removeUser({ _id: 'u1', name: 'Admin' });
+    expect(userServiceMock.deleteUser).not.toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith('You cannot remove your own admin account.');
   });
 });

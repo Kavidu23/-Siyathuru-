@@ -18,6 +18,7 @@ import autoTable from 'jspdf-autotable';
 export class SuperadminComponent implements OnInit {
   currentUser: any = null;
   communities: any[] = [];
+  platformUsers: any[] = [];
   topPerformingCommunities: Array<{
     _id: string;
     name: string;
@@ -26,6 +27,7 @@ export class SuperadminComponent implements OnInit {
 
   isLoading = true;
   isDeleting = false;
+  isRemovingUser = false;
   errorMessage = '';
 
   totalCommunities = 0;
@@ -79,17 +81,19 @@ export class SuperadminComponent implements OnInit {
     this.userService.getUsers().subscribe({
       next: (res: any) => {
         const users = res?.data || res || [];
+        this.platformUsers = users;
         this.totalUsers = users.length;
-        const activeUsers = users.filter(
-          (u: any) => (u?.joinedCommunities || []).length > 0,
-        ).length;
-        this.activeEngagement =
-          this.totalUsers > 0 ? Math.round((activeUsers / this.totalUsers) * 100) : 0;
+        this.activeEngagement = this.calculateActiveEngagement(users);
       },
       error: () => {
         this.errorMessage = 'Failed to load users';
       },
     });
+  }
+
+  private calculateActiveEngagement(users: any[]): number {
+    const activeUsers = users.filter((u: any) => (u?.joinedCommunities || []).length > 0).length;
+    return users.length > 0 ? Math.round((activeUsers / users.length) * 100) : 0;
   }
 
   private loadCommunities() {
@@ -154,6 +158,34 @@ export class SuperadminComponent implements OnInit {
         },
         error: (err: any) => {
           alert(err?.error?.error || 'Failed to deactivate community');
+        },
+      });
+  }
+
+  removeUser(user: any) {
+    if (!user?._id) return;
+    if (String(user._id) === String(this.currentUser?._id)) {
+      alert('You cannot remove your own admin account.');
+      return;
+    }
+
+    const label = user?.name || user?.email || 'this user';
+    const ok = confirm(`Remove user "${label}"?`);
+    if (!ok) return;
+
+    this.isRemovingUser = true;
+    this.userService
+      .deleteUser(user._id)
+      .pipe(finalize(() => (this.isRemovingUser = false)))
+      .subscribe({
+        next: (res: any) => {
+          this.platformUsers = this.platformUsers.filter((u) => u._id !== user._id);
+          this.totalUsers = this.platformUsers.length;
+          this.activeEngagement = this.calculateActiveEngagement(this.platformUsers);
+          alert(res?.message || 'User removed successfully');
+        },
+        error: (err: any) => {
+          alert(err?.error?.error || 'Failed to remove user');
         },
       });
   }

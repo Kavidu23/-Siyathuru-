@@ -44,7 +44,7 @@
   <!-- Community Overview -->
   <section class="card upcoming-management">
     <h2>Communities Overview</h2>
-    <div class="upcoming-list">
+    <div class="upcoming-list scrollable-list">
       <div class="upcoming-item" *ngFor="let c of communities">
         <div class="upcoming-info">
           <strong>🏡 {{ c.name }}</strong>
@@ -73,6 +73,37 @@
         </div>
       </div>
       <div *ngIf="!isLoading && communities.length === 0">No communities found.</div>
+    </div>
+  </section>
+
+  <!-- Platform Members -->
+  <section class="card upcoming-management">
+    <h2>Platform Members</h2>
+    <div class="upcoming-list scrollable-list">
+      <div class="upcoming-item" *ngFor="let u of platformUsers">
+        <div class="upcoming-info">
+          <strong>{{ u.name || 'Unnamed User' }}</strong>
+          <span>{{ u.email || 'No email' }}</span>
+          <span>
+            Role:
+            <b class="role-badge">{{ u.role || 'member' }}</b>
+          </span>
+        </div>
+        <div class="upcoming-actions">
+          <button
+            type="button"
+            class="edit-link"
+            (click)="removeUser(u)"
+            (keyup.enter)="removeUser(u)"
+            (keyup.space)="removeUser(u)"
+            [class.disabled]="isRemovingUser || u._id === currentUser?._id"
+            [disabled]="isRemovingUser || u._id === currentUser?._id"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+      <div *ngIf="!isLoading && platformUsers.length === 0">No users found.</div>
     </div>
   </section>
 
