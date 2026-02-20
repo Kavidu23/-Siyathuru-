@@ -228,6 +228,8 @@ h2 {
   margin-left: 12px;
   cursor: pointer;
   font-size: var(--font-size-sm);
+  border: none;
+  background: none;
 }
 
 .upcoming-actions .remove-btn:hover {
