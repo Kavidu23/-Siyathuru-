@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { of, Subject } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { provideRouter, Router } from '@angular/router';
 
 import { LoginComponent } from './login.component';
@@ -15,6 +15,7 @@ describe('LoginComponent', () => {
     loginVisible$: new Subject<boolean>(),
     closeLogin: jasmine.createSpy('closeLogin'),
     openSignup: jasmine.createSpy('openSignup'),
+    openSignupForVerification: jasmine.createSpy('openSignupForVerification'),
   };
 
   const userServiceMock = {
@@ -41,6 +42,7 @@ describe('LoginComponent', () => {
 
     modalServiceMock.closeLogin.calls.reset();
     modalServiceMock.openSignup.calls.reset();
+    modalServiceMock.openSignupForVerification.calls.reset();
     userServiceMock.loginUser.calls.reset();
     navigateSpy.calls.reset();
   });
@@ -101,5 +103,26 @@ describe('LoginComponent', () => {
 
     expect(alertSpy).toHaveBeenCalledWith('Welcome Leader! Please create your first community.');
     expect(navigateSpy).toHaveBeenCalledWith(['/create-community']);
+  });
+
+  it('opens verification flow when account is not verified', () => {
+    userServiceMock.loginUser.and.returnValue(
+      throwError(() => ({
+        status: 403,
+        error: { error: 'Account not verified' },
+      })),
+    );
+    const alertSpy = spyOn(window, 'alert');
+    component.loginForm.setValue({
+      email: 'pending@example.com',
+      password: 'pass123',
+    });
+
+    component.onSubmit();
+
+    expect(alertSpy).toHaveBeenCalledWith(
+      'Account not verified. Please enter the verification code sent to your email.',
+    );
+    expect(modalServiceMock.openSignupForVerification).toHaveBeenCalledWith('pending@example.com');
   });
 });

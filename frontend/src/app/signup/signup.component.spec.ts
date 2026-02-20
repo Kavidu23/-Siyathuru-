@@ -10,9 +10,11 @@ describe('SignupComponent', () => {
 
   const modalServiceMock = {
     signupVisible$: new Subject<boolean>(),
+    signupVerificationEmail$: new Subject<string | null>(),
     openSignup: jasmine.createSpy('openSignup'),
     closeSignup: jasmine.createSpy('closeSignup'),
     openLogin: jasmine.createSpy('openLogin'),
+    clearSignupVerificationEmail: jasmine.createSpy('clearSignupVerificationEmail'),
   };
 
   const userServiceMock = {

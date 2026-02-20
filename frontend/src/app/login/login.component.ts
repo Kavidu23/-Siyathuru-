@@ -119,6 +119,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         },
         error: (err: any) => {
           console.error('Login error:', err);
+          if (err?.status === 403 && err?.error?.error === 'Account not verified') {
+            alert('Account not verified. Please enter the verification code sent to your email.');
+            this.modalService.openSignupForVerification(payload.email);
+            return;
+          }
           alert(err?.error?.error || 'Login failed. Please try again.');
         },
       });

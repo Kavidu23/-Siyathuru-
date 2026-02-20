@@ -35,6 +35,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   profilePreview: string | ArrayBuffer | null = null;
 
   subscription?: Subscription;
+  verificationRedirectSub?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -48,6 +49,18 @@ export class SignupComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = this.modalService.signupVisible$.subscribe((visible) => {
       this.isVisible = visible;
+    });
+
+    this.verificationRedirectSub = this.modalService.signupVerificationEmail$.subscribe((email) => {
+      if (!email) return;
+      this.resetUserForm();
+      this.createdEmail = email;
+      this.verificationPending = true;
+      this.verifyForm = this.fb.group({
+        email: [email, [Validators.required, Validators.email]],
+        code: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
+      });
+      this.modalService.clearSignupVerificationEmail();
     });
 
     this.http.get<any[]>('districts.json').subscribe(
@@ -68,6 +81,7 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription?.unsubscribe();
+    this.verificationRedirectSub?.unsubscribe();
   }
 
   initForm() {
