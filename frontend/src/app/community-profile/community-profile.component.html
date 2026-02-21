@@ -20,9 +20,62 @@
     <p class="mission">
       {{ community?.mission || 'No mission' }}
     </p>
-    <div class="verification">
-      <span class="verified-badge" *ngIf="community?.isVerified"> ✔ Verified Community </span>
-      <span class="unverified-badge" *ngIf="!community?.isVerified"> Not Verified </span>
+    <div class="sec-section">
+      <div class="verification">
+        <span class="verified-badge" *ngIf="community?.isVerified"> ✔ Verified Community </span>
+        <span class="unverified-badge" *ngIf="!community?.isVerified"> Not Verified </span>
+      </div>
+      <div class="social-icons">
+        <!-- Facebook -->
+        <a
+          *ngIf="community?.media?.facebook"
+          [href]="community.media.facebook"
+          target="_blank"
+          aria-label="Facebook"
+        >
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+
+        <!-- Twitter -->
+        <a
+          *ngIf="community?.media?.twitter"
+          [href]="community.media.twitter"
+          target="_blank"
+          aria-label="Twitter"
+        >
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+
+        <!-- Instagram -->
+        <a
+          *ngIf="community?.media?.instagram"
+          [href]="community.media.instagram"
+          target="_blank"
+          aria-label="Instagram"
+        >
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <!-- WhatsApp -->
+        <a
+          *ngIf="community?.media?.whatsapp"
+          [href]="community.media.whatsapp"
+          target="_blank"
+          aria-label="WhatsApp"
+        >
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+
+        <!-- Reddit -->
+        <a
+          *ngIf="community?.media?.reddit"
+          [href]="community.media.reddit"
+          target="_blank"
+          aria-label="Reddit"
+        >
+          <i class="fa-brands fa-reddit-alien"></i>
+        </a>
+      </div>
     </div>
     <div class="stats">
       <div>

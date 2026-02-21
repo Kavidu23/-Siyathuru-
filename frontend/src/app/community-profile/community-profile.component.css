@@ -56,6 +56,20 @@
   font-weight: 600;
 }
 
+.sec-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin: 10px 0 16px;
+  flex-wrap: wrap;
+}
+
+.verification {
+  display: flex;
+  align-items: center;
+}
+
 /*Acctivation Badge*/
 .activity-section {
   margin-top: 60px;
@@ -67,7 +81,7 @@
 }
 
 .verified-badge {
-  margin-top: var(--spacing-lg);
+  margin-top: 0;
   background: var(--primary-color);
   color: white;
   font-size: 14px;
@@ -78,7 +92,7 @@
 }
 
 .unverified-badge {
-  margin-top: var(--spacing-lg);
+  margin-top: 0;
   background: #9aa1a8;
   color: white;
   font-size: 14px;
@@ -172,18 +186,28 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  margin-left: auto;
+  flex-wrap: wrap;
 }
 
 .social-icons a {
-  font-size: 1.8rem;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
   color: var(--secondary-text-color);
   background-color: white;
   border-radius: 50%;
+  border: 1px solid #dbe1e6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
 }
 
 .social-icons a:hover {
   transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
 
 /* Brand colors on hover */
@@ -192,6 +216,9 @@
 }
 .social-icons a[aria-label='Instagram'] {
   color: #e1306c;
+}
+.social-icons a[aria-label='Twitter'] {
+  color: #111111;
 }
 .social-icons a[aria-label='WhatsApp'] {
   color: #25d366;
@@ -371,5 +398,16 @@
   }
   .social-icons {
     justify-content: center;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .sec-section {
+    justify-content: center;
+  }
+
+  .verification {
+    justify-content: center;
+    width: 100%;
   }
 }
