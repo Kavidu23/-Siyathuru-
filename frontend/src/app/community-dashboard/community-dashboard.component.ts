@@ -261,6 +261,11 @@ export class CommunityDashboardComponent implements OnInit {
   }
 
   goToAlert() {
+    if (!this.selectedCommunity?.isVerified) {
+      alert('Only verified communities can manage alerts. Please verify your community first.');
+      return;
+    }
+
     this.router.navigate(['/management'], {
       queryParams: { communityId: this.selectedCommunity?._id, view: 'alert' },
     });
