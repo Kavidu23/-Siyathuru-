@@ -283,8 +283,8 @@ See `.github/workflows/ci.yml`.
 
 ## Contributing
 
-See `CONTRIBUTING.md`.
+This is personal project and only the owner can contribute to this .See `CONTRIBUTING.md`.
 
 ## Maintainer
 
-Kavidu Lakshan
+Kavidu Lakshan (Rateralalage Thilakarathna)
