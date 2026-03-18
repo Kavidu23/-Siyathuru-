@@ -57,7 +57,7 @@ export const routes: Routes = [
     path: 'chart',
     component: ChartDashboardComponent,
     canActivate: [authGuard],
-    data: { roles: ['leader'] },
+    data: { roles: ['admin'] },
   },
   {
     path: 'superadmin',

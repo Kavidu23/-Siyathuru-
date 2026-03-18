@@ -125,4 +125,11 @@ export class EventService {
       withCredentials: true,
     });
   }
+
+  // Get all alerts
+  getNumberOfEvents(): Observable<{ count: number }> {
+    return this.http.get<{ count: number }>(`${this.baseUrl}/count`, {
+      withCredentials: true,
+    });
+  }
 }

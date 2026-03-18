@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -21,5 +22,16 @@ export class FeedbackService {
   // GET all feedbacks
   getFeedbacks(): Observable<any> {
     return this.http.get<any>(this.baseUrl);
+  }
+
+  //Get number of feedbacks
+  getNumberOfFeedbacks(): Observable<{ count: number }> {
+    return this.http
+      .get<{ count?: number; data?: { count?: number } }>(`${this.baseUrl}/count`)
+      .pipe(
+        map((response) => ({
+          count: response.count ?? response.data?.count ?? 0,
+        })),
+      );
   }
 }

@@ -9,6 +9,7 @@ const {
   deleteEvent,
   joinEvent, // NEW
   getEventsByUserId, // NEW
+  getNumberOfEvents, // NEW
 } = require('../controllers/eventsController');
 
 const authMiddleware = require('../middleware/authMiddleware');
@@ -17,6 +18,10 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 // Role shortcuts
 const leaderOnly = roleMiddleware(['leader']);
 const memberOnly = roleMiddleware(['member']);
+const adminOnly = roleMiddleware(['admin']);
+
+// ===== Admin-only routes =====
+router.get('/count', authMiddleware, adminOnly, getNumberOfEvents);
 
 // ===== Public routes =====
 router.get('/', getEvents); // Get all events

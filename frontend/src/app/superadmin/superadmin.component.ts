@@ -190,6 +190,10 @@ export class SuperadminComponent implements OnInit {
       });
   }
 
+  viewChart() {
+    return this.router.navigate(['/chart']);
+  }
+
   downloadReport() {
     const doc = new jsPDF();
 

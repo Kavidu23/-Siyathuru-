@@ -294,6 +294,22 @@ const getEventsByUserId = async (req, res) => {
   }
 };
 
+const getNumberOfEvents = async (req, res) => {
+  try {
+    const eventCount = await events.countDocuments();
+    res.status(200).json({
+      success: true,
+      count: eventCount,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch event count',
+      details: err.message,
+    });
+  }
+};
+
 module.exports = {
   createEvent,
   getEvents,
@@ -302,4 +318,5 @@ module.exports = {
   deleteEvent,
   joinEvent,
   getEventsByUserId,
+  getNumberOfEvents,
 };

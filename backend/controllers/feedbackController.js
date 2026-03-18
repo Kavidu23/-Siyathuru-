@@ -52,7 +52,25 @@ const getFeedbacks = async (req, res) => {
   }
 };
 
+const getNumberOfFeedbacks = async (req, res) => {
+  try {
+    const feedbackCount = await Feedback.countDocuments();
+    res.status(200).json({
+      success: true,
+      message: 'Total feedback count fetched successfully',
+      data: { count: feedbackCount },
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: 'Server error',
+      details: err.message,
+    });
+  }
+};
+
 module.exports = {
   createFeedback,
   getFeedbacks,
+  getNumberOfFeedbacks,
 };

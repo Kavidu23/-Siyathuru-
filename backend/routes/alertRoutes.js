@@ -11,12 +11,16 @@ const {
   updateAlert,
   deleteAlert,
   getAlertByUserId,
+  getNumberOfAlerts,
 } = require('../controllers/alertController');
 
 // ===== Routes accessible by MEMBER + LEADER =====
 
 // Get all alerts
 router.get('/', authMiddleware, roleMiddleware(['member', 'leader']), getAlerts);
+
+//Get number of alerts
+router.get('/count', authMiddleware, roleMiddleware(['admin']), getNumberOfAlerts);
 
 // Get alerts by user id
 router.get('/user/:userId', authMiddleware, roleMiddleware(['member', 'leader']), getAlertByUserId);

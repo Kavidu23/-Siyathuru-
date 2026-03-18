@@ -113,4 +113,10 @@ export class UserService {
   deleteUser(id: string): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/${id}`);
   }
+
+  getUserCountByMonth(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/stats/monthly`, {
+      withCredentials: true,
+    });
+  }
 }

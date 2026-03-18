@@ -362,6 +362,44 @@ const getUserByCommunity = async (req, res) => {
   }
 };
 
+const getUserCountByMonth = async (req, res) => {
+  try {
+    const userCounts = await User.aggregate([
+      {
+        $group: {
+          _id: { $month: '$createdAt' },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          month: {
+            $arrayElemAt: [
+              ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+              { $subtract: ['$_id', 1] },
+            ],
+          },
+          count: 1,
+          _id: 0,
+        },
+      },
+      {
+        $sort: { count: -1 }, // optional (sort by highest)
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: userCounts,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
+
 /* EXPORTS */
 module.exports = {
   checkUserAvailability,
@@ -375,4 +413,5 @@ module.exports = {
   deleteUser,
   getUserByCommunity,
   getMe,
+  getUserCountByMonth,
 };

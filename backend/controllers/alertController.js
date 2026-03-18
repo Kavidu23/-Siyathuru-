@@ -215,6 +215,22 @@ const deleteAlert = async (req, res) => {
   }
 };
 
+const getNumberOfAlerts = async (req, res) => {
+  try {
+    const count = await Alert.countDocuments();
+    res.status(200).json({
+      success: true,
+      count,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: 'Server error',
+      details: err.message,
+    });
+  }
+};
+
 module.exports = {
   createAlert,
   getAlerts,
@@ -222,4 +238,5 @@ module.exports = {
   updateAlert,
   deleteAlert,
   getAlertByUserId,
+  getNumberOfAlerts,
 };

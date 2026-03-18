@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const {
   checkUserAvailability,
   createUser,
@@ -12,7 +14,11 @@ const {
   logoutUser,
   getUserByCommunity,
   getMe,
+  getUserCountByMonth,
 } = require('../controllers/userController');
+
+// Role shortcuts
+const memberOnly = roleMiddleware(['admin']);
 
 const { requestPasswordReset, resetPassword } = require('../controllers/userPasswordController');
 
@@ -23,13 +29,16 @@ router.post('/verify', verifyUser); // Verify user
 router.post('/forgot-password', requestPasswordReset);
 router.post('/reset-password', resetPassword);
 
+//Special routes
+router.get('/stats/monthly', authMiddleware, memberOnly, getUserCountByMonth); // Get user count by month for the past year
+
 // CURRENT USER
 router.get('/me', getMe); // Must come BEFORE /:id
 router.get('/check-availability', checkUserAvailability); // Must come BEFORE /:id
 
 // CRUD routes
 router.get('/', getUsers); // Get all users
-router.get('/:id', getUserById); // Get single user by ID
+router.get('/:id', memberOnly, getUserById); // Get single user by ID
 router.get('/:communityId', getUserByCommunity); // Get users by community ID
 router.post('/', createUser); // Create new user
 router.put('/:id', updateUser); // Update user by ID

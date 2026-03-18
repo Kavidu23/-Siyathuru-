@@ -69,4 +69,11 @@ export class AlertService {
       withCredentials: true,
     });
   }
+
+  // Get all alerts
+  getNumberOfAlerts(): Observable<{ count: number }> {
+    return this.http.get<{ count: number }>(`${this.baseUrl}/count`, {
+      withCredentials: true,
+    });
+  }
 }

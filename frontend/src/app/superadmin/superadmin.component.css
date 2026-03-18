@@ -96,6 +96,12 @@ h2 {
   background-color: var(--primary-color-hover);
 }
 
+/* Buttons*/
+.action-cta {
+  display: flex;
+  gap: 12px;
+}
+
 /* COMMUNITY HEALTH SNAPSHOT */
 
 .health-grid {
