@@ -177,13 +177,19 @@ describe('Community Controller Unit Tests (with nested objects)', () => {
   it('should fetch community by ID', async () => {
     req.params.id = '1';
     const mockCommunity = { _id: '1', name: 'Test' };
+    const populateMembers = jest.fn().mockResolvedValueOnce(mockCommunity);
+    const populateLeader = jest.fn().mockReturnValueOnce({
+      populate: populateMembers,
+    });
     Community.findById.mockReturnValueOnce({
-      populate: jest.fn().mockResolvedValueOnce(mockCommunity),
+      populate: populateLeader,
     });
 
     await getCommunityById(req, res);
 
     expect(Community.findById).toHaveBeenCalledWith('1');
+    expect(populateLeader).toHaveBeenCalledWith('leader', 'name email profileImage');
+    expect(populateMembers).toHaveBeenCalledWith('members', 'name email profileImage');
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
@@ -193,12 +199,18 @@ describe('Community Controller Unit Tests (with nested objects)', () => {
 
   it('should return 404 if community not found', async () => {
     req.params.id = '1';
+    const populateMembers = jest.fn().mockResolvedValueOnce(null);
+    const populateLeader = jest.fn().mockReturnValueOnce({
+      populate: populateMembers,
+    });
     Community.findById.mockReturnValueOnce({
-      populate: jest.fn().mockResolvedValueOnce(null),
+      populate: populateLeader,
     });
 
     await getCommunityById(req, res);
 
+    expect(populateLeader).toHaveBeenCalledWith('leader', 'name email profileImage');
+    expect(populateMembers).toHaveBeenCalledWith('members', 'name email profileImage');
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
       success: false,

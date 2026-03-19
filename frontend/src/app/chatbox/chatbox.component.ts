@@ -52,10 +52,16 @@ export class ChatboxComponent implements OnInit, OnDestroy {
     });
     this.subs.push(authSub);
 
+    const validateSub = this.userService.validateSession().subscribe({
+      error: () => this.router.navigate(['/home']),
+    });
+    this.subs.push(validateSub);
+
     const routeSub = this.route.queryParamMap.subscribe((params) => {
       const qid = params.get('communityId') || '';
       if (qid) {
         this.communityId = qid;
+        this.applyPreferredCommunity();
       }
     });
     this.subs.push(routeSub);
@@ -88,14 +94,7 @@ export class ChatboxComponent implements OnInit, OnDestroy {
           return isLeader || isMember || inUserJoined;
         });
 
-        const preferred =
-          this.joinedCommunities.find((c) => c._id === this.communityId) ||
-          this.joinedCommunities[0] ||
-          null;
-
-        if (preferred) {
-          this.selectCommunity(preferred);
-        }
+        this.applyPreferredCommunity();
       },
       error: () => {
         this.isLoading = false;
@@ -104,6 +103,23 @@ export class ChatboxComponent implements OnInit, OnDestroy {
     });
 
     this.subs.push(sub);
+  }
+
+  private applyPreferredCommunity() {
+    if (!this.joinedCommunities.length) return;
+
+    const preferred =
+      this.joinedCommunities.find((c) => String(c._id) === String(this.communityId)) ||
+      this.joinedCommunities[0] ||
+      null;
+
+    if (!preferred) return;
+
+    if (this.selectedCommunity?._id === preferred._id && this.selectedContact) {
+      return;
+    }
+
+    this.selectCommunity(preferred);
   }
 
   selectCommunity(community: any) {

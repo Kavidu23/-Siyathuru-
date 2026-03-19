@@ -117,10 +117,9 @@ const getCommunities = async (req, res) => {
 // GET a single community by ID
 const getCommunityById = async (req, res) => {
   try {
-    const community = await Community.findById(req.params.id).populate(
-      'members',
-      'name email profileImage',
-    );
+    const community = await Community.findById(req.params.id)
+      .populate('leader', 'name email profileImage')
+      .populate('members', 'name email profileImage');
     if (!community) {
       return res.status(404).json({
         success: false,
