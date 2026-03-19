@@ -224,13 +224,34 @@ export class SignupComponent implements OnInit, OnDestroy {
           this.submitUserWithImage(payload);
         },
         (uploadErr) => {
-          console.warn('Image upload failed, creating user without image:', uploadErr);
-          this.submitUserWithImage(payload);
+          this.isLoading = false;
+          console.warn('Image upload failed, signup cancelled:', uploadErr);
+          alert(this.getProfileImageUploadErrorMessage(uploadErr));
         },
       );
     } else {
       this.submitUserWithImage(payload);
     }
+  }
+
+  private getProfileImageUploadErrorMessage(uploadErr: any): string {
+    const rawMessage =
+      uploadErr?.error?.error || uploadErr?.error?.message || uploadErr?.message || '';
+
+    const message = String(rawMessage).toLowerCase();
+
+    if (
+      message.includes('nsfw') ||
+      message.includes('not safe for work') ||
+      message.includes('adult') ||
+      message.includes('explicit') ||
+      message.includes('inappropriate') ||
+      message.includes('unsafe')
+    ) {
+      return 'The selected profile image was rejected because it may contain inappropriate or NSFW content. Please choose a different image.';
+    }
+
+    return 'We could not upload your profile image, so your account was not created. Please try again with a different image.';
   }
 
   // Helper method to submit user after image upload
