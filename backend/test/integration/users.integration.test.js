@@ -87,6 +87,10 @@ describe('Integration: Users', () => {
     expect(meRes.status).toBe(200);
     expect(meRes.body.success).toBe(true);
     expect(meRes.body.user.name).toBe(payload.name);
+    expect(meRes.body.user.email).toBe(payload.email);
+    expect(meRes.body.user.pnumber).toBe(payload.pnumber);
+    expect(meRes.body.user.age).toBe(payload.age);
+    expect(meRes.body.user.location).toEqual(payload.location);
 
     const logoutRes = await agent.post('/api/users/logout').send({});
     expect(logoutRes.status).toBe(200);

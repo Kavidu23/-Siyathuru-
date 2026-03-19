@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { of, Subject } from 'rxjs';
 
 import { UserDashboardComponent } from './user-dashboard.component';
@@ -15,6 +16,7 @@ describe('UserDashboardComponent', () => {
   let authState$: Subject<any>;
   let router: Router;
   let navigateSpy: jasmine.Spy;
+  let httpMock: HttpTestingController;
 
   let communityServiceMock: any;
   let alertServiceMock: any;
@@ -47,7 +49,7 @@ describe('UserDashboardComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [UserDashboardComponent],
+      imports: [UserDashboardComponent, HttpClientTestingModule],
       providers: [
         { provide: CommunityService, useValue: communityServiceMock },
         { provide: AlertService, useValue: alertServiceMock },
@@ -59,11 +61,16 @@ describe('UserDashboardComponent', () => {
     }).compileComponents();
 
     router = TestBed.inject(Router);
+    httpMock = TestBed.inject(HttpTestingController);
     navigateSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
     fixture = TestBed.createComponent(UserDashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 
   it('should create', () => {
@@ -98,5 +105,27 @@ describe('UserDashboardComponent', () => {
 
     expect(eventServiceMock.joinEvent).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith('You have already joined this event');
+  });
+
+  it('resolves the district name from saved user coordinates', () => {
+    component.userData = {
+      _id: 'u1',
+      name: 'Test User',
+      location: {
+        coordinates: {
+          latitude: 6.9271,
+          longitude: 79.8612,
+        },
+      },
+    };
+
+    (component as any).districts = [
+      { district: 'Colombo', lat: 6.9271, lng: 79.8612 },
+      { district: 'Galle', lat: 6.0535, lng: 80.221 },
+    ];
+
+    component.loadCity();
+
+    expect(component.userCity).toBe('Colombo');
   });
 });

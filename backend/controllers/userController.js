@@ -335,8 +335,12 @@ const getMe = async (req, res) => {
       user: {
         _id: user._id,
         name: user.name,
+        email: user.email,
+        pnumber: user.pnumber,
         role: user.role,
+        age: user.age,
         profileImage: user.profileImage || null,
+        location: user.location,
         joinedCommunities: user.joinedCommunities || [],
       },
     });

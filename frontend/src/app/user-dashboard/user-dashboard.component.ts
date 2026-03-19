@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FooterComponent } from '../footer/footer.component';
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -13,12 +14,16 @@ import { ChatService } from '../services/chat.service';
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
-  imports: [FooterComponent, CommonModule, RouterModule],
+  imports: [FooterComponent, CommonModule, RouterModule, HttpClientModule],
   templateUrl: './user-dashboard.component.html',
   styleUrls: ['./user-dashboard.component.css'],
 })
 export class UserDashboardComponent implements OnInit, OnDestroy {
+  private readonly coordinateTolerance = 0.0001;
+
   userData: any = null;
+  userCity = '';
+  private districts: { district: string; lat: number; lng: number }[] = [];
 
   // ===== DATA =====
   joinedCommunities: any[] = [];
@@ -37,6 +42,7 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
   private subs: Subscription[] = [];
 
   constructor(
+    private http: HttpClient,
     private communityService: CommunityService,
     private alertService: AlertService,
     private userService: UserService,
@@ -53,6 +59,8 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
         this.router.navigate(['/home']);
         return;
       }
+
+      this.loadCity();
 
       // LOAD ALL USER RELATED DATA
       this.loadUserEvents();
@@ -267,5 +275,77 @@ export class UserDashboardComponent implements OnInit, OnDestroy {
   viewCommunity(id: string): void {
     if (!id) return;
     this.router.navigate(['/community', id]);
+  }
+
+  loadCity(): void {
+    const coords = this.userData?.location?.coordinates;
+
+    if (!coords) {
+      this.userCity = '';
+      return;
+    }
+
+    const latitude = Number(coords.latitude);
+    const longitude = Number(coords.longitude);
+
+    if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+      this.userCity = '';
+      return;
+    }
+
+    if (this.districts.length) {
+      this.userCity = this.findDistrictByCoordinates(latitude, longitude);
+      return;
+    }
+
+    const sub = this.http.get<any[]>('districts.json').subscribe({
+      next: (data: any[]) => {
+        this.districts = data.map((district: any) => ({
+          district: district.district,
+          lat: Number(district.lat),
+          lng: Number(district.lng),
+        }));
+        this.userCity = this.findDistrictByCoordinates(latitude, longitude);
+      },
+      error: (err) => {
+        console.error('Could not load districts.json', err);
+        this.userCity = '';
+      },
+    });
+
+    this.subs.push(sub);
+  }
+
+  private findDistrictByCoordinates(latitude: number, longitude: number): string {
+    const exactMatch = this.districts.find(
+      (district) =>
+        Math.abs(district.lat - latitude) <= this.coordinateTolerance &&
+        Math.abs(district.lng - longitude) <= this.coordinateTolerance,
+    );
+
+    if (exactMatch) {
+      return exactMatch.district;
+    }
+
+    if (!this.districts.length) {
+      return '';
+    }
+
+    const nearestDistrict = this.districts.reduce((closest, current) => {
+      const currentDistance = this.getDistance(latitude, longitude, current.lat, current.lng);
+      const closestDistance = this.getDistance(latitude, longitude, closest.lat, closest.lng);
+      return currentDistance < closestDistance ? current : closest;
+    });
+
+    return nearestDistrict.district;
+  }
+
+  private getDistance(
+    latitudeA: number,
+    longitudeA: number,
+    latitudeB: number,
+    longitudeB: number,
+  ): number {
+    return Math.hypot(latitudeA - latitudeB, longitudeA - longitudeB);
   }
 }

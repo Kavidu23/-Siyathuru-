@@ -4,6 +4,7 @@
     <div class="text">
       <h2>Hi 👋, {{ userData?.name || 'User' }}!</h2>
       <p>Community User Dashboard</p>
+      <p *ngIf="userCity">District: {{ userCity }}</p>
     </div>
   </div>
 
