@@ -169,31 +169,38 @@ export class CommunityCreateComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
 
-    if (this.communityForm.value.otherType) {
-      this.communityForm.value.type = this.communityForm.value.otherType;
-    }
+    const formValue = this.communityForm.value;
 
-    // 1️⃣ Validate images
+    // 1️⃣ Validate images first
     if (!this.bannerFile || !this.profileFile) {
       alert('Banner and Profile images are required.');
       return;
     }
 
-    // 2️⃣ Validate 'Others' type
-    if (this.communityForm.value.type === 'Others' && !this.communityForm.value.otherType) {
+    // 2️⃣ Validate "Others" type properly
+    if (formValue.type === 'Others' && !formValue.otherType) {
       alert('Please specify your community type.');
       return;
     }
 
+    // 3️⃣ Validate form fields
     if (this.communityForm.invalid) {
-      this.communityForm.markAllAsTouched(); // ensures all errors show
+      this.communityForm.markAllAsTouched();
+      alert('Please correct all errors in the form.');
       return;
     }
 
-    // 3️⃣ Show loading
+    // 4️⃣ FIX: Properly update type (DO NOT mutate directly)
+    if (formValue.type === 'Others') {
+      this.communityForm.patchValue({
+        type: formValue.otherType,
+      });
+    }
+
+    // 5️⃣ Start loading
     this.isLoading = true;
 
-    // 4️⃣ Upload images to Cloudinary, then create community
+    // 6️⃣ Upload images
     this.uploadCommunityCoverImages();
   }
 
