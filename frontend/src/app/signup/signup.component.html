@@ -60,7 +60,7 @@
       <div class="column">
         <input formControlName="username" type="text" placeholder="Full Name" />
         <div class="error" *ngIf="submitted && f['username'].errors">
-          <small>Username is required.</small>
+          <small>Username is required and min length 3.</small>
         </div>
 
         <input formControlName="email" type="email" placeholder="Email Address" />
@@ -98,7 +98,7 @@
       <div class="column">
         <input formControlName="password" type="password" placeholder="Password" />
         <div class="error" *ngIf="submitted && f['password'].errors">
-          <small>Password is required.</small>
+          <small>Password is required and min length 6.</small>
         </div>
 
         <input formControlName="confirmPassword" type="password" placeholder="Re-Enter Password" />

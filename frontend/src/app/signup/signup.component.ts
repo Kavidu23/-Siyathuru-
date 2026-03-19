@@ -157,6 +157,12 @@ export class SignupComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.submitted = true;
 
+    if (this.userForm.errors?.['mismatch']) {
+      this.userForm.get('confirmPassword')?.markAsTouched();
+      alert('Password and confirm password do not match.');
+      return;
+    }
+
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
       alert('Please correct the errors in the form.');
