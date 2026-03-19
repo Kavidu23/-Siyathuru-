@@ -16,17 +16,25 @@ export const authGuard: CanActivateFn = (route) => {
   const router = inject(Router);
   const userService = inject(UserService);
   const roles = (route.data?.['roles'] ?? []) as Role[];
+  const unauthorizedMessage = route.data?.['unauthorizedMessage'] as string | undefined;
+
+  const denyAccess = () => {
+    if (unauthorizedMessage) {
+      alert(unauthorizedMessage);
+    }
+    return router.createUrlTree(['/home']);
+  };
 
   const currentUser = userService.getCurrentUser();
   if (currentUser) {
-    return isAllowed(currentUser, roles) ? true : router.createUrlTree(['/home']);
+    return isAllowed(currentUser, roles) ? true : denyAccess();
   }
 
   return userService.validateSession().pipe(
     map((res: any) => {
       const user = res?.user || userService.getCurrentUser();
-      return isAllowed(user, roles) ? true : router.createUrlTree(['/home']);
+      return isAllowed(user, roles) ? true : denyAccess();
     }),
-    catchError(() => of(router.createUrlTree(['/home']))),
+    catchError(() => of(denyAccess())),
   );
 };

@@ -16,6 +16,7 @@ import { AboutComponent } from './about/about.component';
 import { MembersComponent } from './members/members.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { authGuard } from './guards/auth.guard';
+import { FeedbackGiveComponent } from './feedback-give/feedback-give.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' }, // redirect '/' to '/home'
@@ -73,6 +74,12 @@ export const routes: Routes = [
   },
   { path: 'blog', component: BlogComponent },
   { path: 'pro', component: ProComponent },
+  {
+    path: 'feedback',
+    component: FeedbackGiveComponent,
+    canActivate: [authGuard],
+    data: { unauthorizedMessage: 'You must be logged in first to submit feedback.' },
+  },
   { path: 'about', component: AboutComponent },
   {
     path: 'members',

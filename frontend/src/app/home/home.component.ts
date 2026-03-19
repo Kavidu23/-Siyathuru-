@@ -49,7 +49,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   loadFeedbacks() {
     this.feedbackService.getFeedbacks().subscribe(
       (res) => {
-        this.feedbacks = res.data;
+        const allFeedbacks = Array.isArray(res?.data) ? res.data : [];
+        this.feedbacks = allFeedbacks
+          .sort(
+            (a: any, b: any) =>
+              new Date(b?.createdAt || 0).getTime() - new Date(a?.createdAt || 0).getTime(),
+          )
+          .slice(0, 4);
         this.loading = false;
       },
       (err) => {

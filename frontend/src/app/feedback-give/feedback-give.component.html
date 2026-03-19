@@ -1,0 +1,54 @@
+<section class="feedback-page">
+  <header class="feedback-hero">
+    <div>
+      <p class="eyebrow">Siyathuru Feedback</p>
+      <h1>Help us improve Siyathuru</h1>
+      <p class="lead">
+        Share your ideas, pain points, or suggestions. Your feedback helps us build a better
+        experience for every community.
+      </p>
+    </div>
+
+    <div class="hero-panel">
+      <h3>Who can submit feedback?</h3>
+      <p>Only registered users can submit feedback to keep suggestions relevant and accountable.</p>
+      <div class="user-chip" *ngIf="currentUser">
+        Signed in as <strong>{{ currentUser?.name || currentUser?.email }}</strong>
+      </div>
+    </div>
+  </header>
+
+  <section class="feedback-card">
+    <h2>Give Feedback</h2>
+    <p class="subtitle">Tell us what works well and what we can improve.</p>
+
+    <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()">
+      <label for="feedbackMessage">Your Message</label>
+      <textarea
+        id="feedbackMessage"
+        formControlName="message"
+        rows="7"
+        placeholder="Write your feedback here..."
+      ></textarea>
+
+      <small class="error" *ngIf="submitted && f['message'].errors?.['required']">
+        Feedback message is required.
+      </small>
+      <small class="error" *ngIf="submitted && f['message'].errors?.['minlength']">
+        Feedback should be at least 10 characters.
+      </small>
+      <small class="error" *ngIf="submitted && f['message'].errors?.['maxlength']">
+        Feedback cannot exceed 1000 characters.
+      </small>
+
+      <button type="submit" class="btn-primary" [disabled]="isLoading">
+        {{ isLoading ? 'Submitting...' : 'Submit Feedback' }}
+      </button>
+    </form>
+
+    <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </section>
+</section>
+
+<app-footer></app-footer>

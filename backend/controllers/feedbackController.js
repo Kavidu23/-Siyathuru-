@@ -13,6 +13,23 @@ const createFeedback = async (req, res) => {
       });
     }
 
+    if (message.length > 100) {
+      return res.status(400).json({
+        success: false,
+        message: 'Message cannot exceed 100 characters',
+      });
+    }
+
+    if (userId) {
+      const existingFeedback = await Feedback.findOne({ userId });
+      if (existingFeedback) {
+        return res.status(400).json({
+          success: false,
+          message: 'You have already submitted feedback',
+        });
+      }
+    }
+
     const newFeedback = await Feedback.create({
       userId,
       name,
