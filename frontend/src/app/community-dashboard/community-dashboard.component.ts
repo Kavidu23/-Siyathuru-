@@ -18,6 +18,7 @@ interface Community {
   members: string[];
   profileImage?: string;
   isVerified?: boolean;
+  isPrivate?: boolean;
 }
 
 @Component({

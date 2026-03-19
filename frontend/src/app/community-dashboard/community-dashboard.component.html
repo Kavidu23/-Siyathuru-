@@ -18,7 +18,7 @@
   <section class="card immediate-actions">
     <div class="immediate-grid">
       <!-- ----- JOIN REQUESTS ----- -->
-      <div class="action-card urgent-requests">
+      <div *ngIf="selectedCommunity?.isPrivate == true" class="action-card urgent-requests">
         <div class="metric">
           <h2>Requests</h2>
           <p>Pending Join Requests</p>
