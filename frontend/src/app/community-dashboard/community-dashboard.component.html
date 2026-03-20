@@ -1,6 +1,9 @@
 <div class="dashboard community-dashboard">
   <!-- ========== HEADER ========== -->
-  <div class="profile-info">
+  <div
+    class="profile-info"
+    [routerLink]="selectedCommunity?._id ? ['/community', selectedCommunity?._id] : null"
+  >
     <img
       [src]="selectedCommunity?.profileImage || 'profile.jpg'"
       alt="Leader"
@@ -168,8 +171,8 @@
   </section>
 
   <!--Recent Events-->
-  <section>
-    <app-recent-event [communityId]="selectedCommunity!._id"></app-recent-event>
+  <section *ngIf="selectedCommunity?._id as communityId">
+    <app-recent-event [communityId]="communityId"></app-recent-event>
   </section>
 
   <!-- ========== MEMBER MANAGEMENT ========== -->

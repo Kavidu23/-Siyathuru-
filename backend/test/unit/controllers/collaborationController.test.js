@@ -34,7 +34,7 @@ describe('Collaboration Controller Unit Tests', () => {
     });
   });
 
-  it('should return nearby suggested communities with same type', async () => {
+  it('should return nearby suggested communities within 30km regardless of type', async () => {
     req.params.communityId = 'base-community';
 
     const baseCommunity = {
@@ -51,6 +51,13 @@ describe('Collaboration Controller Unit Tests', () => {
         type: 'Volunteer',
         location: {
           coordinates: { latitude: 6.93, longitude: 79.87 },
+        },
+      },
+      {
+        _id: 'nearby-different-type',
+        type: 'Sports',
+        location: {
+          coordinates: { latitude: 6.928, longitude: 79.863 },
         },
       },
       {
@@ -77,7 +84,6 @@ describe('Collaboration Controller Unit Tests', () => {
     expect(Community.findById).toHaveBeenCalledWith('base-community');
     expect(Community.find).toHaveBeenCalledWith({
       _id: { $ne: 'base-community' },
-      type: 'Volunteer',
       'location.coordinates.latitude': { $exists: true },
       'location.coordinates.longitude': { $exists: true },
     });
@@ -85,7 +91,7 @@ describe('Collaboration Controller Unit Tests', () => {
     expect(res.json).toHaveBeenCalledWith({
       success: true,
       message: 'Suggested communities fetched successfully',
-      data: [candidates[0]],
+      data: [candidates[0], candidates[1]],
     });
   });
 

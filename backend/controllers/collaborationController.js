@@ -1,6 +1,6 @@
 const Community = require('../models/communities');
 
-// Suggest Communities based on type and location
+// Suggest communities based on nearby location only
 const suggestCommunities = async (req, res) => {
   try {
     const { communityId } = req.params;
@@ -14,15 +14,13 @@ const suggestCommunities = async (req, res) => {
       });
     }
 
-    const { type, location } = baseCommunity;
+    const { location } = baseCommunity;
 
-    // 2. Find other communities with the same type
-    // Optional: Filter by nearby location (simple example using distance in km)
-    const nearbyThresholdKm = 50; // e.g., 50 km radius
+    // 2. Find other communities with valid coordinates
+    const nearbyThresholdKm = 30;
 
     const suggestedCommunities = await Community.find({
       _id: { $ne: communityId }, // exclude current community
-      type: type,
       'location.coordinates.latitude': {
         $exists: true,
       },
