@@ -17,7 +17,7 @@ const suggestCommunities = async (req, res) => {
     const { location } = baseCommunity;
 
     // 2. Find other communities with valid coordinates
-    const nearbyThresholdKm = 30;
+    const nearbyThresholdKm = 60;
 
     const suggestedCommunities = await Community.find({
       _id: { $ne: communityId }, // exclude current community
