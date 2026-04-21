@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [RouterLink, CommonModule],
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css'], // ✅ fixed typo
+  styleUrls: ['./navbar.component.css'], //
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
@@ -34,7 +34,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // 🔥 Listen to auth changes
+    // Listen to auth changes
     this.authSub = this.userService.authState$.subscribe((user) => {
       this.userData = user;
       this.isLoggedIn = !!user;
@@ -53,7 +53,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.hasUnread = hasUnread;
     });
 
-    // ✅ Validate session on page reload
+    // Validate session on page reload
     this.userService.validateSession().subscribe({
       next: () => {
         // authState$ already updated by validateSession()
@@ -129,7 +129,27 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     // Role-based navigation
     if (this.userData.role === 'leader') {
-      this.router.navigate(['/community-dashboard']);
+      const leaderId = this.userData?._id;
+      if (!leaderId) {
+        this.router.navigate(['/create-community']);
+        return;
+      }
+
+      this.communityService.getCommunitiesByLeader(leaderId).subscribe({
+        next: (res: any) => {
+          const communities = res?.data || res || [];
+
+          if (!communities.length) {
+            this.router.navigate(['/create-community']);
+            return;
+          }
+
+          this.router.navigate(['/community-dashboard']);
+        },
+        error: () => {
+          this.router.navigate(['/create-community']);
+        },
+      });
       return;
     }
 

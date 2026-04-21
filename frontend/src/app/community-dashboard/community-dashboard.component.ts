@@ -85,14 +85,17 @@ export class CommunityDashboardComponent implements OnInit {
         const communities = response.data || response;
         const mine = communities.find((c: Community) => c.leader === this.currentUser._id);
 
-        if (mine) {
-          this.selectedCommunity = mine;
-          this.totalMembers = mine.members?.length || 0;
-
-          this.loadCommunitySuggestions(mine._id);
-          this.loadUpcomingEvents(mine._id);
-          this.loadAlerts(mine._id);
+        if (!mine) {
+          this.router.navigate(['/create-community']);
+          return;
         }
+
+        this.selectedCommunity = mine;
+        this.totalMembers = mine.members?.length || 0;
+
+        this.loadCommunitySuggestions(mine._id);
+        this.loadUpcomingEvents(mine._id);
+        this.loadAlerts(mine._id);
 
         this.isLoading = false;
       },

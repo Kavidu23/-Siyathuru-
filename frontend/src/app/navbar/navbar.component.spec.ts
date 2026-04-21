@@ -35,6 +35,9 @@ describe('NavbarComponent', () => {
 
   const communityServiceMock = {
     getAllCommunities: jasmine.createSpy('getAllCommunities').and.returnValue(of({ data: [] })),
+    getCommunitiesByLeader: jasmine
+      .createSpy('getCommunitiesByLeader')
+      .and.returnValue(of({ data: [] })),
   };
 
   beforeEach(async () => {
@@ -63,6 +66,7 @@ describe('NavbarComponent', () => {
     modalServiceMock.openSignup.calls.reset();
     userServiceMock.logoutUser.calls.reset();
     communityServiceMock.getAllCommunities.calls.reset();
+    communityServiceMock.getCommunitiesByLeader.calls.reset();
     chatServiceMock.startUnreadListenerForCommunities.calls.reset();
     navigateSpy.calls.reset();
   });
@@ -86,6 +90,28 @@ describe('NavbarComponent', () => {
     component.goToUserDashboard();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/superadmin']);
+  });
+
+  it('redirects leader without a community to create-community', () => {
+    component.isLoggedIn = true;
+    component.userData = { _id: 'leader-1', role: 'leader' };
+    communityServiceMock.getCommunitiesByLeader.and.returnValue(of({ data: [] }));
+
+    component.goToUserDashboard();
+
+    expect(communityServiceMock.getCommunitiesByLeader).toHaveBeenCalledWith('leader-1');
+    expect(navigateSpy).toHaveBeenCalledWith(['/create-community']);
+  });
+
+  it('navigates leader with a community to community-dashboard', () => {
+    component.isLoggedIn = true;
+    component.userData = { _id: 'leader-1', role: 'leader' };
+    communityServiceMock.getCommunitiesByLeader.and.returnValue(of({ data: [{ _id: 'c1' }] }));
+
+    component.goToUserDashboard();
+
+    expect(communityServiceMock.getCommunitiesByLeader).toHaveBeenCalledWith('leader-1');
+    expect(navigateSpy).toHaveBeenCalledWith(['/community-dashboard']);
   });
 
   it('navigates home after successful logout', () => {
