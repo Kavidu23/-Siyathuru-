@@ -315,14 +315,14 @@
 }
 
 .gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  display: flex;
   gap: var(--spacing-sm);
-  margin-top: var(--spacing-md);
+  overflow-x: auto;
+  padding-bottom: 5px;
 }
 
 .gallery img {
-  width: 100%;
+  max-width: 180px;
   height: 150px;
   object-fit: cover;
   border-radius: var(--border-radius-card);

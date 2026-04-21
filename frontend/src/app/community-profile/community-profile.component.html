@@ -154,8 +154,9 @@
     <p *ngIf="!communityPhotos || communityPhotos.length === 0">No photos</p>
 
     <!-- Show gallery photos -->
-    <div class="gallery" *ngFor="let ph of communityPhotos">
+    <div class="gallery" *ngIf="communityPhotos && communityPhotos.length > 0">
       <img
+        *ngFor="let ph of communityPhotos"
         [src]="ph.imageUrl"
         alt="Community Event"
         role="button"
