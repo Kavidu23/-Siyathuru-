@@ -91,7 +91,9 @@ export class CommunityService {
 
   // GET: fetch communities by leader ID
   getCommunitiesByLeader(leaderId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/leader/${leaderId}`);
+    return this.http.get<any[]>(`${this.baseUrl}/leader/${leaderId}`, {
+      withCredentials: true,
+    });
   }
 
   getUsersByCommunity(communityId: string): Observable<any> {
