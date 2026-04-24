@@ -42,6 +42,13 @@ export class AlertService {
     });
   }
 
+  // Get all alerts for a community
+  getAlertsByCommunityId(communityId: string): Observable<AlertResponse> {
+    return this.http.get<AlertResponse>(`${this.baseUrl}/community/${communityId}`, {
+      withCredentials: true,
+    });
+  }
+
   // Get alert by ID
   getAlertById(alertId: string): Observable<AlertResponse> {
     return this.http.get<AlertResponse>(`${this.baseUrl}/${alertId}`, {

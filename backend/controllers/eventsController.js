@@ -1,5 +1,34 @@
-const events = require('../models/events');
+﻿const events = require('../models/events');
 const sendEmail = require('../utils/sendEmail');
+const mongoose = require('mongoose');
+
+const buildEventDateTime = (eventDate, eventTime) => {
+  if (!eventDate) return null;
+  const date = new Date(eventDate);
+  if (Number.isNaN(date.getTime())) return null;
+
+  if (!eventTime) return date;
+
+  const timeMatch = String(eventTime)
+    .trim()
+    .match(/^(\d{1,2}):(\d{2})\s*([AaPp][Mm])?$/);
+  if (!timeMatch) return date;
+
+  let hours = Number(timeMatch[1]);
+  const minutes = Number(timeMatch[2]);
+  const meridiem = timeMatch[3]?.toLowerCase();
+
+  if (meridiem) {
+    if (hours === 12) {
+      hours = meridiem === 'am' ? 0 : 12;
+    } else if (meridiem === 'pm') {
+      hours += 12;
+    }
+  }
+
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+};
 
 // Create a new event
 const createEvent = async (req, res) => {
@@ -49,6 +78,70 @@ const createEvent = async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Server error',
+      details: err.message,
+    });
+  }
+};
+
+// Read all events for a community (no time filter)
+const getEventsByCommunityId = async (req, res) => {
+  try {
+    const { communityId } = req.params;
+
+    if (!mongoose.isValidObjectId(communityId)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid communityId',
+      });
+    }
+
+    const communityEvents = await events.find({ communityId }).sort({ eventDate: 1 });
+
+    res.status(200).json({
+      success: true,
+      message: 'Community events fetched successfully',
+      count: communityEvents.length,
+      data: communityEvents,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch community events',
+      details: err.message,
+    });
+  }
+};
+
+// Read upcoming (future) events for a community (date+time aware)
+const getUpcomingEventsByCommunityId = async (req, res) => {
+  try {
+    const { communityId } = req.params;
+
+    if (!mongoose.isValidObjectId(communityId)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid communityId',
+      });
+    }
+
+    const all = await events.find({ communityId }).sort({ eventDate: 1 });
+    const now = new Date();
+
+    const upcoming = all.filter((ev) => {
+      const dt = buildEventDateTime(ev.eventDate, ev.eventTime);
+      return dt ? dt > now : false;
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Upcoming community events fetched successfully',
+      count: upcoming.length,
+      data: upcoming,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch upcoming community events',
       details: err.message,
     });
   }
@@ -142,7 +235,7 @@ const deleteEvent = async (req, res) => {
   try {
     const eventId = req.params.id;
 
-    // 1️⃣ FIND EVENT WITH ATTENDEES POPULATED
+    // 1ï¸âƒ£ FIND EVENT WITH ATTENDEES POPULATED
     const event = await events
       .findById(eventId)
       .populate('attendees', 'email name')
@@ -155,10 +248,10 @@ const deleteEvent = async (req, res) => {
       });
     }
 
-    // 2️⃣ PREPARE EMAIL LIST
+    // 2ï¸âƒ£ PREPARE EMAIL LIST
     const attendeeEmails = event.attendees.map((u) => u.email);
 
-    // 3️⃣ SEND EMAIL TO EACH ATTENDEE
+    // 3ï¸âƒ£ SEND EMAIL TO EACH ATTENDEE
     const emailPromises = attendeeEmails.map((email) => {
       const html = `
         <h3>Event Cancelled</h3>
@@ -178,7 +271,7 @@ const deleteEvent = async (req, res) => {
 
         <p>Sorry for the inconvenience.</p>
 
-        <p>— Siyathuru Team</p>
+        <p>â€” Siyathuru Team</p>
       `;
 
       return sendEmail(
@@ -189,10 +282,10 @@ const deleteEvent = async (req, res) => {
       );
     });
 
-    // Run emails in background (don’t block delete)
+    // Run emails in background (donâ€™t block delete)
     Promise.allSettled(emailPromises);
 
-    // 4️⃣ DELETE EVENT
+    // 4ï¸âƒ£ DELETE EVENT
     await events.findByIdAndDelete(eventId);
 
     res.status(200).json({
@@ -312,6 +405,8 @@ const getNumberOfEvents = async (req, res) => {
 
 module.exports = {
   createEvent,
+  getEventsByCommunityId,
+  getUpcomingEventsByCommunityId,
   getEvents,
   getEventById,
   updateEvent,

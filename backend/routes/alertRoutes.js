@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 
 const authMiddleware = require('../middleware/authMiddleware');
@@ -7,6 +7,7 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 const {
   createAlert,
   getAlerts,
+  getAlertsByCommunityId,
   getAlertById,
   updateAlert,
   deleteAlert,
@@ -24,6 +25,14 @@ router.get('/count', authMiddleware, roleMiddleware(['admin']), getNumberOfAlert
 
 // Get alerts by user id
 router.get('/user/:userId', authMiddleware, roleMiddleware(['member', 'leader']), getAlertByUserId);
+
+// Get alerts for a specific community
+router.get(
+  '/community/:communityId',
+  authMiddleware,
+  roleMiddleware(['member', 'leader']),
+  getAlertsByCommunityId,
+);
 
 // Get single alert by id
 router.get('/:id', authMiddleware, roleMiddleware(['member', 'leader']), getAlertById);

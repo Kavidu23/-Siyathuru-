@@ -129,48 +129,12 @@ export class CommunityDashboardComponent implements OnInit {
 
   // -------- EVENTS --------
   loadUpcomingEvents(communityId: string) {
-    this.eventService.getAllEvents().subscribe({
+    this.eventService.getUpcomingEventsByCommunityId(communityId).subscribe({
       next: (res) => {
-        const allEvents = res.data || [];
-        const now = new Date();
-
-        this.upcomingEvents = allEvents
-          .filter((ev) => ev.communityId === communityId)
-          .filter((ev) => {
-            const dt = this.buildEventDateTime(ev.eventDate, ev.eventTime);
-            return dt ? dt > now : false;
-          });
+        this.upcomingEvents = res.data || [];
       },
       error: () => console.log('Failed to load events'),
     });
-  }
-
-  private buildEventDateTime(eventDate: string, eventTime?: string): Date | null {
-    if (!eventDate) return null;
-    const date = new Date(eventDate);
-    if (Number.isNaN(date.getTime())) return null;
-
-    if (!eventTime) return date;
-
-    const timeMatch = String(eventTime)
-      .trim()
-      .match(/^(\d{1,2}):(\d{2})\s*([AaPp][Mm])?$/);
-    if (!timeMatch) return date;
-
-    let hours = Number(timeMatch[1]);
-    const minutes = Number(timeMatch[2]);
-    const meridiem = timeMatch[3]?.toLowerCase();
-
-    if (meridiem) {
-      if (hours === 12) {
-        hours = meridiem === 'am' ? 0 : 12;
-      } else if (meridiem === 'pm') {
-        hours += 12;
-      }
-    }
-
-    date.setHours(hours, minutes, 0, 0);
-    return date;
   }
 
   deleteEvent(id: string) {
@@ -191,21 +155,12 @@ export class CommunityDashboardComponent implements OnInit {
 
   // -------- ALERTS --------
   loadAlerts(communityId: string) {
-    this.alertService.getAlerts().subscribe({
+    this.alertService.getAlertsByCommunityId(communityId).subscribe({
       next: (res) => {
-        const allAlerts = res.data || [];
-        this.alerts = allAlerts.filter(
-          (al: any) => this.getAlertCommunityId(al?.communityId) === String(communityId),
-        );
+        this.alerts = res.data || [];
       },
       error: () => console.log('Failed to load alerts'),
     });
-  }
-
-  private getAlertCommunityId(communityRef: any): string {
-    if (!communityRef) return '';
-    if (typeof communityRef === 'string') return communityRef;
-    return String(communityRef?._id || communityRef?.id || '');
   }
 
   toggleAlertStatus(alert: any) {

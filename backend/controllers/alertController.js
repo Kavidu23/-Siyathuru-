@@ -1,14 +1,15 @@
-const Alert = require('../models/alert'); // alert model path
+﻿const Alert = require('../models/alert'); // alert model path
 const User = require('../models/user'); // Ensure User model is imported
 const Community = require('../models/communities'); // community model
 const sendEmail = require('../utils/sendEmail'); // email service
+const mongoose = require('mongoose');
 
 // Create a new alert
 const createAlert = async (req, res) => {
   try {
     const { communityId, title, message, severity, isActive } = req.body;
 
-    // 1️⃣ Create alert
+    // 1ï¸âƒ£ Create alert
     const newAlert = await Alert.create({
       communityId,
       title,
@@ -17,7 +18,7 @@ const createAlert = async (req, res) => {
       isActive,
     });
 
-    // 2️⃣ Send email to all members if alert is active
+    // 2ï¸âƒ£ Send email to all members if alert is active
     if (isActive) {
       // Get community members
       const community = await Community.findById(communityId).populate('members', 'name email');
@@ -88,6 +89,40 @@ const getAlerts = async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch alerts',
+      details: err.message,
+    });
+  }
+};
+
+// Read all alerts for a community
+const getAlertsByCommunityId = async (req, res) => {
+  try {
+    const { communityId } = req.params;
+
+    if (!mongoose.isValidObjectId(communityId)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid communityId',
+      });
+    }
+
+    const alerts = await Alert.find({ communityId })
+      .populate({
+        path: 'communityId',
+        select: 'name leader members profileImage',
+      })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      message: 'Community alerts fetched successfully',
+      count: alerts.length,
+      data: alerts,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch community alerts',
       details: err.message,
     });
   }
@@ -234,6 +269,7 @@ const getNumberOfAlerts = async (req, res) => {
 module.exports = {
   createAlert,
   getAlerts,
+  getAlertsByCommunityId,
   getAlertById,
   updateAlert,
   deleteAlert,

@@ -62,6 +62,34 @@ export class EventService {
     return this.getEvents();
   }
 
+  getEventsByCommunityId(communityId: string): Observable<{
+    success: boolean;
+    message: string;
+    count?: number;
+    data: Event[];
+  }> {
+    return this.http.get<{
+      success: boolean;
+      message: string;
+      count?: number;
+      data: Event[];
+    }>(`${this.baseUrl}/community/${communityId}`, { withCredentials: true });
+  }
+
+  getUpcomingEventsByCommunityId(communityId: string): Observable<{
+    success: boolean;
+    message: string;
+    count?: number;
+    data: Event[];
+  }> {
+    return this.http.get<{
+      success: boolean;
+      message: string;
+      count?: number;
+      data: Event[];
+    }>(`${this.baseUrl}/community/${communityId}/upcoming`, { withCredentials: true });
+  }
+
   getEventById(id: string): Observable<{
     success: boolean;
     data: Event;
