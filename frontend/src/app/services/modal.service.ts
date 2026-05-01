@@ -1,6 +1,7 @@
 // modal.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
 export class ModalService {
@@ -11,6 +12,8 @@ export class ModalService {
   loginVisible$ = this.loginVisible.asObservable();
   signupVisible$ = this.signupVisible.asObservable();
   signupVerificationEmail$ = this.signupVerificationEmail.asObservable();
+
+  constructor(private userService: UserService) {}
 
   openSignup() {
     this.signupVisible.next(true);
@@ -31,7 +34,7 @@ export class ModalService {
   }
 
   openLogin() {
-    const user = this.isUserLoggedIn();
+    const user = this.userService.getCurrentUser();
     if (user) {
       alert(
         `You are already logged in as ${user.name}. Please logout to login with another account.`,
@@ -43,14 +46,5 @@ export class ModalService {
 
   closeLogin() {
     this.loginVisible.next(false);
-  }
-
-  private isUserLoggedIn(): any {
-    try {
-      const stored = localStorage.getItem('user');
-      return stored ? JSON.parse(stored) : null;
-    } catch (err) {
-      return null;
-    }
   }
 }
