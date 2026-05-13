@@ -11,6 +11,7 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 
 // Leader-only middleware
 const leaderOnly = roleMiddleware(['leader']);
+const leaderOrAdmin = roleMiddleware(['leader', 'admin']);
 
 // ===== Routes =====
 
@@ -18,6 +19,6 @@ const leaderOnly = roleMiddleware(['leader']);
 router.post('/request', authMiddleware, leaderOnly, requestVerification);
 
 // Verify community (leader only)
-router.post('/verify', authMiddleware, leaderOnly, verifyCommunity);
+router.post('/verify', authMiddleware, leaderOrAdmin, verifyCommunity);
 
 module.exports = router;

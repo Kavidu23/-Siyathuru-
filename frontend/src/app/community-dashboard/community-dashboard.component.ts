@@ -277,14 +277,19 @@ export class CommunityDashboardComponent implements OnInit {
       return;
     }
 
+    const codeRaw = prompt('Enter the 6-digit registration code to request verification:');
+    if (codeRaw === null) return;
+    const registrationCode = Number(String(codeRaw).trim());
+    if (!Number.isFinite(registrationCode)) {
+      alert('Please enter a valid registration code.');
+      return;
+    }
+
     this.isVerifying = true;
-    this.communityService.verifyCommunity(communityId).subscribe({
+    this.communityService.requestCommunityVerification(communityId, registrationCode).subscribe({
       next: (res: any) => {
         this.isVerifying = false;
-        if (this.selectedCommunity) {
-          this.selectedCommunity.isVerified = true;
-        }
-        alert(res?.message || 'Verification requested successfully');
+        alert(res?.message || 'Verification request submitted. Please wait for admin approval.');
       },
       error: (err) => {
         this.isVerifying = false;

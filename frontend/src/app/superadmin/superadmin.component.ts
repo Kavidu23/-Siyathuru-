@@ -140,6 +140,34 @@ export class SuperadminComponent implements OnInit {
     this.router.navigate(['/community', communityId]);
   }
 
+  verifyCommunity(community: any) {
+    const communityId = community?._id;
+    if (!communityId) return;
+
+    if (community?.isVerified) {
+      alert('Community is already verified');
+      return;
+    }
+
+    const codeRaw = prompt('Enter the community registration code to verify:');
+    if (codeRaw === null) return;
+    const registrationCode = Number(String(codeRaw).trim());
+    if (!Number.isFinite(registrationCode)) {
+      alert('Please enter a valid registration code.');
+      return;
+    }
+
+    this.communityService.verifyCommunity(String(communityId), registrationCode).subscribe({
+      next: (res: any) => {
+        community.isVerified = true;
+        alert(res?.message || 'Community verified successfully');
+      },
+      error: (err: any) => {
+        alert(err?.error?.error || 'Community verification failed');
+      },
+    });
+  }
+
   RemoveCommunity(community: any) {
     if (!community?._id) return;
     const ok = confirm(`Remove community "${community.name || 'this community'}"?`);

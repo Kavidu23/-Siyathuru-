@@ -102,11 +102,20 @@ export class CommunityService {
     });
   }
 
+  // POST: leader requests community verification (validates registration code, does not mark verified)
+  requestCommunityVerification(communityId: string, registrationCode: number): Observable<any> {
+    return this.http.post<any>(
+      `${this.verificationBaseUrl}/request`,
+      { communityId, registrationCode },
+      { withCredentials: true },
+    );
+  }
+
   // POST: request/verify community (marks code used + sets isVerified)
-  verifyCommunity(communityId: string): Observable<any> {
+  verifyCommunity(communityId: string, registrationCode: number): Observable<any> {
     return this.http.post<any>(
       `${this.verificationBaseUrl}/verify`,
-      { communityId },
+      { communityId, registrationCode },
       { withCredentials: true },
     );
   }

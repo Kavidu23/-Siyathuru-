@@ -55,6 +55,12 @@ const requestVerification = async (req, res) => {
         error: 'communityId required',
       });
     }
+    if (registrationCode === undefined || registrationCode === null || registrationCode === '') {
+      return res.status(400).json({
+        success: false,
+        error: 'registrationCode required',
+      });
+    }
 
     const codes = await loadCodes();
     const entry = findEntryByCommunityId(codes, communityId);
@@ -85,6 +91,12 @@ const verifyCommunity = async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'communityId required',
+      });
+    }
+    if (registrationCode === undefined || registrationCode === null || registrationCode === '') {
+      return res.status(400).json({
+        success: false,
+        error: 'registrationCode required',
       });
     }
 

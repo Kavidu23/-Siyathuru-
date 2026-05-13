@@ -50,6 +50,10 @@
         <div class="upcoming-info">
           <strong>🏡 {{ c.name }}</strong>
           <span>Members: {{ getMemberCount(c) }}</span>
+          <span>
+            Status:
+            <b class="role-badge">{{ c.isVerified ? 'Verified' : 'Verification Needed' }}</b>
+          </span>
         </div>
         <div class="upcoming-actions">
           <button
@@ -60,6 +64,16 @@
             (keyup.space)="viewCommunity(c._id)"
           >
             View
+          </button>
+          <button
+            type="button"
+            class="view-btn"
+            (click)="verifyCommunity(c)"
+            (keyup.enter)="verifyCommunity(c)"
+            (keyup.space)="verifyCommunity(c)"
+            [disabled]="c.isVerified"
+          >
+            {{ c.isVerified ? 'Verified' : 'Verify' }}
           </button>
           <button
             type="button"
